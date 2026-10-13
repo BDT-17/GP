@@ -50,10 +50,11 @@ of inventing an answer or citation.
 
 ## Repository status
 
-The project currently contains its working harness and proposed MVP
-specification; no application code, dependency manifest, runtime, provider,
-or lesson corpus has been selected yet. Consequently, there is no install,
-run, test, or deployment command at this stage.
+The project currently contains its working harness, proposed MVP specification,
+and a Python 3.10 GitHub Actions baseline; no application code, dependency
+manifest, runtime framework, provider, or lesson corpus has been selected yet.
+There is therefore no project-specific local install, run, or test command at
+this stage.
 
 Before bootstrapping the application, the team must approve the architecture
 proposal and provide:

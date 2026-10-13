@@ -10,11 +10,11 @@ explain-back in their own words.
 
 ## Current repository state
 
-As of 2026-10-13, this repository contains no application source, manifests,
-tests, infrastructure, or runtime configuration. Do not assume a framework,
-LLM provider, vector store, database, deployment target, or test command.
-Before implementation, update this document with the selected stack and its
-verified commands.
+As of 2026-10-13, this repository contains no application source, dependency
+manifest, tests, or application runtime configuration. GitHub Actions provides
+a Python 3.10 CI baseline, but no framework, LLM provider, vector store,
+database, or deployment target has been selected. Before implementation,
+update this document with the selected stack and its verified commands.
 
 ## Durable product rules
 
@@ -62,8 +62,17 @@ here. Product changes should provide evidence for the relevant cases:
 - no completion before misconception repair and explain-back pass;
 - logs and learning summary emitted for a completed and an abstained session.
 
+The current CI workflow installs `flake8` and `pytest`, runs syntax/undefined
+name linting, reports style findings, and runs `pytest` when a `tests/`
+directory exists. It intentionally emits a visible notice while no test suite
+exists; replacing that notice with a mandatory test run is required once tests
+are added.
+
 ## Change log
 
+- 2026-10-13: Added Python 3.10 GitHub Actions CI for pushes and pull requests
+  targeting `thangbd/dev`; it has a visible no-tests notice until a suite is
+  introduced.
 - 2026-10-13: Added proposed MVP requirements and ADR 0001; implementation is
   gated on approval of the backend-first, provider-neutral architecture and a
   permitted lesson corpus.
