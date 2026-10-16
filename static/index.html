@@ -400,6 +400,207 @@
   </div>
 
   <!-- ======================================================== -->
+  <!-- 0.7. SUBJECT SELECTION SCREEN (B1 - KÌ 1 SUBJECTS)       -->
+  <!-- ======================================================== -->
+  <div id="view-subjects" class="w-full h-full flex flex-col justify-between overflow-y-auto chat-scroll bg-[#131f24] text-white select-none hidden">
+    
+    <!-- Top Header -->
+    <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between flex-shrink-0">
+      <!-- Left: Back Button + Logo -->
+      <div class="flex items-center space-x-3.5">
+        <button onclick="switchView('semester')" title="Quay lại chọn học kỳ" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+          <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+          <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
+          <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+        </div>
+      </div>
+
+      <!-- Right Level & Semester Indicator Badge -->
+      <div class="relative">
+        <span class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
+          B1 • KÌ 1 (ĐẠI CƯƠNG)
+        </span>
+      </div>
+    </header>
+
+    <!-- Center Content: Title + 9 Subject Cards Grid -->
+    <main class="w-full max-w-5xl mx-auto px-6 py-8 flex flex-col items-center justify-center flex-1">
+      
+      <!-- Big Centered Title -->
+      <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-2 tracking-tight">
+        Chọn môn học
+      </h1>
+      <p class="text-sm md:text-base font-bold text-[#8598a0] text-center mb-8">
+        Các môn học thuộc <span class="text-[#1cb0f6]">B1 - Kì 1</span>
+      </p>
+
+      <!-- 9 Subject Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        
+        <!-- 1. Calculus I [MATH1.1] -->
+        <div onclick="selectSubject('Calculus I', 'MATH1.1')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#e53935] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#e53935] flex items-center justify-center text-white text-2xl font-black italic shadow-sm flex-shrink-0">
+              ∫
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#ff6b6b] transition leading-tight">
+                Calculus I
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[MATH1.1]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 2. Calculus II [MATH1.3] -->
+        <div onclick="selectSubject('Calculus II', 'MATH1.3')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#e53935] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#e53935] flex items-center justify-center text-white text-2xl font-black italic shadow-sm flex-shrink-0">
+              ∫
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#ff6b6b] transition leading-tight">
+                Calculus II
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[MATH1.3]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 3. Introduction to Informatics [ICT1.001] -->
+        <div onclick="selectSubject('Introduction to Informatics', 'ICT1.001')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-2xl flex-shrink-0">
+              🖥️
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#1cb0f6] transition leading-tight">
+                Introduction to Informatics
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[ICT1.001]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 4. Computer Architecture [ICT1.3] -->
+        <div onclick="selectSubject('Computer Architecture', 'ICT1.3')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-2xl flex-shrink-0">
+              🖥️
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#1cb0f6] transition leading-tight">
+                Computer Architecture
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[ICT1.3]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 5. Introduction to Algorithms [ICT1.4] -->
+        <div onclick="selectSubject('Introduction to Algorithms', 'ICT1.4')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-2xl flex-shrink-0">
+              🖥️
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#1cb0f6] transition leading-tight">
+                Introduction to Algorithms
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[ICT1.4]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 6. Basic Programming [ICT1.002] (Active Course Highlight) -->
+        <div onclick="selectSubject('Basic Programming', 'ICT1.002')" class="bg-[#142936] border-2 border-[#1cb0f6] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-[0_4px_16px_rgba(28,176,246,0.25)] group relative">
+          <span class="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-[#1cb0f6] text-white text-[9px] font-black uppercase tracking-wider rounded-full shadow-sm">
+            HIỆN TẠI
+          </span>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#1c3a4b] border border-[#1cb0f6]/50 flex items-center justify-center text-2xl flex-shrink-0">
+              🖥️
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-[#1cb0f6] group-hover:text-white transition leading-tight">
+                Basic Programming
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[ICT1.002]</div>
+            </div>
+          </div>
+          <span class="text-[#1cb0f6] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 7. Discrete Mathematics [MATH1.4] -->
+        <div onclick="selectSubject('Discrete Mathematics', 'MATH1.4')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#1976d2] flex items-center justify-center text-white text-xs font-black shadow-sm flex-shrink-0">
+              <div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-center font-mono font-black text-[10px] leading-none">
+                <span>1</span><span>2</span>
+                <span>3</span><span>4</span>
+              </div>
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#1cb0f6] transition leading-tight">
+                Discrete Mathematics
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[MATH1.4]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 8. Linear Algebra [MATH1.2] -->
+        <div onclick="selectSubject('Linear Algebra', 'MATH1.2')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#ff9600] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-2xl flex-shrink-0">
+              🧮
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#ff9600] transition leading-tight">
+                Linear Algebra
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">[MATH1.2]</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+        <!-- 9. Economics -->
+        <div onclick="selectSubject('Economics', '')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#58cc02] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-2xl flex-shrink-0">
+              💰
+            </div>
+            <div class="text-left">
+              <div class="text-sm md:text-base font-extrabold text-white group-hover:text-[#58cc02] transition leading-tight">
+                Economics
+              </div>
+              <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">General Elective</div>
+            </div>
+          </div>
+          <span class="text-[#52656d] group-hover:text-white transition font-bold text-lg">›</span>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Bottom Spacing -->
+    <div class="py-6 flex-shrink-0"></div>
+
+  </div>
+
+  <!-- ======================================================== -->
   <!-- 1. MAIN APP WORKSPACE (WRAPPER FOR SIDEBAR + VIEWS)      -->
   <!-- ======================================================== -->
   <div id="view-app" class="w-full h-full flex overflow-hidden hidden">
@@ -1142,6 +1343,7 @@
       const landingView = document.getElementById('view-landing');
       const selectionView = document.getElementById('view-selection');
       const semesterView = document.getElementById('view-semester');
+      const subjectsView = document.getElementById('view-subjects');
       const appView = document.getElementById('view-app');
       const homeView = document.getElementById('view-home');
       const exerciseView = document.getElementById('view-exercise');
@@ -1155,6 +1357,7 @@
       if (landingView) landingView.classList.add('hidden');
       if (selectionView) selectionView.classList.add('hidden');
       if (semesterView) semesterView.classList.add('hidden');
+      if (subjectsView) subjectsView.classList.add('hidden');
       if (appView) appView.classList.add('hidden');
 
       if (viewName === 'landing') {
@@ -1169,6 +1372,11 @@
 
       if (viewName === 'semester') {
         if (semesterView) semesterView.classList.remove('hidden');
+        return;
+      }
+
+      if (viewName === 'subjects') {
+        if (subjectsView) subjectsView.classList.remove('hidden');
         return;
       }
 
@@ -1228,9 +1436,31 @@
     function selectSemester(semester) {
       playDuoSound('hint');
       selectedSemesterName = semester;
+      if (selectedLevelCode === 'B1' && semester === 'Kì 1') {
+        switchView('subjects');
+        return;
+      }
       const unitLabel = document.getElementById('unit-header-label');
       if (unitLabel) {
         unitLabel.innerText = `${selectedLevelCode} • ${semester.toUpperCase()}, BÀI 2`;
+      }
+      switchView('home');
+    }
+
+    let selectedSubjectName = 'Basic Programming';
+    let selectedSubjectCode = 'ICT1.002';
+
+    function selectSubject(name, code) {
+      playDuoSound('hint');
+      selectedSubjectName = name;
+      selectedSubjectCode = code;
+      const unitLabel = document.getElementById('unit-header-label');
+      if (unitLabel) {
+        if (code) {
+          unitLabel.innerText = `${name.toUpperCase()} [${code}], BÀI 2`;
+        } else {
+          unitLabel.innerText = `${name.toUpperCase()}, BÀI 2`;
+        }
       }
       switchView('home');
     }
