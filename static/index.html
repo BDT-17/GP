@@ -421,25 +421,25 @@
 
       <!-- Right Level & Semester Indicator Badge -->
       <div class="relative">
-        <span class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
+        <span id="subjects-badge" class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
           B1 • KÌ 1 (ĐẠI CƯƠNG)
         </span>
       </div>
     </header>
 
-    <!-- Center Content: Title + 9 Subject Cards Grid -->
+    <!-- Center Content: Title + Subject Cards Grid -->
     <main class="w-full max-w-5xl mx-auto px-6 py-8 flex flex-col items-center justify-center flex-1">
       
       <!-- Big Centered Title -->
       <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-2 tracking-tight">
         Chọn môn học
       </h1>
-      <p class="text-sm md:text-base font-bold text-[#8598a0] text-center mb-8">
+      <p id="subjects-subtitle" class="text-sm md:text-base font-bold text-[#8598a0] text-center mb-8">
         Các môn học thuộc <span class="text-[#1cb0f6]">B1 - Kì 1</span>
       </p>
 
-      <!-- 9 Subject Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+      <!-- Subject Cards Grid -->
+      <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
         
         <!-- 1. Calculus I [MATH1.1] -->
         <div onclick="selectSubject('Calculus I', 'MATH1.1')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#e53935] hover:bg-[#20313a] rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 shadow-md group">
@@ -1433,10 +1433,240 @@
       switchView('semester');
     }
 
+    const semesterCourses = {
+      'B1-Kì 1': [
+        {
+          name: 'Calculus I',
+          code: 'MATH1.1',
+          icon: '∫',
+          hoverBorder: 'hover:border-[#e53935]',
+          hoverText: 'group-hover:text-[#ff6b6b]',
+          iconBg: 'bg-[#e53935] text-white italic text-2xl font-black'
+        },
+        {
+          name: 'Calculus II',
+          code: 'MATH1.3',
+          icon: '∫',
+          hoverBorder: 'hover:border-[#e53935]',
+          hoverText: 'group-hover:text-[#ff6b6b]',
+          iconBg: 'bg-[#e53935] text-white italic text-2xl font-black'
+        },
+        {
+          name: 'Introduction to Informatics',
+          code: 'ICT1.001',
+          icon: '🖥️',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Computer Architecture',
+          code: 'ICT1.3',
+          icon: '🖥️',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Introduction to Algorithms',
+          code: 'ICT1.4',
+          icon: '🖥️',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Basic Programming',
+          code: 'ICT1.002',
+          icon: '🖥️',
+          active: true,
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-white',
+          iconBg: 'bg-[#1c3a4b] border border-[#1cb0f6]/50 text-2xl'
+        },
+        {
+          name: 'Discrete Mathematics',
+          code: 'MATH1.4',
+          iconType: 'grid',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#1976d2] text-white shadow-sm'
+        },
+        {
+          name: 'Linear Algebra',
+          code: 'MATH1.2',
+          icon: '🧮',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Economics',
+          code: '',
+          subLabel: 'General Elective',
+          icon: '💰',
+          hoverBorder: 'hover:border-[#58cc02]',
+          hoverText: 'group-hover:text-[#58cc02]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        }
+      ],
+      'B1-Kì 2': [
+        {
+          name: 'Biochemistry',
+          code: 'BIO1.3',
+          icon: '🧫',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Electromagnetism',
+          code: 'PHYS1.3',
+          icon: '🧲',
+          hoverBorder: 'hover:border-[#e53935]',
+          hoverText: 'group-hover:text-[#ff6b6b]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Fundamental Physics II',
+          code: 'PHYS1.2',
+          icon: '⚛️',
+          hoverBorder: 'hover:border-[#ce82ff]',
+          hoverText: 'group-hover:text-[#ce82ff]',
+          iconBg: 'bg-[#8e24aa] text-white text-2xl shadow-sm'
+        },
+        {
+          name: 'General Chemistry II',
+          code: 'CHEM',
+          icon: '👩‍🔬',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'General Microbiology',
+          code: 'BIO1.4',
+          icon: '🧫',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Genetics',
+          code: 'BIO1.2',
+          icon: '🧬',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Organic Chemistry',
+          code: 'CHEM',
+          icon: '🧫',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Practical Physics',
+          code: 'PHYS1.4',
+          icon: '⚛️',
+          hoverBorder: 'hover:border-[#ce82ff]',
+          hoverText: 'group-hover:text-[#ce82ff]',
+          iconBg: 'bg-[#8e24aa] text-white text-2xl shadow-sm'
+        },
+        {
+          name: 'Cellular Biology',
+          code: 'BIO1.1',
+          icon: '🧫',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Fundamental Physics I',
+          code: 'PHYS1.1',
+          icon: '⚛️',
+          hoverBorder: 'hover:border-[#ce82ff]',
+          hoverText: 'group-hover:text-[#ce82ff]',
+          iconBg: 'bg-[#8e24aa] text-white text-2xl shadow-sm'
+        },
+        {
+          name: 'General Chemistry I',
+          code: 'CHEM1.1',
+          icon: '🧪',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        }
+      ]
+    };
+
+    function renderSubjects(level, semester) {
+      const key = `${level}-${semester}`;
+      const courses = semesterCourses[key] || [];
+      const badge = document.getElementById('subjects-badge');
+      const subtitle = document.getElementById('subjects-subtitle');
+      const grid = document.getElementById('subjects-grid');
+
+      if (badge) {
+        badge.innerText = `${level} • ${semester.toUpperCase()} (ĐẠI CƯƠNG)`;
+      }
+      if (subtitle) {
+        subtitle.innerHTML = `Các môn học thuộc <span class="text-[#1cb0f6]">${level} - ${semester} (${courses.length} môn)</span>`;
+      }
+
+      if (!grid) return;
+
+      grid.innerHTML = courses.map(course => {
+        const isCurrent = course.active;
+        const cardBg = isCurrent 
+          ? 'bg-[#142936] border-2 border-[#1cb0f6] shadow-[0_4px_16px_rgba(28,176,246,0.25)] relative' 
+          : `bg-[#18262d] border-2 border-[#2b3940] ${course.hoverBorder || 'hover:border-[#1cb0f6]'} hover:bg-[#20313a] shadow-md`;
+        
+        const badgeHtml = isCurrent 
+          ? '<span class="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-[#1cb0f6] text-white text-[9px] font-black uppercase tracking-wider rounded-full shadow-sm">HIỆN TẠI</span>' 
+          : '';
+
+        let iconInner = '';
+        if (course.iconType === 'grid') {
+          iconInner = `<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-center font-mono font-black text-[10px] leading-none">
+            <span>1</span><span>2</span>
+            <span>3</span><span>4</span>
+          </div>`;
+        } else {
+          iconInner = course.icon;
+        }
+
+        const titleColor = isCurrent ? 'text-[#1cb0f6]' : 'text-white';
+        const codeDisplay = course.code ? `[${course.code}]` : (course.subLabel || '');
+        const arrowColor = isCurrent ? 'text-[#1cb0f6]' : 'text-[#52656d]';
+
+        return `
+          <div onclick="selectSubject('${course.name}', '${course.code || ''}')" class="${cardBg} rounded-2xl p-4 flex items-center justify-between cursor-pointer transition transform hover:-translate-y-1 group">
+            ${badgeHtml}
+            <div class="flex items-center space-x-3.5">
+              <div class="w-11 h-11 rounded-xl ${course.iconBg} flex items-center justify-center flex-shrink-0">
+                ${iconInner}
+              </div>
+              <div class="text-left">
+                <div class="text-sm md:text-base font-extrabold ${titleColor} ${course.hoverText || 'group-hover:text-[#1cb0f6]'} transition leading-tight">
+                  ${course.name}
+                </div>
+                <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">${codeDisplay}</div>
+              </div>
+            </div>
+            <span class="${arrowColor} group-hover:text-white transition font-bold text-lg">›</span>
+          </div>
+        `;
+      }).join('');
+    }
+
     function selectSemester(semester) {
       playDuoSound('hint');
       selectedSemesterName = semester;
-      if (selectedLevelCode === 'B1' && semester === 'Kì 1') {
+      if (selectedLevelCode === 'B1') {
+        renderSubjects('B1', semester);
         switchView('subjects');
         return;
       }
