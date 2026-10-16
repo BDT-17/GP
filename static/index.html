@@ -319,6 +319,87 @@
   </div>
 
   <!-- ======================================================== -->
+  <!-- 0.6. SEMESTER SELECTION SCREEN ("Kì 1 & Kì 2")           -->
+  <!-- ======================================================== -->
+  <div id="view-semester" class="w-full h-full flex flex-col justify-between overflow-x-hidden bg-[#131f24] text-white select-none hidden">
+    
+    <!-- Top Header -->
+    <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
+      <!-- Left: Back Button + Logo -->
+      <div class="flex items-center space-x-3.5">
+        <button onclick="switchView('selection')" title="Quay lại chọn học phần" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+          <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+          <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
+          <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+        </div>
+      </div>
+
+      <!-- Right Level Indicator Badge -->
+      <div class="relative">
+        <span id="semester-level-badge" class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
+          B1 - ĐẠI CƯƠNG KHOA HỌC TỰ NHIÊN
+        </span>
+      </div>
+    </header>
+
+    <!-- Center Content: Title + 2 Semester Blocks (Kì 1 & Kì 2) -->
+    <main class="w-full max-w-3xl mx-auto px-6 py-6 flex flex-col items-center justify-center flex-1 my-auto">
+      
+      <!-- Big Centered Title -->
+      <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-2 tracking-tight">
+        Chọn học kỳ
+      </h1>
+      <p id="semester-subtitle" class="text-sm md:text-base font-bold text-[#8598a0] text-center mb-10">
+        Đại cương khoa học tự nhiên
+      </p>
+
+      <!-- 2 Semester Blocks Grid (Kì 1 & Kì 2) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-xl">
+        
+        <!-- BLOCK KÌ 1 -->
+        <div onclick="selectSemester('Kì 1')" class="bg-[#18262d] border-2 border-[#1cb0f6] bg-[#142936] rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-[0_4px_20px_rgba(28,176,246,0.25)] group relative">
+          <!-- Recommended Badge -->
+          <span class="absolute -top-3 px-3 py-0.5 bg-[#1cb0f6] text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-md">
+            HIỆN TẠI
+          </span>
+          <!-- Icon Circle -->
+          <div class="w-24 h-24 rounded-2xl bg-[#1c3a4b] border border-[#1cb0f6]/50 flex items-center justify-center text-5xl mb-4 group-hover:scale-105 transition shadow-sm">
+            📘
+          </div>
+          <!-- Title Kì 1 -->
+          <div class="text-3xl font-black text-[#1cb0f6]">Kì 1</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs md:text-sm font-bold text-white mt-1.5 min-h-[2.5rem] flex items-center justify-center leading-snug">Học kỳ 1</div>
+          <div class="text-[11px] font-bold text-[#8598a0] mt-1">12.8M learners</div>
+        </div>
+
+        <!-- BLOCK KÌ 2 -->
+        <div onclick="selectSemester('Kì 2')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-lg group">
+          <!-- Icon Circle -->
+          <div class="w-24 h-24 rounded-2xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-5xl mb-4 group-hover:scale-105 transition shadow-sm">
+            📙
+          </div>
+          <!-- Title Kì 2 -->
+          <div class="text-3xl font-black text-white group-hover:text-[#1cb0f6] transition">Kì 2</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs md:text-sm font-bold text-[#8598a0] mt-1.5 min-h-[2.5rem] flex items-center justify-center leading-snug">Học kỳ 2</div>
+          <div class="text-[11px] font-bold text-[#52656d] mt-1">9.8M learners</div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Empty footer space to balance vertical layout -->
+    <div class="py-6"></div>
+
+  </div>
+
+  <!-- ======================================================== -->
   <!-- 1. MAIN APP WORKSPACE (WRAPPER FOR SIDEBAR + VIEWS)      -->
   <!-- ======================================================== -->
   <div id="view-app" class="w-full h-full flex overflow-hidden hidden">
@@ -452,7 +533,7 @@
           <div>
             <div class="text-xs font-black uppercase tracking-wider opacity-90 flex items-center space-x-1">
               <span>←</span>
-              <span>HỌC PHẦN 1, BÀI 2</span>
+              <span id="unit-header-label">HỌC PHẦN 1, BÀI 2</span>
             </div>
             <h2 class="text-xl font-extrabold mt-0.5">Tính Đa Hình: Nạp Chồng & Ghi Đè</h2>
           </div>
@@ -1060,6 +1141,7 @@
       currentView = viewName;
       const landingView = document.getElementById('view-landing');
       const selectionView = document.getElementById('view-selection');
+      const semesterView = document.getElementById('view-semester');
       const appView = document.getElementById('view-app');
       const homeView = document.getElementById('view-home');
       const exerciseView = document.getElementById('view-exercise');
@@ -1072,6 +1154,7 @@
 
       if (landingView) landingView.classList.add('hidden');
       if (selectionView) selectionView.classList.add('hidden');
+      if (semesterView) semesterView.classList.add('hidden');
       if (appView) appView.classList.add('hidden');
 
       if (viewName === 'landing') {
@@ -1081,6 +1164,11 @@
 
       if (viewName === 'selection') {
         if (selectionView) selectionView.classList.remove('hidden');
+        return;
+      }
+
+      if (viewName === 'semester') {
+        if (semesterView) semesterView.classList.remove('hidden');
         return;
       }
 
@@ -1104,8 +1192,46 @@
       }
     }
 
+    const levelDetails = {
+      'B0': {
+        title: 'B0 - Tiếng Anh, khoa học nền',
+        sub: 'Khối kiến thức cơ sở & tiếng Anh'
+      },
+      'B1': {
+        title: 'B1 - Đại cương khoa học tự nhiên',
+        sub: 'Đại cương khoa học tự nhiên'
+      },
+      'B2': {
+        title: 'B2 - Kiến thức cơ sở ngành',
+        sub: 'Kiến thức cơ sở ngành'
+      },
+      'B3': {
+        title: 'B3 - Chuyên ngành và thực tập',
+        sub: 'Chuyên ngành và thực tập'
+      }
+    };
+
+    let selectedLevelCode = 'B1';
+    let selectedSemesterName = 'Kì 1';
+
     function selectLevel(level) {
       playDuoSound('hint');
+      selectedLevelCode = level;
+      const info = levelDetails[level] || { title: `${level} - Khóa học`, sub: 'Lộ trình học tập' };
+      const badge = document.getElementById('semester-level-badge');
+      const subtitle = document.getElementById('semester-subtitle');
+      if (badge) badge.innerText = info.title.toUpperCase();
+      if (subtitle) subtitle.innerText = info.sub;
+      switchView('semester');
+    }
+
+    function selectSemester(semester) {
+      playDuoSound('hint');
+      selectedSemesterName = semester;
+      const unitLabel = document.getElementById('unit-header-label');
+      if (unitLabel) {
+        unitLabel.innerText = `${selectedLevelCode} • ${semester.toUpperCase()}, BÀI 2`;
+      }
       switchView('home');
     }
 
