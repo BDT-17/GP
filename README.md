@@ -85,3 +85,6 @@ behavior that has not been implemented and verified.
 
 No license has been selected. Do not reuse course materials, source transcripts,
 or generated artifacts outside the permissions granted to the project team.
+
+## Run UI
+ python server.py
