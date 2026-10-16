@@ -98,12 +98,138 @@
 <body class="h-full flex overflow-hidden">
 
   <!-- ======================================================== -->
-  <!-- 1. LEFT SIDEBAR NAVIGATION (FAITHFUL TO DUOLINGO IMAGE 2) -->
+  <!-- 0. LANDING / WELCOME SCREEN (DUOLINGO DARK MODE)         -->
   <!-- ======================================================== -->
-  <aside class="w-64 border-r-2 border-[#202f36] flex flex-col justify-between px-3 py-4 bg-[#131f24] z-30 flex-shrink-0 select-none">
-    <div>
-      <!-- Brand Logo (User's Owl Icon + Mascot text optically balanced slightly left of center) -->
-      <div class="w-full pt-3 pb-6 flex items-center justify-center -translate-x-3.5 space-x-2 cursor-pointer" onclick="switchView('home')">
+  <div id="view-landing" class="w-full h-full flex flex-col justify-between overflow-x-hidden bg-[#131f24] text-white select-none">
+    
+    <!-- Top Landing Header -->
+    <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
+      <!-- Left Logo: Owl + Mascot -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+        <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
+        <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+      </div>
+
+      <!-- Right Language Selector -->
+      <div class="relative">
+        <button class="flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#8598a0] hover:text-white transition">
+          <span>SITE LANGUAGE: ENGLISH</span>
+          <span class="text-[10px]">▼</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Content (Two Columns: Graphic on Left, Text & CTAs on Right) -->
+    <main class="w-full max-w-5xl mx-auto px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-12 flex-1 my-auto">
+      
+      <!-- Left: Character Gang Graphic -->
+      <div class="w-full md:w-1/2 flex items-center justify-center">
+        <div class="relative w-80 h-80 flex items-center justify-center">
+          <div class="absolute inset-0 bg-[#58cc02]/10 rounded-full blur-3xl"></div>
+          
+          <!-- Central Mascot Owl + Floating Character Friends -->
+          <div class="relative z-10 flex flex-col items-center">
+            <img src="/static/owl.png" alt="Mascot Owl" class="w-40 h-40 object-contain drop-shadow-2xl animate-bounce" style="animation-duration: 2.8s;" />
+            
+            <div class="absolute -top-3 -left-8 w-14 h-14 rounded-2xl bg-[#ce82ff] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
+              👧
+            </div>
+            <div class="absolute -top-6 right-0 w-14 h-14 rounded-2xl bg-[#ff9600] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
+              🦊
+            </div>
+            <div class="absolute bottom-2 -left-10 w-14 h-14 rounded-2xl bg-[#1cb0f6] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
+              🧑‍🎓
+            </div>
+            <div class="absolute bottom-0 -right-4 w-14 h-14 rounded-2xl bg-[#ff4b4b] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
+              👨‍🏫
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Main Hero Heading & Action Buttons -->
+      <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left max-w-md space-y-7">
+        <h1 class="text-3xl md:text-4xl font-black text-white leading-tight tracking-tight">
+          The most fun way to learn languages, chess, and more!
+        </h1>
+
+        <div class="w-full space-y-3">
+          <!-- GET STARTED (Green Button -> Switches to Main App) -->
+          <button onclick="switchView('home')" class="w-full py-4 duo-btn-green rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl">
+            GET STARTED
+          </button>
+          <!-- I ALREADY HAVE AN ACCOUNT (Outline Button -> Switches to Main App) -->
+          <button onclick="switchView('home')" class="w-full py-3.5 bg-[#18262d] border-2 border-[#37464f] hover:bg-[#20313a] text-[#1cb0f6] rounded-2xl font-black text-xs uppercase tracking-wider transition">
+            I ALREADY HAVE AN ACCOUNT
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Language Bar (Exactly 3 Languages: Vietnam, English, France) -->
+    <footer class="w-full border-t border-[#202f36] bg-[#131f24] py-5 px-6 flex-shrink-0">
+      <div class="max-w-4xl mx-auto flex items-center justify-center space-x-8 text-xs font-black uppercase tracking-wider text-[#8598a0]">
+        <!-- Left Arrow -->
+        <span class="text-slate-500 cursor-pointer hover:text-white transition">‹</span>
+
+        <!-- 1. VIETNAM -->
+        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
+            <svg viewBox="0 0 3 2" class="w-full h-full">
+              <rect width="3" height="2" fill="#da251d"/>
+              <polygon points="1.5,0.4 1.62,0.76 2,0.76 1.69,0.98 1.81,1.34 1.5,1.12 1.19,1.34 1.31,0.98 1,0.76 1.38,0.76" fill="#ffff00"/>
+            </svg>
+          </span>
+          <span>VIETNAM</span>
+        </div>
+
+        <!-- 2. ENGLISH -->
+        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
+            <svg viewBox="0 0 19 10" class="w-full h-full">
+              <rect width="19" height="10" fill="#b22234"/>
+              <rect y="1.5" width="19" height="0.8" fill="#ffffff"/>
+              <rect y="3.1" width="19" height="0.8" fill="#ffffff"/>
+              <rect y="4.6" width="19" height="0.8" fill="#ffffff"/>
+              <rect y="6.2" width="19" height="0.8" fill="#ffffff"/>
+              <rect y="7.7" width="19" height="0.8" fill="#ffffff"/>
+              <rect y="9.2" width="19" height="0.8" fill="#ffffff"/>
+              <rect width="7.6" height="5.4" fill="#3c3b6e"/>
+            </svg>
+          </span>
+          <span>ENGLISH</span>
+        </div>
+
+        <!-- 3. FRANCE -->
+        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
+            <svg viewBox="0 0 3 2" class="w-full h-full">
+              <rect width="1" height="2" fill="#002395"/>
+              <rect x="1" width="1" height="2" fill="#ffffff"/>
+              <rect x="2" width="1" height="2" fill="#ed2939"/>
+            </svg>
+          </span>
+          <span>FRANCE</span>
+        </div>
+
+        <!-- Right Arrow -->
+        <span class="text-slate-500 cursor-pointer hover:text-white transition">›</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 1. MAIN APP WORKSPACE (WRAPPER FOR SIDEBAR + VIEWS)      -->
+  <!-- ======================================================== -->
+  <div id="view-app" class="w-full h-full flex overflow-hidden hidden">
+
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <aside class="w-64 border-r-2 border-[#202f36] flex flex-col justify-between px-3 py-4 bg-[#131f24] z-30 flex-shrink-0 select-none">
+      <div>
+        <!-- Brand Logo (User's Owl Icon + Mascot text optically balanced slightly left of center) -->
+      <div class="w-full pt-3 pb-6 flex items-center justify-center -translate-x-3.5 space-x-2 cursor-pointer" onclick="switchView('landing')">
         <img src="/static/owl.png" alt="Owl Logo" class="w-11 h-11 object-contain drop-shadow-md flex-shrink-0" />
         <span class="text-[#58cc02] font-black text-[32px] tracking-tight block leading-none pt-0.5">
           Mascot
@@ -758,6 +884,7 @@
     </div>
 
   </div>
+  </div>
 
   <!-- ======================================================== -->
   <!-- 3. SLIDES & LESSON MODAL                                 -->
@@ -833,6 +960,8 @@
 
     function switchView(viewName) {
       currentView = viewName;
+      const landingView = document.getElementById('view-landing');
+      const appView = document.getElementById('view-app');
       const homeView = document.getElementById('view-home');
       const exerciseView = document.getElementById('view-exercise');
       const profileView = document.getElementById('view-profile');
@@ -841,6 +970,15 @@
 
       const activeClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition";
       const inactiveClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition";
+
+      if (viewName === 'landing') {
+        if (landingView) landingView.classList.remove('hidden');
+        if (appView) appView.classList.add('hidden');
+        return;
+      }
+
+      if (landingView) landingView.classList.add('hidden');
+      if (appView) appView.classList.remove('hidden');
 
       homeView.classList.add('hidden');
       exerciseView.classList.add('hidden');
@@ -875,6 +1013,7 @@
         const res = await fetch('/api/session');
         sessionData = await res.json();
         updateUIFromState();
+        switchView('landing');
       } catch (e) {
         console.error("Init error:", e);
       }
