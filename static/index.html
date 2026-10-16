@@ -154,12 +154,12 @@
         </h1>
 
         <div class="w-full space-y-3">
-          <!-- GET STARTED (Green Button -> Switches to Main App) -->
-          <button onclick="switchView('home')" class="w-full py-4 duo-btn-green rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl">
+          <!-- GET STARTED (Green Button -> Switches to Selection Screen) -->
+          <button onclick="switchView('selection')" class="w-full py-4 duo-btn-green rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl">
             GET STARTED
           </button>
-          <!-- I ALREADY HAVE AN ACCOUNT (Outline Button -> Switches to Main App) -->
-          <button onclick="switchView('home')" class="w-full py-3.5 bg-[#18262d] border-2 border-[#37464f] hover:bg-[#20313a] text-[#1cb0f6] rounded-2xl font-black text-xs uppercase tracking-wider transition">
+          <!-- I ALREADY HAVE AN ACCOUNT (Outline Button -> Switches to Selection Screen) -->
+          <button onclick="switchView('selection')" class="w-full py-3.5 bg-[#18262d] border-2 border-[#37464f] hover:bg-[#20313a] text-[#1cb0f6] rounded-2xl font-black text-xs uppercase tracking-wider transition">
             I ALREADY HAVE AN ACCOUNT
           </button>
         </div>
@@ -174,7 +174,7 @@
         <span class="text-slate-500 cursor-pointer hover:text-white transition">‹</span>
 
         <!-- 1. VIETNAM -->
-        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
           <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
             <svg viewBox="0 0 3 2" class="w-full h-full">
               <rect width="3" height="2" fill="#da251d"/>
@@ -185,7 +185,7 @@
         </div>
 
         <!-- 2. ENGLISH -->
-        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
           <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
             <svg viewBox="0 0 19 10" class="w-full h-full">
               <rect width="19" height="10" fill="#b22234"/>
@@ -202,7 +202,7 @@
         </div>
 
         <!-- 3. FRANCE -->
-        <div onclick="switchView('home')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
+        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
           <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
             <svg viewBox="0 0 3 2" class="w-full h-full">
               <rect width="1" height="2" fill="#002395"/>
@@ -217,6 +217,104 @@
         <span class="text-slate-500 cursor-pointer hover:text-white transition">›</span>
       </div>
     </footer>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 0.5. COURSE SELECTION SCREEN ("I want to learn...")       -->
+  <!-- ======================================================== -->
+  <div id="view-selection" class="w-full h-full flex flex-col justify-between overflow-x-hidden bg-[#131f24] text-white select-none hidden">
+    
+    <!-- Top Selection Header -->
+    <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
+      <!-- Left Logo: Owl + Mascot (click returns to landing) -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+        <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
+        <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+      </div>
+
+      <!-- Right Language Selector -->
+      <div class="relative">
+        <button class="flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#8598a0] hover:text-white transition">
+          <span>SITE LANGUAGE: ENGLISH</span>
+          <span class="text-[10px]">▼</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Center Content: Title + 4 Blocks (B0, B1, B2, B3) -->
+    <main class="w-full max-w-4xl mx-auto px-6 py-6 flex flex-col items-center justify-center flex-1 my-auto">
+      
+      <!-- Big Centered Title -->
+      <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-10 tracking-tight">
+        I want to learn...
+      </h1>
+
+      <!-- 4 Course Level Blocks Grid (B0, B1, B2, B3) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5 w-full">
+        
+        <!-- BLOCK B0 -->
+        <div onclick="selectLevel('B0')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-lg group">
+          <!-- Icon Circle -->
+          <div class="w-20 h-20 rounded-2xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition shadow-sm">
+            🌱
+          </div>
+          <!-- Title B0 -->
+          <div class="text-2xl font-black text-white group-hover:text-[#1cb0f6] transition">B0</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs font-bold text-[#8598a0] mt-1">Cơ bản</div>
+          <div class="text-[11px] font-bold text-[#52656d] mt-1">15.4M learners</div>
+        </div>
+
+        <!-- BLOCK B1 (Active / Current Course) -->
+        <div onclick="selectLevel('B1')" class="bg-[#18262d] border-2 border-[#1cb0f6] bg-[#142936] rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-[0_4px_20px_rgba(28,176,246,0.2)] group relative">
+          <!-- Recommended Badge -->
+          <span class="absolute -top-3 px-3 py-0.5 bg-[#1cb0f6] text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-sm">
+            HIỆN TẠI
+          </span>
+          <!-- Icon Circle -->
+          <div class="w-20 h-20 rounded-2xl bg-[#1c3a4b] border border-[#1cb0f6]/50 flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition shadow-sm">
+            ☕
+          </div>
+          <!-- Title B1 -->
+          <div class="text-2xl font-black text-[#1cb0f6]">B1</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs font-bold text-white mt-1">OOP & Đa hình</div>
+          <div class="text-[11px] font-bold text-[#8598a0] mt-1">22.6M learners</div>
+        </div>
+
+        <!-- BLOCK B2 -->
+        <div onclick="selectLevel('B2')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#ce82ff] hover:bg-[#20313a] rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-lg group">
+          <!-- Icon Circle -->
+          <div class="w-20 h-20 rounded-2xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition shadow-sm">
+            🧩
+          </div>
+          <!-- Title B2 -->
+          <div class="text-2xl font-black text-white group-hover:text-[#ce82ff] transition">B2</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs font-bold text-[#8598a0] mt-1">Thuật toán</div>
+          <div class="text-[11px] font-bold text-[#52656d] mt-1">18.2M learners</div>
+        </div>
+
+        <!-- BLOCK B3 -->
+        <div onclick="selectLevel('B3')" class="bg-[#18262d] border-2 border-[#2b3940] hover:border-[#ff9600] hover:bg-[#20313a] rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition transform hover:-translate-y-1.5 shadow-lg group">
+          <!-- Icon Circle -->
+          <div class="w-20 h-20 rounded-2xl bg-[#283842] border border-[#37464f] flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition shadow-sm">
+            🏆
+          </div>
+          <!-- Title B3 -->
+          <div class="text-2xl font-black text-white group-hover:text-[#ff9600] transition">B3</div>
+          <!-- Subtitle / Learners count -->
+          <div class="text-xs font-bold text-[#8598a0] mt-1">Nâng cao</div>
+          <div class="text-[11px] font-bold text-[#52656d] mt-1">9.8M learners</div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Empty footer space to balance vertical layout -->
+    <div class="py-6"></div>
 
   </div>
 
@@ -961,6 +1059,7 @@
     function switchView(viewName) {
       currentView = viewName;
       const landingView = document.getElementById('view-landing');
+      const selectionView = document.getElementById('view-selection');
       const appView = document.getElementById('view-app');
       const homeView = document.getElementById('view-home');
       const exerciseView = document.getElementById('view-exercise');
@@ -971,13 +1070,20 @@
       const activeClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition";
       const inactiveClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition";
 
+      if (landingView) landingView.classList.add('hidden');
+      if (selectionView) selectionView.classList.add('hidden');
+      if (appView) appView.classList.add('hidden');
+
       if (viewName === 'landing') {
         if (landingView) landingView.classList.remove('hidden');
-        if (appView) appView.classList.add('hidden');
         return;
       }
 
-      if (landingView) landingView.classList.add('hidden');
+      if (viewName === 'selection') {
+        if (selectionView) selectionView.classList.remove('hidden');
+        return;
+      }
+
       if (appView) appView.classList.remove('hidden');
 
       homeView.classList.add('hidden');
@@ -996,6 +1102,11 @@
         exerciseView.classList.remove('hidden');
         document.getElementById('user-input').focus();
       }
+    }
+
+    function selectLevel(level) {
+      playDuoSound('hint');
+      switchView('home');
     }
 
     function playSpeechAudio() {
