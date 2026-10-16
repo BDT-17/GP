@@ -1599,6 +1599,81 @@
           hoverText: 'group-hover:text-[#00cd9c]',
           iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
         }
+      ],
+      'B2-Kì 1': [
+        {
+          name: 'Data Structures and Algorithms',
+          code: '',
+          icon: '⌨️',
+          hoverBorder: 'hover:border-[#ce82ff]',
+          hoverText: 'group-hover:text-[#ce82ff]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Fundamentals of Databases',
+          code: '',
+          iconType: 'database',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#142936] border border-[#1cb0f6]/40 text-2xl'
+        },
+        {
+          name: 'Intellectual Property Law',
+          code: '',
+          icon: '⚖️',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Numerical Methods',
+          code: '',
+          icon: '⚙️',
+          hoverBorder: 'hover:border-[#8598a0]',
+          hoverText: 'group-hover:text-[#8598a0]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Object-oriented programming',
+          code: '',
+          icon: '☕',
+          active: true,
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-white',
+          iconBg: 'bg-[#1c3a4b] border border-[#1cb0f6]/50 text-2xl'
+        },
+        {
+          name: 'Operating Systems',
+          code: '',
+          icon: '🖥️',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Probability and Statistic',
+          code: '',
+          icon: '🎲',
+          hoverBorder: 'hover:border-[#e53935]',
+          hoverText: 'group-hover:text-[#ff6b6b]',
+          iconBg: 'bg-[#e53935]/20 border border-[#e53935]/40 text-2xl'
+        },
+        {
+          name: 'Project Management',
+          code: '',
+          icon: '📅',
+          hoverBorder: 'hover:border-[#e53935]',
+          hoverText: 'group-hover:text-[#ff6b6b]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Signal and Systems',
+          code: '',
+          icon: '📡',
+          hoverBorder: 'hover:border-[#00cd9c]',
+          hoverText: 'group-hover:text-[#00cd9c]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        }
       ]
     };
 
@@ -1609,8 +1684,16 @@
       const subtitle = document.getElementById('subjects-subtitle');
       const grid = document.getElementById('subjects-grid');
 
+      const levelSubtitles = {
+        'B0': 'CƠ SỞ & TIẾNG ANH',
+        'B1': 'ĐẠI CƯƠNG',
+        'B2': 'CƠ SỞ NGÀNH',
+        'B3': 'CHUYÊN NGÀNH'
+      };
+      const cat = levelSubtitles[level] || 'KHÓA HỌC';
+
       if (badge) {
-        badge.innerText = `${level} • ${semester.toUpperCase()} (ĐẠI CƯƠNG)`;
+        badge.innerText = `${level} • ${semester.toUpperCase()} (${cat})`;
       }
       if (subtitle) {
         subtitle.innerHTML = `Các môn học thuộc <span class="text-[#1cb0f6]">${level} - ${semester} (${courses.length} môn)</span>`;
@@ -1634,12 +1717,15 @@
             <span>1</span><span>2</span>
             <span>3</span><span>4</span>
           </div>`;
+        } else if (course.iconType === 'database') {
+          iconInner = `<svg class="w-6 h-6 text-[#1cb0f6]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 3.34 2 5v14c0 1.66 4.48 3 10 3s10-1.34 10-3V5c0-1.66-4.48-3-10-3zm0 2c4.42 0 8 1.05 8 2s-3.58 2-8 2-8-1.05-8-2 3.58-2 8-2zm8 5.68c-.89.5-2.22.95-3.8 1.18-.74.11-1.54.14-2.2.14s-1.46-.03-2.2-.14C8.22 10.63 6.89 10.18 6 9.68V7.82c1.7.98 4.67 1.48 8 1.48s6.3-.5 8-1.48v1.86zm0 4.68c-.89.5-2.22.95-3.8 1.18-.74.11-1.54.14-2.2.14s-1.46-.03-2.2-.14c-1.58-.23-2.91-.68-3.8-1.18v-1.86c1.7.98 4.67 1.48 8 1.48s6.3-.5 8-1.48v1.86zm0 4.64c-1.7.98-4.67 1.48-8 1.48s-6.3-.5-8-1.48v-1.82c.89.5 2.22.95 3.8 1.18.74.11 1.54.14 2.2.14s1.46-.03 2.2-.14c1.58-.23 2.91-.68 3.8-1.18v1.82z"/></svg>`;
         } else {
           iconInner = course.icon;
         }
 
         const titleColor = isCurrent ? 'text-[#1cb0f6]' : 'text-white';
         const codeDisplay = course.code ? `[${course.code}]` : (course.subLabel || '');
+        const codeHtml = codeDisplay ? `<div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">${codeDisplay}</div>` : '';
         const arrowColor = isCurrent ? 'text-[#1cb0f6]' : 'text-[#52656d]';
 
         return `
@@ -1653,7 +1739,7 @@
                 <div class="text-sm md:text-base font-extrabold ${titleColor} ${course.hoverText || 'group-hover:text-[#1cb0f6]'} transition leading-tight">
                   ${course.name}
                 </div>
-                <div class="text-[11px] font-black text-[#8598a0] mt-0.5 tracking-wider">${codeDisplay}</div>
+                ${codeHtml}
               </div>
             </div>
             <span class="${arrowColor} group-hover:text-white transition font-bold text-lg">›</span>
@@ -1665,8 +1751,9 @@
     function selectSemester(semester) {
       playDuoSound('hint');
       selectedSemesterName = semester;
-      if (selectedLevelCode === 'B1') {
-        renderSubjects('B1', semester);
+      const key = `${selectedLevelCode}-${semester}`;
+      if (semesterCourses[key]) {
+        renderSubjects(selectedLevelCode, semester);
         switchView('subjects');
         return;
       }
