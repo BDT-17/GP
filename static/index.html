@@ -1822,6 +1822,80 @@
           hoverText: 'group-hover:text-[#1cb0f6]',
           iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
         }
+      ],
+      'B3-Kì 2': [
+        {
+          name: 'Applied Data Science with Python',
+          code: '',
+          icon: '🐍',
+          hoverBorder: 'hover:border-[#58cc02]',
+          hoverText: 'group-hover:text-[#58cc02]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Computer Graphics',
+          code: '',
+          icon: '🖼️',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Distributed Systems',
+          code: '',
+          icon: '🌐',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Introduction to Cryptography',
+          code: '',
+          icon: '🔒',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#ff9600]/20 border border-[#ff9600]/40 text-2xl'
+        },
+        {
+          name: 'Introduction to Deep Learning',
+          code: '',
+          icon: '🧠',
+          hoverBorder: 'hover:border-[#e91e63]',
+          hoverText: 'group-hover:text-[#ff4081]',
+          iconBg: 'bg-[#e91e63]/20 border border-[#e91e63]/40 text-2xl'
+        },
+        {
+          name: 'Machine learning and Data mining II',
+          code: '',
+          icon: '🤖',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#142936] border border-[#1cb0f6]/40 text-2xl'
+        },
+        {
+          name: 'Natural Language Processing',
+          code: '',
+          iconType: 'abcd',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#1976d2] text-white shadow-sm'
+        },
+        {
+          name: 'Network Simulation',
+          code: '',
+          icon: '🌐',
+          hoverBorder: 'hover:border-[#1cb0f6]',
+          hoverText: 'group-hover:text-[#1cb0f6]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        },
+        {
+          name: 'Scientific writing & communication',
+          code: '',
+          icon: '🎨',
+          hoverBorder: 'hover:border-[#ff9600]',
+          hoverText: 'group-hover:text-[#ff9600]',
+          iconBg: 'bg-[#283842] border border-[#37464f] text-2xl'
+        }
       ]
     };
 
@@ -1864,6 +1938,11 @@
           iconInner = `<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-center font-mono font-black text-[10px] leading-none">
             <span>1</span><span>2</span>
             <span>3</span><span>4</span>
+          </div>`;
+        } else if (course.iconType === 'abcd') {
+          iconInner = `<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-center font-mono font-black text-[10px] leading-none">
+            <span>a</span><span>b</span>
+            <span>c</span><span>d</span>
           </div>`;
         } else if (course.iconType && course.iconType.startsWith('database')) {
           const colorClass = course.iconType === 'database-pink' ? 'text-[#e91e63]' : 'text-[#1cb0f6]';
