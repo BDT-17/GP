@@ -7,4 +7,7 @@ __pycache__/
 env/
 venv/
 *.json.log
+.coverage
+coverage.xml
+htmlcov/
 

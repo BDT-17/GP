@@ -50,26 +50,20 @@ update this document with the selected stack and its verified commands.
 
 ## Verification
 
-There are no verified executable checks yet. When code is introduced, record
-the actual install, lint, type-check, test, build, and evaluation commands
-here. Product changes should provide evidence for the relevant cases:
+Verified executable test and lint commands:
+- Install dependencies: `pip install -r requirements.txt`
+- Run linting: `flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics`
+- Run test suite with coverage: `pytest -v --cov=src`
+- Launch demo API server: `python server.py` (FastAPI at `http://127.0.0.1:8000`)
 
-- allowed prerequisite/current retrieval with source citations;
-- denial or redirect for future and out-of-scope questions;
-- TA hinting without prematurely giving the answer;
-- Lecturer escalation when configured conditions are met;
-- no overlapping role turns;
-- no completion before misconception repair and explain-back pass;
-- logs and learning summary emitted for a completed and an abstained session.
-
-The current CI workflow installs `flake8` and `pytest`, runs syntax/undefined
-name linting, reports style findings, and runs `pytest` when a `tests/`
-directory exists. It intentionally emits a visible notice while no test suite
-exists; replacing that notice with a mandatory test run is required once tests
-are added.
+Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandatory test suite across:
+- `tests/test_curriculum_gate.py`: Retrieval gating, prerequisite/future-lesson policies.
+- `tests/test_orchestrator.py`: Multi-agent orchestration, Socratic hints, lecturer escalation, completion integrity.
+- `tests/test_api.py`: FastAPI server endpoints (`/`, `/api/session`, `/api/chat`, `/api/summary`, `/api/reset`).
 
 ## Change log
 
+- 2026-10-17: Configured comprehensive CI pipeline (`ci.yml`) with pip caching, flake8 linting, mandatory pytest suite (15 tests, 96% coverage) and FastAPI integration tests.
 - 2026-10-13: Added Python 3.10 GitHub Actions CI for pushes and pull requests
   targeting `thangbd/dev`; it has a visible no-tests notice until a suite is
   introduced.

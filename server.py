@@ -1,6 +1,5 @@
 """FastAPI Web Server for MASCOT Demo."""
 
-import json
 from pathlib import Path
 import sys
 from fastapi import FastAPI, HTTPException
@@ -12,7 +11,6 @@ import uvicorn
 # Add src to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from mascot.models import Role
 from mascot.orchestrator import MascotOrchestrator
 
 app = FastAPI(title="MASCOT Demo API", version="0.1.0")
