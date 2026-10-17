@@ -86,5 +86,33 @@ behavior that has not been implemented and verified.
 No license has been selected. Do not reuse course materials, source transcripts,
 or generated artifacts outside the permissions granted to the project team.
 
-## Run UI
- python server.py
+## Development & Deployment
+
+### 1. Local Run
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Start demo web server (FastAPI + Duolingo-style UI)
+python server.py
+# Access at: http://127.0.0.1:8000
+```
+
+### 2. Testing & Quality Assurance
+```bash
+# Run flake8 syntax checks
+flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+# Run full test suite with coverage
+pytest -v --cov=src
+```
+
+### 3. Run with Docker
+```bash
+# Build and run with Docker Compose
+docker compose up --build
+
+# Or build & run standalone container
+docker build -t mascot-app .
+docker run -p 8000:8000 mascot-app
+```
