@@ -100,8 +100,19 @@ def test_api_course_endpoints():
         assert "session_state" in data
         assert data["session_state"]["course_id"] == "ICT1.002"
 
-        # 3. Check /api/session reflects new course
+        # 3. Check /api/session reflects new course and code snippet
         res_session = client.get("/api/session")
         assert res_session.status_code == 200
         assert res_session.json()["course_id"] == "ICT1.002"
+        assert "hoandoi.c" in res_session.json()["code_snippet"]["filename"]
+
+        # 4. Run code simulation for switched course
+        res_code = client.post("/api/code/run")
+        assert res_code.status_code == 200
+        code_data = res_code.json()
+        assert "hoandoi.c" in code_data["filename"]
+        assert "c" in code_data["language"]
+        assert len(code_data["code"]) > 0
+        assert len(code_data["output"]) > 0
+
 

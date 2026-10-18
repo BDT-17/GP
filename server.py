@@ -117,6 +117,21 @@ async def get_session():
         "terminal_reason": orchestrator.terminal_reason,
         "conversation_history": orchestrator.conversation_history,
         "profile": profile,
+        "code_snippet": orchestrator.scenario.get("code_snippet"),
+    }
+
+
+@app.post("/api/code/run")
+async def run_code_simulation():
+    """Simulates running the peer student's misconception code snippet."""
+    snippet = orchestrator.scenario.get("code_snippet", {})
+    return {
+        "status": "success",
+        "filename": snippet.get("filename", "demo.txt"),
+        "language": snippet.get("language", "text"),
+        "code": snippet.get("code", ""),
+        "output": snippet.get("simulation_output", ""),
+        "explanation": snippet.get("run_explanation", ""),
     }
 
 

@@ -76,3 +76,33 @@ def test_reset_session(client):
     assert response.status_code == 200
     assert response.json()["status"] == "reset_successful"
 
+
+def test_get_session_includes_code_snippet(client):
+    """Test get_session response contains code_snippet for interactive misconception."""
+    response = client.get("/api/session")
+    assert response.status_code == 200
+    data = response.json()
+    assert "code_snippet" in data
+    snippet = data["code_snippet"]
+    assert snippet is not None
+    assert "filename" in snippet
+    assert "code" in snippet
+    assert "simulation_output" in snippet
+    assert "run_explanation" in snippet
+
+
+def test_run_code_simulation(client):
+    """Test running code simulation endpoint."""
+    response = client.post("/api/code/run")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert "PolymorphismDemo.java" in data["filename"]
+    assert "simulation_output" not in data  # data['output'] is returned
+    assert "output" in data
+    assert len(data["output"]) > 0
+    assert "speak" in data["output"].lower()
+    assert "explanation" in data
+
+
+

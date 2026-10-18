@@ -107,3 +107,4 @@ def test_api_llm_status():
         data = res.json()
         assert "provider" in data
         assert "is_live_llm" in data
+

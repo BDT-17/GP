@@ -10,6 +10,13 @@
     "initial_misconception": "Tớ nghĩ là trong Java hay C++, Overloading (nạp chồng) với Overriding (ghi đè) chỉ là hai cách gọi khác nhau của cùng một việc: đó là viết lại một phương thức để dùng lại. Bản chất chúng hoàn toàn giống nhau, đúng không cậu?",
     "persona_notes": "Bạn học năng nổ nhưng hay nhầm lẫn thuật ngữ, dễ nhầm giữa nạp chồng và ghi đè. Cần người học chỉ ra điểm khác nhau cụ thể mới chịu tâm phục khẩu phục."
   },
+  "code_snippet": {
+    "filename": "PolymorphismDemo.java",
+    "language": "java",
+    "code": "class Animal {\n    void speak() {\n        System.out.println(\"Tiếng động vật\");\n    }\n}\n\nclass Dog extends Animal {\n    // Bảo viết hàm này và bảo đây là Ghi đè (Overriding):\n    void speak(int times) {\n        System.out.println(\"Gâu gâu \" + times + \" lần\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Animal pet = new Dog();\n        pet.speak(); // Gọi hàm nào?\n    }\n}",
+    "simulation_output": "Tiếng động vật\n[Phát hiện]: pet.speak() gọi hàm của Animal chứ không phải của Dog! Hàm speak(int times) ở Dog KHÔNG GHI ĐÈ mà chỉ là NẠP CHỒNG vì khác chữ ký hàm (tham số)!",
+    "run_explanation": "Kết quả in ra là của lớp Animal! Chữ ký hàm khác nhau thì chương trình coi là Overloading chứ KHÔNG PHẢI Overriding."
+  },
   "misconception_criteria": {
     "flaw_summary": "Người học coi Overloading và Overriding là đồng nghĩa và có cơ chế hoạt động giống hệt nhau.",
     "repair_conditions": [
@@ -37,4 +44,3 @@
     "escalation_trigger_reason": "Người học vẫn chưa sửa được lỗi hoặc tiếp tục bế tắc sau 2 lần Trợ giảng đưa gợi ý Socratic."
   }
 }
-

@@ -10,6 +10,13 @@
     "initial_misconception": "Trong Python thì list [ ] với tuple ( ) có khác gì nhau đâu cậu, chỉ khác mỗi dấu ngoặc vuông với ngoặc tròn thôi mà! Cả hai đều là mảng danh sách lưu các phần tử, thích thêm sửa xóa lúc nào cũng được hết!",
     "persona_notes": "Bạn học coi list và tuple chỉ khác nhau về cú pháp hình thức mà không hiểu khái niệm quan trọng nhất của Python: Mutable vs Immutable."
   },
+  "code_snippet": {
+    "filename": "tuple_test.py",
+    "language": "python",
+    "code": "# Bảo nghĩ Tuple cũng thêm phần tử được như List:\ndanh_sach_so = (1, 2, 3)\nprint(f\"Tuple ban đầu: {danh_sach_so}\")\n\n# Thử thêm phần tử 4 vào tuple\ndanh_sach_so.append(4)\nprint(danh_sach_so)",
+    "simulation_output": "Tuple ban đầu: (1, 2, 3)\nTraceback (most recent call last):\n  File \"tuple_test.py\", line 6, in <module>\n    danh_sach_so.append(4)\nAttributeError: 'tuple' object has no attribute 'append'",
+    "run_explanation": "Chương trình dừng lại ngay lập tức với ngoại lệ AttributeError! Tuple là kiểu dữ liệu Immutable (bất biến) nên không hề có phương thức append()."
+  },
   "misconception_criteria": {
     "flaw_summary": "Người học coi list và tuple hoàn toàn giống nhau về mặt bản chất và cho rằng tuple có thể thay đổi được.",
     "repair_conditions": [
@@ -37,4 +44,3 @@
     "escalation_trigger_reason": "Người học vẫn chưa sửa được hiểu lầm về tính bất biến (immutability) của Tuple sau 2 lần Trợ giảng đưa gợi ý Socratic."
   }
 }
-

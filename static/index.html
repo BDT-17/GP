@@ -1186,6 +1186,45 @@
           </div>
         </div>
 
+        <!-- Interactive Code Misconception Block (Bảo's Buggy Code Snippet) -->
+        <div id="code-misconception-card" class="w-full mb-6 bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
+          <!-- Card Header Bar -->
+          <div class="bg-[#18262d] px-4 py-2.5 flex items-center justify-between border-b border-[#2b3940]">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block"></span>
+              <span id="code-snippet-filename" class="text-xs font-mono font-bold text-[#8598a0] ml-2">PolymorphismDemo.java</span>
+              <span id="code-snippet-lang" class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#20313a] text-[#1cb0f6]">JAVA</span>
+            </div>
+            <button id="run-code-btn" onclick="runCodeSimulation()" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] active:translate-y-0.5 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
+              <span>▶</span>
+              <span>Chạy thử code của Bảo</span>
+            </button>
+          </div>
+
+          <!-- Code View Area -->
+          <div class="p-4 bg-[#0d1519] overflow-x-auto text-sm font-mono text-[#e0e6ed] leading-relaxed max-h-56">
+            <pre><code id="code-snippet-content">// Đang tải đoạn mã của bạn học Bảo...</code></pre>
+          </div>
+
+          <!-- Simulation Console Output Drawer -->
+          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#141e24] p-3.5 transition-all">
+            <div class="flex items-center justify-between text-xs font-bold text-[#8598a0] mb-1.5">
+              <div class="flex items-center space-x-1.5 text-amber-400">
+                <span>💻</span>
+                <span>KẾT QUẢ THỰC THI (TERMINAL OUTPUT):</span>
+              </div>
+              <button onclick="toggleConsoleDrawer()" class="text-[#8598a0] hover:text-white text-xs font-bold">✕ Đóng</button>
+            </div>
+            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#0a0f12] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
+            <div id="code-console-hint" class="mt-2 text-xs font-semibold text-[#8598a0] flex items-center space-x-1.5">
+              <span>💡</span>
+              <span id="code-console-hint-text">Hãy nhìn kết quả trên và nhắn cho bạn Bảo biết tại sao code lại chạy như vậy nhé!</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Active Answer Slot (Underlined) -->
         <div class="w-full mb-6">
           <div class="min-h-[64px] w-full border-b-2 border-[#37464f] flex flex-wrap items-center gap-2 p-2 focus-within:border-[#1cb0f6] transition">
@@ -2118,12 +2157,71 @@
           updateUIFromState();
           updateDialogue('peer', data.initial_statement || sessionData.initial_misconception);
           updateWordBank(selectedSubjectCode);
+          renderCodeSnippet(sessionData.code_snippet);
         }
       } catch (err) {
         console.warn("Could not switch course on backend:", err);
       }
 
       switchView('home');
+    }
+
+    function renderCodeSnippet(snippet) {
+      const card = document.getElementById('code-misconception-card');
+      if (!card) return;
+
+      if (!snippet || !snippet.code) {
+        card.classList.add('hidden');
+        return;
+      }
+
+      card.classList.remove('hidden');
+      const fileEl = document.getElementById('code-snippet-filename');
+      if (fileEl) fileEl.innerText = snippet.filename || 'snippet.txt';
+      const langEl = document.getElementById('code-snippet-lang');
+      if (langEl) langEl.innerText = (snippet.language || 'code').toUpperCase();
+      const codeEl = document.getElementById('code-snippet-content');
+      if (codeEl) codeEl.innerText = snippet.code;
+
+      const drawer = document.getElementById('code-console-drawer');
+      if (drawer) drawer.classList.add('hidden');
+    }
+
+    async function runCodeSimulation() {
+      playDuoSound('hint');
+      const drawer = document.getElementById('code-console-drawer');
+      const outputEl = document.getElementById('code-console-output');
+      const hintEl = document.getElementById('code-console-hint-text');
+
+      if (!drawer || !outputEl) return;
+
+      try {
+        const res = await fetch('/api/code/run', { method: 'POST' });
+        const data = await res.json();
+        outputEl.innerText = data.output || "Đoạn mã đã chạy xong không có output.";
+        if (hintEl && data.explanation) {
+          hintEl.innerText = data.explanation;
+        }
+      } catch (err) {
+        if (sessionData && sessionData.code_snippet) {
+          outputEl.innerText = sessionData.code_snippet.simulation_output || "";
+          if (hintEl && sessionData.code_snippet.run_explanation) {
+            hintEl.innerText = sessionData.code_snippet.run_explanation;
+          }
+        }
+      }
+
+      drawer.classList.remove('hidden');
+      const input = document.getElementById('user-input');
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.focus();
+      }
+    }
+
+    function toggleConsoleDrawer() {
+      const drawer = document.getElementById('code-console-drawer');
+      if (drawer) drawer.classList.toggle('hidden');
     }
 
     function updateWordBank(code) {
@@ -2219,6 +2317,7 @@
           updateDialogue('peer', sessionData.initial_misconception);
         }
         updateWordBank(sessionData.course_id);
+        renderCodeSnippet(sessionData.code_snippet);
         switchView('landing');
       } catch (e) {
         console.error("Init error:", e);

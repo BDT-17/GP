@@ -66,6 +66,7 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 
 ## Change log
 
+- 2026-10-18: Implemented Interactive Code Misconception Block and Runner Simulator (`/api/code/run`), dynamic code snippets across courses (Java, C, Python), and frontend interactive execution console (32 tests, 91% coverage).
 - 2026-10-18: Integrated Multi-Provider LLM Client (`src/mascot/llm_client.py`) supporting Gemini, Groq, OpenAI, and Ollama with Socratic hint prompting and offline fallback (30 tests, 91% coverage).
 - 2026-10-18: Implemented SQLite Database Persistence (`src/mascot/database.py`), learner profile stats (XP, gems, streak), session history logging, and API integration (23 tests, 96% coverage).
 - 2026-10-18: Implemented Course & Scenario Modularization (`data/courses/`), dynamic CourseManager, multi-concept Evaluator, and integrated frontend subject switching (19 tests, 95% coverage).

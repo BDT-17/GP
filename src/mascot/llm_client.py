@@ -145,3 +145,4 @@ class LLMClient:
                 return data["choices"][0]["message"]["content"].strip()
 
         return None
+
