@@ -749,9 +749,20 @@
         <!-- Course Selector Bar & Quick Guide Trigger -->
         <div id="tour-course-selector" class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
           <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-xl flex-shrink-0">
-              📚
-            </div>
+            <!-- Ô bên trái kèm chấm thông báo / mở hướng dẫn động -->
+            <button 
+              id="tour-guide-trigger" 
+              onclick="openGuideModal('home')" 
+              class="relative w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 hover:border-[#58cc02] hover:bg-[#58cc02]/25 flex items-center justify-center text-xl flex-shrink-0 cursor-pointer transition transform hover:scale-105 group shadow-sm outline-none" 
+              title="Bấm vào đây để xem hướng dẫn sử dụng"
+            >
+              <span>📚</span>
+              <!-- Chấm tròn động (Pulsing Dot) báo hiệu mở hướng dẫn -->
+              <span class="absolute -top-1 -right-1 flex h-3 w-3" title="Bấm để xem hướng dẫn">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#58cc02] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-[#58cc02] border-2 border-[#18262d]"></span>
+              </span>
+            </button>
             <div>
               <div class="text-[10px] font-black uppercase tracking-wider text-[#8598a0]">Môn học hiện tại:</div>
               <div class="text-sm font-black text-white flex items-center space-x-2">
@@ -763,10 +774,6 @@
             <button onclick="switchView('selection')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] hover:border-[#1cb0f6] text-xs font-black uppercase text-[#1cb0f6] transition flex items-center space-x-1 shadow-sm" title="Chọn môn học khác (C, Python, Java)">
               <span>Đổi môn</span>
               <span>▾</span>
-            </button>
-            <button onclick="openGuideModal('home')" class="px-3 py-1.5 rounded-xl bg-[#58cc02]/20 hover:bg-[#58cc02]/30 border border-[#58cc02]/50 text-xs font-black uppercase text-[#58cc02] transition flex items-center space-x-1 shadow-sm" title="Xem hướng dẫn tương tác">
-              <span>❓</span>
-              <span>Hướng dẫn</span>
             </button>
           </div>
         </div>
@@ -1709,8 +1716,8 @@
         target: '#tour-course-selector',
         view: 'home',
         icon: '🎓',
-        title: 'Môn học hiện tại',
-        desc: 'Hiển thị môn đang học (CS102, ICT1.002, CS105...) và nút Đổi môn nhanh chóng.',
+        title: 'Môn học & Chấm hướng dẫn',
+        desc: 'Hiển thị môn đang học và nút Đổi môn. Bấm vào chấm xanh ở ô bên trái để mở hướng dẫn bất kỳ lúc nào!',
         placement: 'bottom'
       },
       {
