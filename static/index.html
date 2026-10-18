@@ -736,7 +736,7 @@
               <span>←</span>
               <span id="unit-header-label">HỌC PHẦN 1, BÀI 2</span>
             </div>
-            <h2 class="text-xl font-extrabold mt-0.5">Tính Đa Hình: Nạp Chồng & Ghi Đè</h2>
+            <h2 id="unit-topic-title" class="text-xl font-extrabold mt-0.5">Tính Đa Hình: Nạp Chồng & Ghi Đè</h2>
           </div>
           <button onclick="toggleSlideModal()" class="px-4 py-2.5 bg-[#00b58a] hover:bg-[#00a37c] text-white rounded-xl font-black text-xs uppercase tracking-wider border-2 border-white/30 flex items-center space-x-1.5 transition">
             <span>📖</span>
@@ -911,8 +911,8 @@
         <!-- User Info Details -->
         <div class="flex items-start justify-between pb-4 border-b border-[#202f36]">
           <div>
-            <h2 class="text-2xl font-black text-white leading-tight">Quoc Anh</h2>
-            <div class="text-sm font-bold text-[#8598a0]">QuocAnh162480</div>
+            <h2 id="profile-name" class="text-2xl font-black text-white leading-tight">Quoc Anh</h2>
+            <div id="profile-user" class="text-sm font-bold text-[#8598a0]">QuocAnh162480</div>
             <div class="text-xs text-[#8598a0] mt-0.5">Joined September 2024</div>
             <div class="text-xs font-black text-[#1cb0f6] mt-2 space-x-3">
               <span class="hover:underline cursor-pointer">0 Following</span>
@@ -938,7 +938,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-slate-500">🔥</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">0</div>
+                <div id="profile-streak" class="text-lg font-black text-white leading-none">1</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Day streak</div>
               </div>
             </div>
@@ -947,7 +947,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-amber-400">⚡</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">568</div>
+                <div id="profile-xp" class="text-lg font-black text-white leading-none">568</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Total XP</div>
               </div>
             </div>
@@ -956,7 +956,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-slate-300">🛡️</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">Silver</div>
+                <div id="profile-league" class="text-lg font-black text-white leading-none">Silver</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Current league</div>
               </div>
             </div>
@@ -965,7 +965,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-amber-400">🥇</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">1</div>
+                <div id="profile-top3" class="text-lg font-black text-white leading-none">1</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Top 3 finishes</div>
               </div>
             </div>
@@ -1186,6 +1186,45 @@
           </div>
         </div>
 
+        <!-- Interactive Code Misconception Block (Bảo's Buggy Code Snippet) -->
+        <div id="code-misconception-card" class="w-full mb-6 bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
+          <!-- Card Header Bar -->
+          <div class="bg-[#18262d] px-4 py-2.5 flex items-center justify-between border-b border-[#2b3940]">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block"></span>
+              <span id="code-snippet-filename" class="text-xs font-mono font-bold text-[#8598a0] ml-2">PolymorphismDemo.java</span>
+              <span id="code-snippet-lang" class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#20313a] text-[#1cb0f6]">JAVA</span>
+            </div>
+            <button id="run-code-btn" onclick="runCodeSimulation()" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] active:translate-y-0.5 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
+              <span>▶</span>
+              <span>Chạy thử code của Bảo</span>
+            </button>
+          </div>
+
+          <!-- Code View Area -->
+          <div class="p-4 bg-[#0d1519] overflow-x-auto text-sm font-mono text-[#e0e6ed] leading-relaxed max-h-56">
+            <pre><code id="code-snippet-content">// Đang tải đoạn mã của bạn học Bảo...</code></pre>
+          </div>
+
+          <!-- Simulation Console Output Drawer -->
+          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#141e24] p-3.5 transition-all">
+            <div class="flex items-center justify-between text-xs font-bold text-[#8598a0] mb-1.5">
+              <div class="flex items-center space-x-1.5 text-amber-400">
+                <span>💻</span>
+                <span>KẾT QUẢ THỰC THI (TERMINAL OUTPUT):</span>
+              </div>
+              <button onclick="toggleConsoleDrawer()" class="text-[#8598a0] hover:text-white text-xs font-bold">✕ Đóng</button>
+            </div>
+            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#0a0f12] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
+            <div id="code-console-hint" class="mt-2 text-xs font-semibold text-[#8598a0] flex items-center space-x-1.5">
+              <span>💡</span>
+              <span id="code-console-hint-text">Hãy nhìn kết quả trên và nhắn cho bạn Bảo biết tại sao code lại chạy như vậy nhé!</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Active Answer Slot (Underlined) -->
         <div class="w-full mb-6">
           <div class="min-h-[64px] w-full border-b-2 border-[#37464f] flex flex-wrap items-center gap-2 p-2 focus-within:border-[#1cb0f6] transition">
@@ -1207,7 +1246,7 @@
           <div class="text-[11px] font-black uppercase tracking-wider text-[#52656d] mb-2.5">
             Từ khóa gợi ý (Nhấn để chọn):
           </div>
-          <div class="flex flex-wrap gap-2.5">
+          <div id="word-bank-tiles" class="flex flex-wrap gap-2.5">
             <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
               Overloading trong cùng một lớp
             </button>
@@ -1727,7 +1766,7 @@
         },
         {
           name: 'Object-oriented programming',
-          code: '',
+          code: 'CS102',
           icon: '☕',
           active: true,
           hoverBorder: 'hover:border-[#1cb0f6]',
@@ -1770,7 +1809,7 @@
       'B2-Kì 2': [
         {
           name: 'Advanced programming with Python',
-          code: '',
+          code: 'CS105',
           icon: '🐍',
           hoverBorder: 'hover:border-[#1cb0f6]',
           hoverText: 'group-hover:text-[#1cb0f6]',
@@ -2087,10 +2126,11 @@
     let selectedSubjectName = 'Basic Programming';
     let selectedSubjectCode = 'ICT1.002';
 
-    function selectSubject(name, code) {
+    async function selectSubject(name, code) {
       playDuoSound('hint');
       selectedSubjectName = name;
-      selectedSubjectCode = code;
+      selectedSubjectCode = code || 'CS102';
+
       const unitLabel = document.getElementById('unit-header-label');
       if (unitLabel) {
         if (code) {
@@ -2099,7 +2139,159 @@
           unitLabel.innerText = `${name.toUpperCase()}, BÀI 2`;
         }
       }
+
+      // Call backend to switch course scenario and corpus dynamically
+      try {
+        const res = await fetch('/api/session/select', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ course_id: selectedSubjectCode })
+        });
+        const data = await res.json();
+        if (data && data.session_state) {
+          sessionData = data.session_state;
+          const topicTitle = document.getElementById('unit-topic-title');
+          if (topicTitle && sessionData.concept_title) {
+            topicTitle.innerText = sessionData.concept_title;
+          }
+          updateUIFromState();
+          updateDialogue('peer', data.initial_statement || sessionData.initial_misconception);
+          updateWordBank(selectedSubjectCode);
+          renderCodeSnippet(sessionData.code_snippet);
+        }
+      } catch (err) {
+        console.warn("Could not switch course on backend:", err);
+      }
+
       switchView('home');
+    }
+
+    function renderCodeSnippet(snippet) {
+      const card = document.getElementById('code-misconception-card');
+      if (!card) return;
+
+      if (!snippet || !snippet.code) {
+        card.classList.add('hidden');
+        return;
+      }
+
+      card.classList.remove('hidden');
+      const fileEl = document.getElementById('code-snippet-filename');
+      if (fileEl) fileEl.innerText = snippet.filename || 'snippet.txt';
+      const langEl = document.getElementById('code-snippet-lang');
+      if (langEl) langEl.innerText = (snippet.language || 'code').toUpperCase();
+      const codeEl = document.getElementById('code-snippet-content');
+      if (codeEl) codeEl.innerText = snippet.code;
+
+      const drawer = document.getElementById('code-console-drawer');
+      if (drawer) drawer.classList.add('hidden');
+    }
+
+    async function runCodeSimulation() {
+      playDuoSound('hint');
+      const drawer = document.getElementById('code-console-drawer');
+      const outputEl = document.getElementById('code-console-output');
+      const hintEl = document.getElementById('code-console-hint-text');
+
+      if (!drawer || !outputEl) return;
+
+      try {
+        const res = await fetch('/api/code/run', { method: 'POST' });
+        const data = await res.json();
+        outputEl.innerText = data.output || "Đoạn mã đã chạy xong không có output.";
+        if (hintEl && data.explanation) {
+          hintEl.innerText = data.explanation;
+        }
+      } catch (err) {
+        if (sessionData && sessionData.code_snippet) {
+          outputEl.innerText = sessionData.code_snippet.simulation_output || "";
+          if (hintEl && sessionData.code_snippet.run_explanation) {
+            hintEl.innerText = sessionData.code_snippet.run_explanation;
+          }
+        }
+      }
+
+      drawer.classList.remove('hidden');
+      const input = document.getElementById('user-input');
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.focus();
+      }
+    }
+
+    function toggleConsoleDrawer() {
+      const drawer = document.getElementById('code-console-drawer');
+      if (drawer) drawer.classList.toggle('hidden');
+    }
+
+    function updateWordBank(code) {
+      const container = document.getElementById('word-bank-tiles');
+      if (!container) return;
+
+      if (code === 'ICT1.002') {
+        container.innerHTML = `
+          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tham trị sao chép giá trị (Pass-by-value)
+          </button>
+          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            không làm thay đổi biến ngoài
+          </button>
+          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)
+          </button>
+          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            thay đổi trực tiếp biến gốc
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      } else if (code === 'CS105') {
+        container.innerHTML = `
+          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            List là kiểu dữ liệu Mutable (thay đổi được)
+          </button>
+          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            dùng ngoặc vuông [] và có append
+          </button>
+          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tuple là kiểu dữ liệu Immutable (bất biến)
+          </button>
+          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            dùng ngoặc tròn () không thể sửa phần tử
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Overloading trong cùng một lớp
+          </button>
+          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            khác danh sách tham số
+          </button>
+          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Overriding trong kế thừa lớp cha con
+          </button>
+          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            cùng tên và cùng tham số
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      }
     }
 
     function playSpeechAudio() {
@@ -2117,6 +2309,15 @@
         const res = await fetch('/api/session');
         sessionData = await res.json();
         updateUIFromState();
+        if (sessionData && sessionData.concept_title) {
+          const topicTitle = document.getElementById('unit-topic-title');
+          if (topicTitle) topicTitle.innerText = sessionData.concept_title;
+        }
+        if (sessionData && sessionData.initial_misconception) {
+          updateDialogue('peer', sessionData.initial_misconception);
+        }
+        updateWordBank(sessionData.course_id);
+        renderCodeSnippet(sessionData.code_snippet);
         switchView('landing');
       } catch (e) {
         console.error("Init error:", e);
@@ -2147,7 +2348,13 @@
       if (type === 'hint') {
         input.value = "Tớ chưa hiểu lắm, cho tớ gợi ý với!";
       } else if (type === 'future') {
-        input.value = "Abstract class và Interface hoạt động thế nào?";
+        if (selectedSubjectCode === 'ICT1.002') {
+          input.value = "Cấp phát bộ nhớ động malloc và heap hoạt động thế nào?";
+        } else if (selectedSubjectCode === 'CS105') {
+          input.value = "Generator function và từ khóa yield hoạt động thế nào?";
+        } else {
+          input.value = "Abstract class và Interface hoạt động thế nào?";
+        }
       }
       updateButtonState();
       input.focus();
@@ -2179,10 +2386,32 @@
       const title = document.getElementById('exercise-title');
       const badge = document.getElementById('badge-text');
 
+      // Update learner profile stats from SQLite persistence
+      if (sessionData && sessionData.profile) {
+        const p = sessionData.profile;
+        const elStreak = document.getElementById('home-streak');
+        if (elStreak) elStreak.innerText = p.streak;
+        const elGems = document.getElementById('home-gems');
+        if (elGems) elGems.innerText = p.gems;
+
+        const pStreak = document.getElementById('profile-streak');
+        if (pStreak) pStreak.innerText = p.streak;
+        const pXp = document.getElementById('profile-xp');
+        if (pXp) pXp.innerText = p.xp;
+        const pLeague = document.getElementById('profile-league');
+        if (pLeague) pLeague.innerText = p.league;
+        const pTop3 = document.getElementById('profile-top3');
+        if (pTop3) pTop3.innerText = p.top3_finishes;
+        const pName = document.getElementById('profile-name');
+        if (pName) pName.innerText = p.display_name;
+        const pUser = document.getElementById('profile-user');
+        if (pUser) pUser.innerText = p.username;
+      }
+
       if (sessionData.terminal_status === 'completed') {
         badge.innerText = "HOÀN THÀNH XUẤT SẮC";
         badge.className = "text-[#58cc02]";
-        title.innerText = "Chúc mừng bạn đã chinh phục bài học!";
+        title.innerText = "Chúc mừng bạn đã chinh phục bài học! (+50 XP • +15 Gems)";
       } else if (sessionData.misconception_repaired) {
         badge.innerText = "BƯỚC 2: GIẢI THÍCH LẠI (EXPLAIN-BACK)";
         badge.className = "text-[#ffc800]";
@@ -2285,8 +2514,8 @@
         icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
         icon.innerText = "✓";
         title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Chính xác tuyệt đối!";
-        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric!";
+        title.innerText = "Chính xác tuyệt đối! (+50 XP • +15 Gems)";
+        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric! Điểm thưởng đã được cộng vào tài khoản.";
       } else if (state.misconception_repaired && role === 'peer') {
         playDuoSound('correct');
         footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";

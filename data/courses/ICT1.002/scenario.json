@@ -1,0 +1,46 @@
+{
+  "scenario_id": "scenario_basic_prog_pass_by_value_vs_ref",
+  "course_id": "ICT1.002",
+  "lesson_id": "lesson_2",
+  "lesson_order": 2,
+  "concept_id": "prog_param_passing",
+  "concept_title": "Phân biệt Truyền tham trị (Pass-by-value) và Truyền tham chiếu (Pass-by-reference)",
+  "peer_student": {
+    "name": "Bảo (Bạn học)",
+    "initial_misconception": "Tớ nghĩ là khi mình truyền một biến vào hàm, ví dụ hàm hoanDoi(a, b) trong C++, thì bên trong hàm thay đổi giá trị của a và b là bên ngoài hàm gọi hai biến đấy cũng tự động đổi theo luôn chứ, vì tên biến giống hệt nhau mà!",
+    "persona_notes": "Bạn học chưa hiểu rõ về vùng nhớ Call Stack và cơ chế sao chép biến khi truyền tham số, nghĩ rằng gán tên biến giống nhau là tự động đổi biến gốc."
+  },
+  "code_snippet": {
+    "filename": "hoandoi.c",
+    "language": "c",
+    "code": "#include <stdio.h>\n\n// Bảo viết hàm hoán đổi truyền tham số như sau:\nvoid hoanDoi(int a, int b) {\n    int tmp = a;\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int x = 5, y = 10;\n    printf(\"Trước khi gọi hàm: x = %d, y = %d\\n\", x, y);\n    hoanDoi(x, y);\n    printf(\"Sau khi gọi hàm:  x = %d, y = %d\\n\", x, y);\n    return 0;\n}",
+    "simulation_output": "Trước khi gọi hàm: x = 5, y = 10\nSau khi gọi hàm:  x = 5, y = 10\n[Cảnh báo]: Hai biến x và y hoàn toàn KHÔNG đổi giá trị cho nhau!",
+    "run_explanation": "Hàm đã chạy xong nhưng x và y không đổi! Lý do: Tham số a và b chỉ là bản sao (Pass-by-value) nằm trong vùng nhớ stack riêng của hàm hoanDoi."
+  },
+  "misconception_criteria": {
+    "flaw_summary": "Người học nhầm lẫn rằng truyền tham số mặc định (tham trị) sẽ tự động làm thay đổi biến gốc bên ngoài hàm.",
+    "repair_conditions": [
+      "Chỉ ra được cơ chế Truyền tham trị (Pass-by-value) chỉ tạo một BẢN SAO (copy) độc lập trên stack, không làm thay đổi biến gốc bên ngoài.",
+      "Chỉ ra được muốn thay đổi biến bên ngoài thì phải dùng Truyền tham chiếu (kí hiệu &) hoặc truyền con trỏ (kí hiệu *) mang địa chỉ ô nhớ."
+    ]
+  },
+  "explain_back_rubric": [
+    {
+      "dimension": "copy_vs_address",
+      "required_understanding": "Phân biệt: Tham trị sao chép giá trị sang biến cục bộ mới; Tham chiếu hoặc con trỏ truyền địa chỉ ô nhớ gốc."
+    },
+    {
+      "dimension": "side_effect_on_original",
+      "required_understanding": "Phân biệt tác động: Tham trị hoàn toàn không thay đổi biến ban đầu; Tham chiếu thay đổi trực tiếp biến gốc."
+    },
+    {
+      "dimension": "syntax_distinction",
+      "required_understanding": "Phân biệt cú pháp: C++ dùng tham chiếu & hoặc con trỏ * để hàm có thể cập nhật giá trị trả về nhiều biến."
+    }
+  ],
+  "escalation_policy": {
+    "max_hints_before_escalation": 2,
+    "escalation_role": "Lecturer",
+    "escalation_trigger_reason": "Người học vẫn chưa sửa được hiểu lầm về cơ chế sao chép tham số sau 2 lần Trợ giảng đưa gợi ý Socratic."
+  }
+}

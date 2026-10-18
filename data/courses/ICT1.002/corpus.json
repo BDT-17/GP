@@ -1,0 +1,80 @@
+{
+  "course_id": "ICT1.002",
+  "course_name": "Lập trình căn bản (Basic Programming)",
+  "lessons": [
+    {
+      "lesson_id": "lesson_1",
+      "lesson_order": 1,
+      "lesson_title": "Biến và Kiểu dữ liệu trong C/C++ (Variables and Data Types)",
+      "is_prerequisite": true,
+      "chunks": [
+        {
+          "chunk_id": "ICT1002_L1_C1",
+          "concept_id": "prog_variables",
+          "source_id": "slide_l1_02",
+          "source_location": "Slide 2, Mục 1.1: Khái niệm biến và ô nhớ",
+          "text": "Biến là định danh đại diện cho một ô nhớ trong bộ nhớ RAM. Mỗi biến có một kiểu dữ liệu xác định kích thước ô nhớ và một địa chỉ bộ nhớ duy nhất (truy xuất qua toán tử &)."
+        },
+        {
+          "chunk_id": "ICT1002_L1_C2",
+          "concept_id": "prog_functions",
+          "source_id": "slide_l1_05",
+          "source_location": "Slide 5, Mục 1.3: Cấu trúc hàm cơ bản",
+          "text": "Hàm nhận các tham số đầu vào và có thể trả về một giá trị. Các biến khai báo trong hàm là biến cục bộ (local variables), chỉ tồn tại trong suốt quá trình hàm thực thi trên ngăn xếp Call Stack."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_2",
+      "lesson_order": 2,
+      "lesson_title": "Truyền tham số cho Hàm: Tham trị và Tham chiếu (Pass-by-value vs Pass-by-reference)",
+      "is_current": true,
+      "chunks": [
+        {
+          "chunk_id": "ICT1002_L2_C1",
+          "concept_id": "prog_param_passing",
+          "source_id": "slide_l2_02",
+          "source_location": "Slide 2, Mục 2.1: Cơ chế truyền tham số",
+          "text": "Khi gọi một hàm với các đối số, chương trình cần quyết định cách dữ liệu được chuyển giao cho tham số của hàm: truyền bản sao giá trị (Pass-by-value) hoặc truyền địa chỉ/tham chiếu (Pass-by-reference)."
+        },
+        {
+          "chunk_id": "ICT1002_L2_C2",
+          "concept_id": "prog_pass_by_value",
+          "source_id": "slide_l2_04",
+          "source_location": "Slide 4, Mục 2.2: Truyền theo giá trị (Pass-by-value)",
+          "text": "Truyền tham trị (Pass-by-value): Hàm tạo một bản sao độc lập (copy) của đối số được truyền vào. Mọi thay đổi đối với tham số này bên trong hàm chỉ tác động lên bản sao và hoàn toàn KHÔNG làm thay đổi biến gốc ở hàm gọi (caller). Đây là cơ chế mặc định trong C/C++."
+        },
+        {
+          "chunk_id": "ICT1002_L2_C3",
+          "concept_id": "prog_pass_by_reference",
+          "source_id": "slide_l2_06",
+          "source_location": "Slide 6, Mục 2.3: Truyền theo tham chiếu và con trỏ (Pass-by-reference)",
+          "text": "Truyền tham chiếu (Pass-by-reference) hoặc truyền qua con trỏ: Hàm nhận địa chỉ ô nhớ của biến gốc (dùng ký hiệu & trong C++ hoặc con trỏ * trong C). Thao tác thay đổi giá trị trong hàm sẽ trực tiếp làm thay đổi giá trị của biến gốc bên ngoài hàm."
+        },
+        {
+          "chunk_id": "ICT1002_L2_C4",
+          "concept_id": "prog_param_comparison",
+          "source_id": "slide_l2_08",
+          "source_location": "Slide 8, Mục 2.4: So sánh tham trị và tham chiếu",
+          "text": "So sánh cốt lõi: 1) Tham trị sao chép giá trị sang ô nhớ mới, an toàn nhưng tốn bộ nhớ với dữ liệu lớn, không đổi được biến gốc. 2) Tham chiếu chia sẻ cùng một ô nhớ gốc thông qua bí danh hoặc địa chỉ, cho phép hàm thay đổi trực tiếp biến gốc bên ngoài."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_3",
+      "lesson_order": 3,
+      "lesson_title": "Bộ nhớ động và Con trỏ nâng cao (Dynamic Memory & Advanced Pointers)",
+      "is_future": true,
+      "chunks": [
+        {
+          "chunk_id": "ICT1002_L3_C1",
+          "concept_id": "prog_dynamic_memory",
+          "source_id": "slide_l3_02",
+          "source_location": "Slide 2, Mục 3.1: Quản lý vùng nhớ Heap",
+          "text": "Cấp phát bộ nhớ động sử dụng malloc/free trong C hoặc new/delete trong C++ để xin cấp phát bộ nhớ trên vùng nhớ Heap. Đây là nội dung nâng cao thuộc Bài 3."
+        }
+      ]
+    }
+  ]
+}
+

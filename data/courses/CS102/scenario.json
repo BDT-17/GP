@@ -1,0 +1,46 @@
+{
+  "scenario_id": "scenario_oop_overloading_vs_overriding",
+  "course_id": "CS102",
+  "lesson_id": "lesson_2",
+  "lesson_order": 2,
+  "concept_id": "oop_polymorphism",
+  "concept_title": "Phân biệt Nạp chồng (Overloading) và Ghi đè (Overriding)",
+  "peer_student": {
+    "name": "Bảo (Bạn học)",
+    "initial_misconception": "Tớ nghĩ là trong Java hay C++, Overloading (nạp chồng) với Overriding (ghi đè) chỉ là hai cách gọi khác nhau của cùng một việc: đó là viết lại một phương thức để dùng lại. Bản chất chúng hoàn toàn giống nhau, đúng không cậu?",
+    "persona_notes": "Bạn học năng nổ nhưng hay nhầm lẫn thuật ngữ, dễ nhầm giữa nạp chồng và ghi đè. Cần người học chỉ ra điểm khác nhau cụ thể mới chịu tâm phục khẩu phục."
+  },
+  "code_snippet": {
+    "filename": "PolymorphismDemo.java",
+    "language": "java",
+    "code": "class Animal {\n    void speak() {\n        System.out.println(\"Tiếng động vật\");\n    }\n}\n\nclass Dog extends Animal {\n    // Bảo viết hàm này và bảo đây là Ghi đè (Overriding):\n    void speak(int times) {\n        System.out.println(\"Gâu gâu \" + times + \" lần\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Animal pet = new Dog();\n        pet.speak(); // Gọi hàm nào?\n    }\n}",
+    "simulation_output": "Tiếng động vật\n[Phát hiện]: pet.speak() gọi hàm của Animal chứ không phải của Dog! Hàm speak(int times) ở Dog KHÔNG GHI ĐÈ mà chỉ là NẠP CHỒNG vì khác chữ ký hàm (tham số)!",
+    "run_explanation": "Kết quả in ra là của lớp Animal! Chữ ký hàm khác nhau thì chương trình coi là Overloading chứ KHÔNG PHẢI Overriding."
+  },
+  "misconception_criteria": {
+    "flaw_summary": "Người học coi Overloading và Overriding là đồng nghĩa và có cơ chế hoạt động giống hệt nhau.",
+    "repair_conditions": [
+      "Chỉ ra được Overloading diễn ra trong CÙNG MỘT LỚP với danh sách tham số KHÁC NHAU.",
+      "Chỉ ra được Overriding diễn ra giữa LỚP CHA VÀ LỚP CON (kế thừa) với chữ ký hàm (tên và tham số) GIỐNG HỆT NHAU."
+    ]
+  },
+  "explain_back_rubric": [
+    {
+      "dimension": "scope_and_inheritance",
+      "required_understanding": "Phân biệt phạm vi: Overloading trong cùng 1 class; Overriding đòi hỏi quan hệ kế thừa (lớp con ghi đè phương thức lớp cha)."
+    },
+    {
+      "dimension": "method_signature",
+      "required_understanding": "Phân biệt chữ ký hàm: Overloading bắt buộc khác nhau về tham số (số lượng, kiểu, thứ tự); Overriding bắt buộc cùng tên và cùng tham số."
+    },
+    {
+      "dimension": "polymorphism_type",
+      "required_understanding": "Phân biệt thời điểm: Overloading là đa hình tĩnh / compile-time; Overriding là đa hình động / runtime (điểm cộng nếu có)."
+    }
+  ],
+  "escalation_policy": {
+    "max_hints_before_escalation": 2,
+    "escalation_role": "Lecturer",
+    "escalation_trigger_reason": "Người học vẫn chưa sửa được lỗi hoặc tiếp tục bế tắc sau 2 lần Trợ giảng đưa gợi ý Socratic."
+  }
+}

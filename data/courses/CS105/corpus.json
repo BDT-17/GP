@@ -1,0 +1,73 @@
+{
+  "course_id": "CS105",
+  "course_name": "Lập trình nâng cao với Python (Advanced Python Programming)",
+  "lessons": [
+    {
+      "lesson_id": "lesson_1",
+      "lesson_order": 1,
+      "lesson_title": "Kiểu dữ liệu cơ bản và Cú pháp Python (Basic Types & Syntax)",
+      "is_prerequisite": true,
+      "chunks": [
+        {
+          "chunk_id": "CS105_L1_C1",
+          "concept_id": "python_basic_types",
+          "source_id": "slide_l1_03",
+          "source_location": "Slide 3, Mục 1.1: Biến và kiểu dữ liệu trong Python",
+          "text": "Mọi đối tượng trong Python đều là object với định danh (id), kiểu dữ liệu (type) và giá trị (value). Kiểu số int, float, chuỗi str và boolean là các kiểu dữ liệu cơ bản."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_2",
+      "lesson_order": 2,
+      "lesson_title": "Cấu trúc dữ liệu Sequence: List vs Tuple (Mutable vs Immutable)",
+      "is_current": true,
+      "chunks": [
+        {
+          "chunk_id": "CS105_L2_C1",
+          "concept_id": "python_list_vs_tuple",
+          "source_id": "slide_l2_02",
+          "source_location": "Slide 2, Mục 2.1: Giới thiệu List và Tuple",
+          "text": "List và Tuple đều là các cấu trúc dữ liệu dạng chuỗi (sequence) lưu trữ tập hợp các phần tử có thứ tự. Tuy nhiên, điểm khác biệt căn bản và quan trọng nhất giữa chúng nằm ở tính biến đổi (mutability)."
+        },
+        {
+          "chunk_id": "CS105_L2_C2",
+          "concept_id": "python_list_mutable",
+          "source_id": "slide_l2_04",
+          "source_location": "Slide 4, Mục 2.2: List và tính Mutable",
+          "text": "List (khai báo bằng dấu ngoặc vuông []) là kiểu dữ liệu có thể thay đổi (Mutable). Sau khi tạo, lập trình viên có thể thay đổi giá trị của phần tử, thêm phần tử mới bằng append/extend, hoặc xóa phần tử bằng remove/pop mà không làm thay đổi id của đối tượng."
+        },
+        {
+          "chunk_id": "CS105_L2_C3",
+          "concept_id": "python_tuple_immutable",
+          "source_id": "slide_l2_06",
+          "source_location": "Slide 6, Mục 2.3: Tuple và tính Immutable",
+          "text": "Tuple (khai báo bằng dấu ngoặc tròn () hoặc dấu phẩy) là kiểu dữ liệu bất biến (Immutable). Một khi đã khởi tạo, các phần tử trong tuple KHÔNG THỂ thay đổi, thêm hay bớt. Do tính bất biến, tuple an toàn hơn, tốn ít bộ nhớ hơn list và có thể được dùng làm key trong dictionary."
+        },
+        {
+          "chunk_id": "CS105_L2_C4",
+          "concept_id": "python_sequence_comparison",
+          "source_id": "slide_l2_08",
+          "source_location": "Slide 8, Mục 2.4: Bảng so sánh List vs Tuple",
+          "text": "So sánh cốt lõi: 1) Khả năng thay đổi: List là Mutable (sửa được), Tuple là Immutable (không sửa được). 2) Cú pháp: List dùng [], Tuple dùng (). 3) Hiệu năng & bộ nhớ: Tuple nhẹ hơn và duyệt nhanh hơn list. 4) Tính hashable: Tuple chứa dữ liệu bất biến có thể làm key cho dict, List thì không thể."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_3",
+      "lesson_order": 3,
+      "lesson_title": "Generators và Iterators trong Python (Generators & Iterators)",
+      "is_future": true,
+      "chunks": [
+        {
+          "chunk_id": "CS105_L3_C1",
+          "concept_id": "python_generators",
+          "source_id": "slide_l3_02",
+          "source_location": "Slide 2, Mục 3.1: Từ khóa yield và Generator function",
+          "text": "Generator trong Python sinh giá trị tuần tự theo cơ chế lười biếng (lazy evaluation) bằng từ khóa yield. Đây là chủ đề nâng cao thuộc Bài 3."
+        }
+      ]
+    }
+  ]
+}
+
