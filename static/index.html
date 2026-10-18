@@ -1448,9 +1448,14 @@
 
         <!-- Classroom Discussion Feed (Scrollable Multi-Role Chat Feed) -->
         <div class="w-full flex flex-col space-y-3.5 pt-2">
-          <div class="text-[11px] font-black uppercase tracking-wider text-[#8598a0] flex items-center space-x-2">
-            <span>💬 DIỄN BIẾN LỚP HỌC (CLASSROOM DISCUSSION FEED):</span>
-            <span class="h-px bg-[#202f36] flex-1"></span>
+          <div class="text-[11px] font-black uppercase tracking-wider text-[#8598a0] flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span>💬 DIỄN BIẾN LỚP HỌC (CLASSROOM DISCUSSION FEED):</span>
+            </div>
+            <button onclick="toggleGlobalMute()" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-[#18262d] hover:bg-[#20313a] text-slate-300 hover:text-white text-xs font-bold border border-[#2b3940] transition" title="Bấm để tắt tiếng / bật tiếng">
+              <span id="header-sound-icon">🔊</span>
+              <span id="header-sound-text" class="text-[10px]">Âm thanh</span>
+            </button>
           </div>
 
           <div id="classroom-chat-feed" class="w-full space-y-3.5">
@@ -1486,6 +1491,16 @@
                 onkeydown="if(event.key === 'Enter') handleCheck()"
                 oninput="updateButtonState()"
               />
+              <!-- Sound Mute / Unmute Button -->
+              <button 
+                id="sound-toggle-btn" 
+                onclick="toggleGlobalMute()" 
+                type="button"
+                title="Bấm để tắt tiếng / bật tiếng âm thanh"
+                class="w-9 h-9 rounded-xl bg-[#20313a] hover:bg-[#2c404c] text-slate-300 hover:text-white flex items-center justify-center flex-shrink-0 transition border border-[#37464f]"
+              >
+                <span id="sound-toggle-icon" class="text-base">🔊</span>
+              </button>
               <!-- Voice Input (STT) Button -->
               <button 
                 id="mic-btn" 
@@ -1573,11 +1588,13 @@
     let currentView = 'home';
     let sessionData = {};
     let isWaitingNext = false;
+    let isAudioMuted = false;
 
     // Web Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playDuoSound(type) {
+      if (isAudioMuted) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -2594,13 +2611,90 @@
       }
     }
 
-    function playSpeechAudio(customText, role = 'peer') {
+    let currentSpeakingText = null;
+    let currentSpeakingBtn = null;
+
+    function toggleGlobalMute() {
+      isAudioMuted = !isAudioMuted;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      currentSpeakingText = null;
+      if (currentSpeakingBtn) {
+        currentSpeakingBtn.classList.remove('animate-pulse');
+        currentSpeakingBtn = null;
+      }
+      updateSoundIcons();
+    }
+
+    function updateSoundIcons() {
+      const globalIcon = document.getElementById('sound-toggle-icon');
+      const globalBtn = document.getElementById('sound-toggle-btn');
+      const headerIcon = document.getElementById('header-sound-icon');
+      const headerText = document.getElementById('header-sound-text');
+
+      if (globalIcon) {
+        globalIcon.innerText = isAudioMuted ? '🔇' : '🔊';
+      }
+      if (globalBtn) {
+        globalBtn.title = isAudioMuted ? 'Đang tắt tiếng (Bấm để bật tiếng)' : 'Đang bật tiếng (Bấm để tắt tiếng)';
+        if (isAudioMuted) {
+          globalBtn.classList.add('bg-rose-950/70', 'border-rose-700', 'text-rose-400');
+          globalBtn.classList.remove('bg-[#20313a]', 'border-[#37464f]', 'text-slate-300');
+        } else {
+          globalBtn.classList.remove('bg-rose-950/70', 'border-rose-700', 'text-rose-400');
+          globalBtn.classList.add('bg-[#20313a]', 'border-[#37464f]', 'text-slate-300');
+        }
+      }
+
+      if (headerIcon) headerIcon.innerText = isAudioMuted ? '🔇' : '🔊';
+      if (headerText) headerText.innerText = isAudioMuted ? 'Đã tắt tiếng' : 'Âm thanh';
+
+      document.querySelectorAll('.chat-speech-btn').forEach(btn => {
+        btn.innerHTML = isAudioMuted ? '🔇' : '🔊';
+        btn.title = isAudioMuted ? 'Đang tắt tiếng (Bấm để bật và nghe)' : 'Bấm để nghe đọc hoặc tắt tiếng';
+      });
+    }
+
+    function toggleSpeechAudio(customText, role = 'peer', btn = null) {
+      const text = customText || (sessionData ? sessionData.initial_misconception : '');
+      const cleanText = text.replace(/^\[.*?\]:\s*/, '').trim();
+
+      // If speech synthesis is currently active:
+      if ('speechSynthesis' in window && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+        window.speechSynthesis.cancel();
+
+        const wasCurrent = (currentSpeakingText === cleanText);
+        if (currentSpeakingBtn) {
+          currentSpeakingBtn.innerHTML = isAudioMuted ? '🔇' : '🔊';
+          currentSpeakingBtn.classList.remove('animate-pulse');
+          currentSpeakingBtn = null;
+        }
+        currentSpeakingText = null;
+
+        // If clicking while reading this message, it stops and turns off sound!
+        if (wasCurrent) {
+          return;
+        }
+      }
+
+      // If user was globally muted and explicitly clicked a speaker icon to hear this message, unmute:
+      if (isAudioMuted) {
+        isAudioMuted = false;
+        updateSoundIcons();
+      }
+
+      playSpeechAudio(cleanText, role, btn);
+    }
+
+    function playSpeechAudio(customText, role = 'peer', btn = null) {
+      if (isAudioMuted) return;
       playDuoSound('hint');
       const text = customText || (sessionData ? sessionData.initial_misconception : '');
       if ('speechSynthesis' in window && text) {
         window.speechSynthesis.cancel();
         // Remove speaker prefix brackets like [TS. Minh]: or [Thầy Hùng]: for natural speech
-        const cleanText = text.replace(/^\[.*?\]:\s*/, '');
+        const cleanText = text.replace(/^\[.*?\]:\s*/, '').trim();
         const utter = new SpeechSynthesisUtterance(cleanText);
         utter.lang = 'vi-VN';
 
@@ -2618,6 +2712,32 @@
           utter.pitch = 1.0;
           utter.rate = 1.0;
         }
+
+        currentSpeakingText = cleanText;
+        currentSpeakingBtn = btn;
+        if (btn) {
+          btn.innerHTML = '🔊';
+          btn.classList.add('animate-pulse');
+          btn.title = 'Đang đọc... Bấm vào đây để tắt tiếng';
+        }
+
+        utter.onend = () => {
+          if (btn) {
+            btn.innerHTML = isAudioMuted ? '🔇' : '🔊';
+            btn.classList.remove('animate-pulse');
+          }
+          currentSpeakingText = null;
+          currentSpeakingBtn = null;
+        };
+
+        utter.onerror = () => {
+          if (btn) {
+            btn.innerHTML = isAudioMuted ? '🔇' : '🔊';
+            btn.classList.remove('animate-pulse');
+          }
+          currentSpeakingText = null;
+          currentSpeakingBtn = null;
+        };
 
         window.speechSynthesis.speak(utter);
       }
@@ -2711,6 +2831,7 @@
     function createChatMessageHtml(role, content) {
       const safeContent = (content || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const speechContent = safeContent.replace(/'/g, "\\'");
+      const speakerIcon = isAudioMuted ? '🔇' : '🔊';
 
       if (role === 'learner' || role === 'user') {
         return `
@@ -2739,8 +2860,8 @@
                   <span class="text-xs font-black uppercase tracking-wider text-[#58cc02]">Thầy Hùng (Trợ giảng Socratic)</span>
                   <span class="text-[9px] font-bold bg-[#1d3d2a] text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-700">Gợi ý bậc thang</span>
                 </div>
-                <button onclick="playSpeechAudio('${speechContent}', 'ta')" class="text-xs text-[#8598a0] hover:text-emerald-400 p-1" title="Nghe Thầy Hùng nói">
-                  🔊
+                <button onclick="toggleSpeechAudio('${speechContent}', 'ta', this)" class="chat-speech-btn text-xs text-[#8598a0] hover:text-emerald-400 p-1 transition" title="Bấm để nghe đọc hoặc tắt tiếng">
+                  ${speakerIcon}
                 </button>
               </div>
               <div class="text-sm font-semibold text-emerald-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
@@ -2760,8 +2881,8 @@
                   <span class="text-[9px] font-bold bg-[#331c47] text-purple-200 px-2 py-0.5 rounded-full border border-purple-700">Leo thang & Trích dẫn VLearn</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <button onclick="playSpeechAudio('${speechContent}', 'lecturer')" class="text-xs text-[#8598a0] hover:text-purple-300 p-1" title="Nghe TS. Minh nói">
-                    🔊
+                  <button onclick="toggleSpeechAudio('${speechContent}', 'lecturer', this)" class="chat-speech-btn text-xs text-[#8598a0] hover:text-purple-300 p-1 transition" title="Bấm để nghe đọc hoặc tắt tiếng">
+                    ${speakerIcon}
                   </button>
                   <button onclick="toggleSlideModal()" class="text-[10px] font-bold text-[#ce93d8] hover:underline flex items-center space-x-1">
                     <span>📄 Xem Slide</span>
@@ -2800,8 +2921,8 @@
                   <span class="text-xs font-black uppercase tracking-wider text-[#ff9600]">Bảo (Bạn học)</span>
                   <span class="text-[9px] font-bold bg-[#36210f] text-amber-300 px-2 py-0.5 rounded-full border border-amber-700">Ngộ nhận / Phản biện</span>
                 </div>
-                <button onclick="playSpeechAudio('${speechContent}', 'peer')" class="text-xs text-[#8598a0] hover:text-amber-400 p-1" title="Nghe Bảo nói">
-                  🔊
+                <button onclick="toggleSpeechAudio('${speechContent}', 'peer', this)" class="chat-speech-btn text-xs text-[#8598a0] hover:text-amber-400 p-1 transition" title="Bấm để nghe đọc hoặc tắt tiếng">
+                  ${speakerIcon}
                 </button>
               </div>
               <div class="text-sm font-bold text-white leading-relaxed whitespace-pre-wrap">${safeContent}</div>
@@ -2997,7 +3118,10 @@
 
         // Append assistant response to feed
         appendChatMessage(data.reply.role, data.reply.message);
-        playSpeechAudio(data.reply.message, data.reply.role);
+        const feedEl = document.getElementById('classroom-chat-feed');
+        const speechBtns = feedEl ? feedEl.querySelectorAll('.chat-speech-btn') : [];
+        const lastSpeechBtn = speechBtns.length > 0 ? speechBtns[speechBtns.length - 1] : null;
+        playSpeechAudio(data.reply.message, data.reply.role, lastSpeechBtn);
         updateUIFromState();
 
         if (sessionData.terminal_status === 'completed') {
