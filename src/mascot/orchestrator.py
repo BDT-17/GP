@@ -18,6 +18,7 @@ from mascot.models import (
     TerminalStatus,
 )
 from mascot.retriever import CurriculumRetriever
+from mascot.security import AdversarialGuard
 
 
 class MascotOrchestrator:
@@ -41,6 +42,7 @@ class MascotOrchestrator:
 
         self.retriever = CurriculumRetriever(corpus_path=corpus_path)
         self.evaluator = Evaluator(self.scenario)
+        self.security_guard = AdversarialGuard()
 
         self.peer = PeerAgent(
             name=self.scenario["peer_student"]["name"],
@@ -66,6 +68,7 @@ class MascotOrchestrator:
         self.terminal_status: TerminalStatus = TerminalStatus.ACTIVE
         self.terminal_reason: str = ""
         self.citations_used: List[Citation] = []
+        self.security_alerts: List[Dict[str, Any]] = []
 
         self.event_log: List[SessionEvent] = []
         self.conversation_history: List[Dict[str, str]] = []
@@ -125,6 +128,7 @@ class MascotOrchestrator:
         self.terminal_status = TerminalStatus.ACTIVE
         self.terminal_reason = ""
         self.citations_used = []
+        self.security_alerts = []
 
         self.event_log = []
         self.conversation_history = []
@@ -151,6 +155,34 @@ class MascotOrchestrator:
             content=learner_text,
             metadata={"attempt_number": self.learner_attempts},
         )
+
+        # 0. Adversarial & Security Inspection (AC6, P1)
+        scan = self.security_guard.inspect(learner_text)
+        if scan.is_suspicious:
+            alert = {
+                "turn": self.learner_attempts,
+                "threat_type": scan.threat_type,
+                "reason": scan.reason,
+                "input_snippet": learner_text[:100],
+            }
+            self.security_alerts.append(alert)
+            self._log_event(
+                event_type="security_alert",
+                role=Role.ORCHESTRATOR.value,
+                content=scan.reason,
+                metadata=alert,
+            )
+
+        if scan.is_blocked:
+            response_text = scan.safe_response or "[Hệ thống]: Yêu cầu bị từ chối do vi phạm quy tắc an toàn sư phạm."
+            self.active_role = Role.ORCHESTRATOR
+            self._log_event(event_type="response_generated", role=Role.ORCHESTRATOR.value, content=response_text)
+            self.conversation_history.append({"role": Role.ORCHESTRATOR.value, "content": response_text})
+            return {
+                "role": Role.ORCHESTRATOR.value,
+                "message": response_text,
+                "terminal": False,
+            }
 
         # 1. Apply Curriculum Gate check (AC1, AC2)
         retrieval_decision = self.retriever.retrieve(
@@ -276,6 +308,7 @@ class MascotOrchestrator:
             terminal_status=self.terminal_status,
             terminal_reason=self.terminal_reason or "Session in progress or ended.",
             citations_used=[c.source_location for c in self.citations_used],
+            security_alerts=self.security_alerts,
             created_at=self.event_log[0].timestamp if self.event_log else "",
         )
 

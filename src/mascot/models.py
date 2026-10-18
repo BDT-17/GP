@@ -81,5 +81,7 @@ class InstructorSummary(BaseModel):
     terminal_status: TerminalStatus
     terminal_reason: str
     citations_used: List[str]
+    security_alerts: List[Dict[str, Any]] = Field(default_factory=list)
     created_at: str
+
 

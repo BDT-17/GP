@@ -118,6 +118,7 @@ async def get_session():
         "conversation_history": orchestrator.conversation_history,
         "profile": profile,
         "code_snippet": orchestrator.scenario.get("code_snippet"),
+        "security_alerts": orchestrator.security_alerts,
     }
 
 
@@ -204,6 +205,25 @@ async def get_llm_status():
     return {
         "provider": client.get_provider(),
         "is_live_llm": client.get_provider() != "fallback",
+    }
+
+
+@app.get("/api/instructor/audit")
+async def get_instructor_audit():
+    """Returns comprehensive instructor audit data: summary, all sessions, security logs, citations."""
+    summary = orchestrator.generate_instructor_summary()
+    sessions = db.get_all_sessions()
+    total_sessions = len(sessions)
+    completed_sessions = sum(1 for s in sessions if s.get("completed"))
+    completion_rate = round((completed_sessions / total_sessions * 100), 1) if total_sessions > 0 else 0.0
+
+    return {
+        "current_summary": summary.model_dump(),
+        "total_sessions": total_sessions,
+        "completed_sessions": completed_sessions,
+        "completion_rate": completion_rate,
+        "security_alerts": orchestrator.security_alerts,
+        "recent_sessions": sessions[:15],
     }
 
 
