@@ -103,7 +103,17 @@ class TeachingAssistantAgent:
         idx = min(max(0, hint_level - 1), len(self.hints) - 1)
         return self.hints[idx]
 
-    def prompt_explain_back_retry(self, learner_input: Optional[str] = None) -> str:
+    def prompt_explain_back_retry(
+        self,
+        learner_input: Optional[str] = None,
+        rubric_feedback: Optional[str] = None,
+    ) -> str:
+        if rubric_feedback:
+            return (
+                f"[{self.name}]: Bạn đã đi đúng hướng rồi! Tuy nhiên:\n"
+                f"{rubric_feedback}\n"
+                "Bạn hãy thử trình bày bổ sung lại một lần nữa nhé!"
+            )
         return (
             f"[{self.name}]: Bạn đã đi đúng hướng rồi! Tuy nhiên phần giải thích lại (Explain-back) "
             "cần nêu rõ cả 2 khía cạnh cốt lõi của khái niệm. "

@@ -94,7 +94,7 @@ class Evaluator:
                 return False, needs_help, "Người học chưa chỉ ra được lỗi sai trong phát biểu của bạn học."
 
     def evaluate_explain_back(self, user_text: str) -> EvaluationOutcome:
-        """Assesses learner's self-generated explain-back against rubric."""
+        """Assesses learner's self-generated explain-back against multi-criteria rubric."""
         text = user_text.lower()
 
         if self.concept_id == "prog_param_passing":
@@ -114,11 +114,25 @@ class Evaluator:
                 "side_effect_on_original": dim2,
                 "syntax_distinction": dim3,
             }
-            feedback = (
-                "Giải thích xuất sắc và đầy đủ bản chất cơ chế truyền tham số!"
-                if is_pass
-                else "Bài giải thích còn thiếu cơ chế sao chép tham trị hoặc tác động lên biến gốc. Hãy bổ sung đầy đủ cả 2 điểm."
-            )
+            dimension_feedback = {
+                "copy_vs_address": (
+                    "✓ Đã nêu rõ cơ chế sao chép giá trị (tham trị) vs truyền địa chỉ ô nhớ (tham chiếu/con trỏ)."
+                    if dim1 else "✗ Cần phân biệt rõ: Tham trị sao chép giá trị sang ô nhớ mới, còn tham chiếu/con trỏ truyền địa chỉ ô nhớ."
+                ),
+                "side_effect_on_original": (
+                    "✓ Đã chỉ rõ tác động lên biến gốc bên ngoài hàm."
+                    if dim2 else "✗ Cần nêu rõ: Tham trị không làm thay đổi biến gốc bên ngoài, tham chiếu/con trỏ thay đổi trực tiếp biến gốc."
+                ),
+                "syntax_distinction": (
+                    "✓ Đã nêu ký hiệu cú pháp con trỏ/tham chiếu (&, *)."
+                    if dim3 else "✗ Gợi ý: Có thể nhắc thêm ký hiệu tham chiếu (&) hoặc con trỏ (*) trong ngôn ngữ C."
+                ),
+            }
+            missing_dimensions = [k for k, passed in [("copy_vs_address", dim1), ("side_effect_on_original", dim2)] if not passed]
+            if is_pass:
+                feedback = "Giải thích xuất sắc và đầy đủ bản chất cơ chế truyền tham số!"
+            else:
+                feedback = "Bài giải thích còn thiếu: " + " ".join([dimension_feedback[k] for k in missing_dimensions])
 
         elif self.concept_id == "python_list_vs_tuple":
             has_list_mut = any(p in text for p in ["list", "danh sách"]) and any(p in text for p in ["mutable", "thay đổi"])
@@ -137,11 +151,25 @@ class Evaluator:
                 "syntax_and_methods": dim2,
                 "use_case_and_hashability": dim3,
             }
-            feedback = (
-                "Giải thích xuất sắc về tính chất Mutable của List và Immutable của Tuple!"
-                if is_pass
-                else "Bài giải thích cần nêu rõ tính biến đổi (mutable của list vs immutable của tuple) và cú pháp tương ứng."
-            )
+            dimension_feedback = {
+                "mutability_contrast": (
+                    "✓ Đã phân biệt tính biến đổi: List là mutable (thay đổi được), Tuple là immutable (bất biến)."
+                    if dim1 else "✗ Cần nêu rõ tính chất biến đổi: List có thể thay đổi (mutable), còn Tuple là bất biến (immutable)."
+                ),
+                "syntax_and_methods": (
+                    "✓ Đã phân biệt cú pháp dấu ngoặc [] vs () hoặc phương thức append."
+                    if dim2 else "✗ Cần nêu rõ cú pháp: List dùng ngoặc vuông [], Tuple dùng ngoặc tròn ()."
+                ),
+                "use_case_and_hashability": (
+                    "✓ Đã nêu trường hợp sử dụng (tối ưu bộ nhớ, hash key dictionary, an toàn dữ liệu)."
+                    if dim3 else "✗ Gợi ý: Có thể nêu thêm việc Tuple tối ưu bộ nhớ hoặc dùng làm key trong dictionary."
+                ),
+            }
+            missing_dimensions = [k for k, passed in [("mutability_contrast", dim1), ("syntax_and_methods", dim2)] if not passed]
+            if is_pass:
+                feedback = "Giải thích xuất sắc về tính chất Mutable của List và Immutable của Tuple!"
+            else:
+                feedback = "Bài giải thích còn thiếu: " + " ".join([dimension_feedback[k] for k in missing_dimensions])
 
         else:
             # Default: OOP Overloading vs Overriding
@@ -161,11 +189,27 @@ class Evaluator:
                 "method_signature": has_signature,
                 "polymorphism_type": has_polymorphism_type,
             }
-            feedback = (
-                "Giải thích xuất sắc và đầy đủ bản chất!"
-                if is_pass
-                else "Bài giải thích còn thiếu khía cạnh phạm vi lớp hoặc tính chất của tham số. Hãy bổ sung đầy đủ cả 2 điểm."
-            )
+            dimension_feedback = {
+                "scope_and_inheritance": (
+                    "✓ Đã phân biệt phạm vi: Overloading trong cùng 1 lớp; Overriding đòi hỏi kế thừa lớp cha - lớp con."
+                    if has_scope else "✗ Cần phân biệt rõ phạm vi: Overloading trong cùng một lớp; Overriding trong quan hệ kế thừa (lớp cha - lớp con)."
+                ),
+                "method_signature": (
+                    "✓ Đã phân biệt đúng chữ ký hàm: Overloading khác tham số; Overriding cùng tên và cùng tham số."
+                    if has_signature else "✗ Cần phân biệt rõ chữ ký hàm: Overloading khác nhau về tham số; Overriding giống hệt về tên và tham số."
+                ),
+                "polymorphism_type": (
+                    "✓ Đã nêu rõ thời điểm liên kết: Overloading là đa hình biên dịch (compile-time); Overriding là đa hình thực thi (runtime)."
+                    if has_polymorphism_type else "✗ Gợi ý: Có thể bổ sung thêm tính chất đa hình tĩnh (compile-time) vs đa hình động (runtime)."
+                ),
+            }
+            missing_dimensions = [k for k, passed in [("scope_and_inheritance", has_scope), ("method_signature", has_signature)] if not passed]
+            if is_pass:
+                feedback = "Giải thích xuất sắc và đầy đủ bản chất!"
+            else:
+                feedback = "Bài giải thích còn thiếu: " + " ".join([dimension_feedback[k] for k in missing_dimensions])
+
+        score_pct = round(sum(1 for v in rubric_scores.values() if v) / len(rubric_scores) * 100, 1)
 
         return EvaluationOutcome(
             misconception_repaired=True,
@@ -174,4 +218,7 @@ class Evaluator:
             confidence=0.9 if is_pass else 0.5,
             feedback=feedback,
             rubric_scores=rubric_scores,
+            dimension_feedback=dimension_feedback,
+            missing_dimensions=missing_dimensions,
+            score_percentage=score_pct,
         )

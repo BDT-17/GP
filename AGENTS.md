@@ -64,9 +64,11 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 - `tests/test_database.py`: SQLite persistence for learner profile (XP/gems/streak), session logs, and chat history.
 - `tests/test_llm_integration.py`: Multi-provider LLM client (Gemini/Groq/OpenAI/Ollama) with Socratic prompting and graceful fallback.
 - `tests/test_adversarial.py`: Prompt injection defense, role hijacking resistance, and completion integrity (MVP Scenarios 6 & 7).
+- `tests/test_rubric_and_semantic_rag.py`: Multi-criteria rubric evaluation, diagnostic TA feedback, and Semantic Vector RAG with cosine similarity.
 
 ## Change log
 
+- 2026-10-18: Implemented Multi-Criteria Rubric Scoring (`Evaluator`), diagnostic TA Socratic feedback, and Semantic Vector RAG (`CurriculumRetriever`) with TF-IDF cosine similarity and curriculum gating (45 tests, 92% coverage).
 - 2026-10-18: Implemented AdversarialGuard (Prompt Injection & Role Hijacking defense) and Instructor Audit Dashboard with real-time session observability and chat transcripts (39 tests, 92% coverage).
 - 2026-10-18: Implemented Interactive Code Misconception Block and Runner Simulator (`/api/code/run`), dynamic code snippets across courses (Java, C, Python), and frontend interactive execution console (32 tests, 91% coverage).
 - 2026-10-18: Integrated Multi-Provider LLM Client (`src/mascot/llm_client.py`) supporting Gemini, Groq, OpenAI, and Ollama with Socratic hint prompting and offline fallback (30 tests, 91% coverage).

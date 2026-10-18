@@ -12,6 +12,7 @@ from mascot.course_manager import CourseManager
 from mascot.evaluator import Evaluator
 from mascot.models import (
     Citation,
+    EvaluationOutcome,
     InstructorSummary,
     Role,
     SessionEvent,
@@ -69,6 +70,7 @@ class MascotOrchestrator:
         self.terminal_reason: str = ""
         self.citations_used: List[Citation] = []
         self.security_alerts: List[Dict[str, Any]] = []
+        self.last_rubric_evaluation: Optional[EvaluationOutcome] = None
 
         self.event_log: List[SessionEvent] = []
         self.conversation_history: List[Dict[str, str]] = []
@@ -129,6 +131,7 @@ class MascotOrchestrator:
         self.terminal_reason = ""
         self.citations_used = []
         self.security_alerts = []
+        self.last_rubric_evaluation = None
 
         self.event_log = []
         self.conversation_history = []
@@ -256,14 +259,17 @@ class MascotOrchestrator:
                     )
 
         else:
-            # Stage B: Evaluating Explain-Back (AC6)
+            # Stage B: Evaluating Explain-Back (AC6, P3)
             eval_outcome = self.evaluator.evaluate_explain_back(learner_text)
+            self.last_rubric_evaluation = eval_outcome
             self._log_event(
                 event_type="assessment",
                 metadata={
                     "stage": "explain_back",
                     "passed": eval_outcome.explain_back_passed,
                     "scores": eval_outcome.rubric_scores,
+                    "missing_dimensions": eval_outcome.missing_dimensions,
+                    "score_percentage": eval_outcome.score_percentage,
                 },
             )
 
@@ -280,7 +286,10 @@ class MascotOrchestrator:
                 )
             else:
                 self.active_role = Role.TA
-                response_text = self.ta.prompt_explain_back_retry(learner_input=learner_text)
+                response_text = self.ta.prompt_explain_back_retry(
+                    learner_input=learner_text,
+                    rubric_feedback=eval_outcome.feedback,
+                )
 
         # Log and record single speaking turn (AC5)
         self._log_event(event_type="response_generated", role=self.active_role.value, content=response_text)
@@ -294,6 +303,17 @@ class MascotOrchestrator:
 
     def generate_instructor_summary(self) -> InstructorSummary:
         """Generates concise instructor-facing summary (AC7)."""
+        rubric_assessment = None
+        if self.last_rubric_evaluation:
+            rubric_assessment = {
+                "passed": self.last_rubric_evaluation.explain_back_passed,
+                "scores": self.last_rubric_evaluation.rubric_scores,
+                "dimension_feedback": self.last_rubric_evaluation.dimension_feedback,
+                "missing_dimensions": self.last_rubric_evaluation.missing_dimensions,
+                "score_percentage": self.last_rubric_evaluation.score_percentage,
+                "feedback": self.last_rubric_evaluation.feedback,
+            }
+
         return InstructorSummary(
             session_id=self.session_id,
             course_id=self.course_id,
@@ -309,6 +329,7 @@ class MascotOrchestrator:
             terminal_reason=self.terminal_reason or "Session in progress or ended.",
             citations_used=[c.source_location for c in self.citations_used],
             security_alerts=self.security_alerts,
+            rubric_assessment=rubric_assessment,
             created_at=self.event_log[0].timestamp if self.event_log else "",
         )
 

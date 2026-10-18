@@ -149,3 +149,4 @@ class AdversarialGuard:
         # Neutralize system keywords if present
         cleaned = re.sub(r"(?i)(system prompt|assistant instruction|ignore all)", "[filtered]", cleaned)
         return cleaned
+

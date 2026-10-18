@@ -119,6 +119,14 @@ async def get_session():
         "profile": profile,
         "code_snippet": orchestrator.scenario.get("code_snippet"),
         "security_alerts": orchestrator.security_alerts,
+        "rubric_assessment": {
+            "scores": orchestrator.last_rubric_evaluation.rubric_scores,
+            "dimension_feedback": orchestrator.last_rubric_evaluation.dimension_feedback,
+            "missing_dimensions": orchestrator.last_rubric_evaluation.missing_dimensions,
+            "score_percentage": orchestrator.last_rubric_evaluation.score_percentage,
+            "feedback": orchestrator.last_rubric_evaluation.feedback,
+            "passed": orchestrator.last_rubric_evaluation.explain_back_passed,
+        } if orchestrator.last_rubric_evaluation else None,
     }
 
 
