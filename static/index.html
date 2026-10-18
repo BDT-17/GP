@@ -2896,7 +2896,8 @@
         const elHints = document.getElementById('inst-metric-socratic-hints');
         if (elHints) {
           const escText = curr.escalated_to_lecturer ? '1 (Leo thang)' : '0';
-          elHints.innerText = `${curr.hint_count || 0} / ${escText}`;
+          const pushbackText = curr.peer_pushback_count ? ` · Peer: ${curr.peer_pushback_count}` : '';
+          elHints.innerText = `${curr.hint_count || 0} / ${escText}${pushbackText}`;
         }
 
         const elSec = document.getElementById('inst-metric-security-alerts');

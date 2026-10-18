@@ -25,7 +25,8 @@ class Evaluator:
         # Check if user is asking for help or is stuck
         help_patterns = [
             "gợi ý", "chịu", "không biết", "giúp", "bế tắc", "đáp án là gì",
-            "cho đáp án", "nói luôn đi", "hint", "help"
+            "cho đáp án", "nói luôn đi", "hint", "help",
+            "chưa rõ", "chưa hiểu", "giải thích thêm", "giải thích giúp", "không rõ"
         ]
         needs_help = any(p in text for p in help_patterns)
 

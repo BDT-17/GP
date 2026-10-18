@@ -78,6 +78,7 @@ class InstructorSummary(BaseModel):
     scenario_id: str
     learner_attempts: int
     hint_count: int
+    peer_pushback_count: int = 0
     escalated_to_lecturer: bool
     misconception_repaired: bool
     explain_back_passed: bool

@@ -63,6 +63,7 @@ class MascotOrchestrator:
         self.active_role: Role = Role.PEER
         self.learner_attempts: int = 0
         self.hint_count: int = 0
+        self.peer_pushback_count: int = 0
         self.escalation_count: int = 0
         self.misconception_repaired: bool = False
         self.explain_back_passed: bool = False
@@ -124,6 +125,7 @@ class MascotOrchestrator:
         self.active_role = Role.PEER
         self.learner_attempts = 0
         self.hint_count = 0
+        self.peer_pushback_count = 0
         self.escalation_count = 0
         self.misconception_repaired = False
         self.explain_back_passed = False
@@ -137,6 +139,17 @@ class MascotOrchestrator:
         self.conversation_history = []
 
         return self.start_session()
+
+    def _is_challenging_peer(self, text: str) -> bool:
+        """Determines if the learner is directly challenging or debating the peer student."""
+        t = text.lower()
+        challenge_markers = [
+            "sai rồi", "nhầm rồi", "không phải đâu", "không đúng", "khác nhau",
+            "bảo ơi", "cậu nhầm", "bạn nhầm", "chưa đúng", "không giống nhau",
+            "không giống", "sai bét", "sai hoàn toàn", "hai cái khác",
+            "overloading khác", "overriding khác", "tham trị khác", "list khác"
+        ]
+        return any(marker in t for marker in challenge_markers)
 
     def process_turn(self, learner_text: str) -> Dict[str, Any]:
         """Processes one learner turn.
@@ -235,6 +248,14 @@ class MascotOrchestrator:
                 response_text = self.peer.acknowledge_repair(
                     self.scenario.get("concept_title"), learner_input=learner_text
                 )
+            elif not needs_help and self.peer_pushback_count < 1 and self._is_challenging_peer(learner_text):
+                # AC5: Peer deliberates / pushes back before conceding or before TA steps in
+                self.peer_pushback_count += 1
+                self.active_role = Role.PEER
+                response_text = self.peer.pushback(
+                    learner_input=learner_text,
+                    concept_title=self.scenario.get("concept_title"),
+                )
             else:
                 # Needs support or failed attempt
                 self.hint_count += 1
@@ -289,6 +310,9 @@ class MascotOrchestrator:
                 response_text = self.ta.prompt_explain_back_retry(
                     learner_input=learner_text,
                     rubric_feedback=eval_outcome.feedback,
+                    missing_dimensions=eval_outcome.missing_dimensions,
+                    dimension_feedback=eval_outcome.dimension_feedback,
+                    concept_title=self.scenario.get("concept_title"),
                 )
 
         # Log and record single speaking turn (AC5)
@@ -322,6 +346,7 @@ class MascotOrchestrator:
             scenario_id=self.scenario_id,
             learner_attempts=self.learner_attempts,
             hint_count=self.hint_count,
+            peer_pushback_count=self.peer_pushback_count,
             escalated_to_lecturer=self.escalation_count > 0,
             misconception_repaired=self.misconception_repaired,
             explain_back_passed=self.explain_back_passed,

@@ -65,9 +65,11 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 - `tests/test_llm_integration.py`: Multi-provider LLM client (Gemini/Groq/OpenAI/Ollama) with Socratic prompting and graceful fallback.
 - `tests/test_adversarial.py`: Prompt injection defense, role hijacking resistance, and completion integrity (MVP Scenarios 6 & 7).
 - `tests/test_rubric_and_semantic_rag.py`: Multi-criteria rubric evaluation, diagnostic TA feedback, and Semantic Vector RAG with cosine similarity.
+- `tests/test_peer_and_rubric_llm.py`: Peer deliberation/pushback, turn arbitration, and LLM rubric-diagnostic Socratic prompting.
 
 ## Change log
 
+- 2026-10-18: Implemented Peer Pushback & Deliberation (`PeerAgent.pushback`), LLM Socratic Prompting with Rubric Missing Dimensions (`TeachingAssistantAgent.prompt_explain_back_retry`), and audit tracking (51 tests, 92% coverage).
 - 2026-10-18: Implemented Multi-Criteria Rubric Scoring (`Evaluator`), diagnostic TA Socratic feedback, and Semantic Vector RAG (`CurriculumRetriever`) with TF-IDF cosine similarity and curriculum gating (45 tests, 92% coverage).
 - 2026-10-18: Implemented AdversarialGuard (Prompt Injection & Role Hijacking defense) and Instructor Audit Dashboard with real-time session observability and chat transcripts (39 tests, 92% coverage).
 - 2026-10-18: Implemented Interactive Code Misconception Block and Runner Simulator (`/api/code/run`), dynamic code snippets across courses (Java, C, Python), and frontend interactive execution console (32 tests, 91% coverage).
