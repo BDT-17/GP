@@ -408,22 +408,25 @@
     <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between flex-shrink-0">
       <!-- Left: Back Button + Logo -->
       <div class="flex items-center space-x-3.5">
-        <button onclick="switchView('semester')" title="Quay lại chọn học kỳ" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+        <button onclick="switchView('home')" title="Quay lại Lộ trình học tập" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
           <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('home')">
           <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
           <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
         </div>
       </div>
 
-      <!-- Right Level & Semester Indicator Badge -->
-      <div class="relative">
+      <!-- Right Level & Semester Indicator Badge + Quick Close -->
+      <div class="flex items-center space-x-2.5">
         <span id="subjects-badge" class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
           B1 • KÌ 1 (ĐẠI CƯƠNG)
         </span>
+        <button onclick="switchView('home')" class="px-3.5 py-1.5 rounded-full bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition shadow-sm" title="Quay lại học tập">
+          ✕ Đóng
+        </button>
       </div>
     </header>
 
@@ -617,7 +620,7 @@
       </div>
 
       <!-- Navigation Menu (Exact layout, icons, font & active cyan border from Image 2) -->
-      <!-- Navigation Menu (5 Standardized Core Pedagogical Items) -->
+      <!-- Navigation Menu (Core Pedagogical Items with Course Selection) -->
       <nav class="space-y-2 text-[14px] font-black uppercase tracking-wider">
         <!-- 1. LEARN (Học tập & Lộ trình môn học) -->
         <button id="nav-learn" onclick="switchView('home')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition">
@@ -629,7 +632,15 @@
           <span class="leading-none pt-0.5">HỌC TẬP</span>
         </button>
 
-        <!-- 2. CLASSROOM (Lớp học mô phỏng đa tác nhân - Active Tutoring) -->
+        <!-- 2. COURSES (Chọn môn học: CS102, ICT1.002, CS105...) -->
+        <button id="nav-subjects" onclick="switchView('subjects')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition" title="Chọn môn học (CS102, ICT1.002, CS105...)">
+          <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
+            📚
+          </div>
+          <span class="leading-none pt-0.5">CHỌN MÔN</span>
+        </button>
+
+        <!-- 3. CLASSROOM (Lớp học mô phỏng đa tác nhân - Active Tutoring) -->
         <button id="nav-classroom" onclick="switchView('exercise')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             🎓
@@ -637,7 +648,7 @@
           <span class="leading-none pt-0.5">LỚP HỌC</span>
         </button>
 
-        <!-- 3. CURRICULUM (Giáo trình VLearn & Cơ sở tri thức) -->
+        <!-- 4. CURRICULUM (Giáo trình VLearn & Cơ sở tri thức) -->
         <button id="nav-curriculum" onclick="toggleSlideModal()" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             📖
@@ -645,7 +656,7 @@
           <span class="leading-none pt-0.5">GIÁO TRÌNH</span>
         </button>
 
-        <!-- 4. INSTRUCTOR (Thanh tra Sư phạm, Radar Rubric & Audit) -->
+        <!-- 5. INSTRUCTOR (Thanh tra Sư phạm, Radar Rubric & Audit) -->
         <button id="nav-instructor" onclick="switchView('instructor')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -659,7 +670,7 @@
           <span class="leading-none pt-0.5">GIẢNG VIÊN</span>
         </button>
 
-        <!-- 5. PROFILE (Hồ sơ học viên & Chứng chỉ Mastery) -->
+        <!-- 6. PROFILE (Hồ sơ học viên & Chứng chỉ Mastery) -->
         <button id="nav-profile" onclick="switchView('profile')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
@@ -674,9 +685,12 @@
 
     <!-- Bottom Promo Card (Matching the Chess Card in Image 2) -->
     <div class="border-2 border-[#283842] rounded-2xl p-4 bg-[#142229] mb-2">
-      <div class="flex items-center space-x-2 text-[11px] font-black uppercase text-[#8598a0] mb-1">
-        <span>☕</span>
-        <span>MASCOT · CS102</span>
+      <div class="flex items-center justify-between text-[11px] font-black uppercase text-[#8598a0] mb-1">
+        <div class="flex items-center space-x-1.5">
+          <span>☕</span>
+          <span id="sidebar-course-tag">CS102 · OOP</span>
+        </div>
+        <button onclick="switchView('subjects')" class="text-[#1cb0f6] hover:underline text-[10px] font-bold">Đổi môn</button>
       </div>
       <div class="font-extrabold text-white text-xs mb-3 leading-snug">
         Lớp học chủ động cùng Trợ giảng AI
@@ -1598,6 +1612,7 @@
       const profileView = document.getElementById('view-profile');
       const instructorView = document.getElementById('view-instructor');
       const navLearn = document.getElementById('nav-learn');
+      const navSubjects = document.getElementById('nav-subjects');
       const navClassroom = document.getElementById('nav-classroom');
       const navCurriculum = document.getElementById('nav-curriculum');
       const navInstructor = document.getElementById('nav-instructor');
@@ -1639,6 +1654,7 @@
       if (profileView) profileView.classList.add('hidden');
       if (instructorView) instructorView.classList.add('hidden');
       if (navLearn) navLearn.className = inactiveClass;
+      if (navSubjects) navSubjects.className = inactiveClass;
       if (navClassroom) navClassroom.className = inactiveClass;
       if (navCurriculum) navCurriculum.className = inactiveClass;
       if (navProfile) navProfile.className = inactiveClass;
@@ -2385,6 +2401,9 @@
       } catch (err) {
         console.warn("Could not switch course on backend:", err);
       }
+
+      const sideTag = document.getElementById('sidebar-course-tag');
+      if (sideTag) sideTag.innerText = `${selectedSubjectCode} · ${name}`;
 
       switchView('home');
     }
