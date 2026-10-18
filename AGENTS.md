@@ -61,9 +61,11 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 - `tests/test_orchestrator.py`: Multi-agent orchestration, Socratic hints, lecturer escalation, completion integrity.
 - `tests/test_api.py`: FastAPI server endpoints (`/`, `/api/session`, `/api/chat`, `/api/summary`, `/api/reset`).
 - `tests/test_course_modularization.py`: Modular course corpora and scenario switching (CS102, ICT1.002, CS105).
+- `tests/test_database.py`: SQLite persistence for learner profile (XP/gems/streak), session logs, and chat history.
 
 ## Change log
 
+- 2026-10-18: Implemented SQLite Database Persistence (`src/mascot/database.py`), learner profile stats (XP, gems, streak), session history logging, and API integration (23 tests, 96% coverage).
 - 2026-10-18: Implemented Course & Scenario Modularization (`data/courses/`), dynamic CourseManager, multi-concept Evaluator, and integrated frontend subject switching (19 tests, 95% coverage).
 - 2026-10-17: Configured comprehensive CI pipeline (`ci.yml`) with pip caching, flake8 linting, mandatory pytest suite (15 tests, 96% coverage) and FastAPI integration tests.
 - 2026-10-13: Added Python 3.10 GitHub Actions CI for pushes and pull requests

@@ -68,3 +68,4 @@ class CourseManager:
         default_scenario = DATA_DIR / "scenario.json"
         default_corpus = DATA_DIR / "corpus.json"
         return default_scenario, default_corpus
+

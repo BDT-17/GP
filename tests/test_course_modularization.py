@@ -104,3 +104,4 @@ def test_api_course_endpoints():
         res_session = client.get("/api/session")
         assert res_session.status_code == 200
         assert res_session.json()["course_id"] == "ICT1.002"
+

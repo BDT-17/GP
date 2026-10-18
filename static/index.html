@@ -911,8 +911,8 @@
         <!-- User Info Details -->
         <div class="flex items-start justify-between pb-4 border-b border-[#202f36]">
           <div>
-            <h2 class="text-2xl font-black text-white leading-tight">Quoc Anh</h2>
-            <div class="text-sm font-bold text-[#8598a0]">QuocAnh162480</div>
+            <h2 id="profile-name" class="text-2xl font-black text-white leading-tight">Quoc Anh</h2>
+            <div id="profile-user" class="text-sm font-bold text-[#8598a0]">QuocAnh162480</div>
             <div class="text-xs text-[#8598a0] mt-0.5">Joined September 2024</div>
             <div class="text-xs font-black text-[#1cb0f6] mt-2 space-x-3">
               <span class="hover:underline cursor-pointer">0 Following</span>
@@ -938,7 +938,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-slate-500">🔥</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">0</div>
+                <div id="profile-streak" class="text-lg font-black text-white leading-none">1</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Day streak</div>
               </div>
             </div>
@@ -947,7 +947,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-amber-400">⚡</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">568</div>
+                <div id="profile-xp" class="text-lg font-black text-white leading-none">568</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Total XP</div>
               </div>
             </div>
@@ -956,7 +956,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-slate-300">🛡️</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">Silver</div>
+                <div id="profile-league" class="text-lg font-black text-white leading-none">Silver</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Current league</div>
               </div>
             </div>
@@ -965,7 +965,7 @@
             <div class="p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
               <span class="text-2xl text-amber-400">🥇</span>
               <div>
-                <div class="text-lg font-black text-white leading-none">1</div>
+                <div id="profile-top3" class="text-lg font-black text-white leading-none">1</div>
                 <div class="text-xs font-bold text-[#8598a0] mt-1">Top 3 finishes</div>
               </div>
             </div>
@@ -2287,10 +2287,32 @@
       const title = document.getElementById('exercise-title');
       const badge = document.getElementById('badge-text');
 
+      // Update learner profile stats from SQLite persistence
+      if (sessionData && sessionData.profile) {
+        const p = sessionData.profile;
+        const elStreak = document.getElementById('home-streak');
+        if (elStreak) elStreak.innerText = p.streak;
+        const elGems = document.getElementById('home-gems');
+        if (elGems) elGems.innerText = p.gems;
+
+        const pStreak = document.getElementById('profile-streak');
+        if (pStreak) pStreak.innerText = p.streak;
+        const pXp = document.getElementById('profile-xp');
+        if (pXp) pXp.innerText = p.xp;
+        const pLeague = document.getElementById('profile-league');
+        if (pLeague) pLeague.innerText = p.league;
+        const pTop3 = document.getElementById('profile-top3');
+        if (pTop3) pTop3.innerText = p.top3_finishes;
+        const pName = document.getElementById('profile-name');
+        if (pName) pName.innerText = p.display_name;
+        const pUser = document.getElementById('profile-user');
+        if (pUser) pUser.innerText = p.username;
+      }
+
       if (sessionData.terminal_status === 'completed') {
         badge.innerText = "HOÀN THÀNH XUẤT SẮC";
         badge.className = "text-[#58cc02]";
-        title.innerText = "Chúc mừng bạn đã chinh phục bài học!";
+        title.innerText = "Chúc mừng bạn đã chinh phục bài học! (+50 XP • +15 Gems)";
       } else if (sessionData.misconception_repaired) {
         badge.innerText = "BƯỚC 2: GIẢI THÍCH LẠI (EXPLAIN-BACK)";
         badge.className = "text-[#ffc800]";
@@ -2393,8 +2415,8 @@
         icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
         icon.innerText = "✓";
         title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Chính xác tuyệt đối!";
-        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric!";
+        title.innerText = "Chính xác tuyệt đối! (+50 XP • +15 Gems)";
+        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric! Điểm thưởng đã được cộng vào tài khoản.";
       } else if (state.misconception_repaired && role === 'peer') {
         playDuoSound('correct');
         footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";
