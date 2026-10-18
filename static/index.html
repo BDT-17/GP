@@ -714,6 +714,31 @@
       <!-- Center Path Area -->
       <div class="flex-1 flex flex-col items-center py-6 px-4 max-w-2xl mx-auto w-full">
         
+        <!-- Course Selector Bar & Quick Guide Trigger -->
+        <div class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-xl flex-shrink-0">
+              📚
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-[#8598a0]">Môn học hiện tại:</div>
+              <div class="text-sm font-black text-white flex items-center space-x-2">
+                <span id="home-course-name">CS102 • Lập trình Hướng đối tượng</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+            <button onclick="switchView('subjects')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] hover:border-[#1cb0f6] text-xs font-black uppercase text-[#1cb0f6] transition flex items-center space-x-1 shadow-sm" title="Chọn môn học khác (C, Python, Java)">
+              <span>Đổi môn</span>
+              <span>▾</span>
+            </button>
+            <button onclick="openGuideModal()" class="px-3 py-1.5 rounded-xl bg-[#58cc02]/20 hover:bg-[#58cc02]/30 border border-[#58cc02]/50 text-xs font-black uppercase text-[#58cc02] transition flex items-center space-x-1 shadow-sm" title="Xem hướng dẫn cách sử dụng và luồng học">
+              <span>❓</span>
+              <span>Hướng dẫn</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Unit Header Banner (Section 1, Unit 2) -->
         <div class="w-full bg-[#00cd9c] text-white rounded-2xl p-5 mb-8 shadow-lg flex items-center justify-between border-b-4 border-[#00a880]">
           <div>
@@ -1297,8 +1322,16 @@
         </div>
 
         <!-- Right Quick Actions & Hearts -->
-        <div class="flex items-center space-x-3 ml-3">
-          <button onclick="toggleSlideModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Mở Sổ tay giáo trình VLearn">
+        <div class="flex items-center space-x-2 sm:space-x-2.5 ml-2">
+          <button onclick="switchView('subjects')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Chọn môn học khác">
+            <span>📚</span>
+            <span class="hidden sm:inline">Đổi môn</span>
+          </button>
+          <button onclick="openGuideModal()" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-emerald-400 transition shadow-sm" title="Xem hướng dẫn cách học">
+            <span>❓</span>
+            <span class="hidden sm:inline">Hướng dẫn</span>
+          </button>
+          <button onclick="toggleSlideModal()" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Mở Sổ tay giáo trình VLearn">
             <span>📖</span>
             <span class="hidden sm:inline">Giáo Trình</span>
           </button>
@@ -1555,11 +1588,103 @@
     </div>
   </div>
 
+  <!-- ======================================================== -->
+  <!-- 5. QUICK USER GUIDE & ONBOARDING MODAL                    -->
+  <!-- ======================================================== -->
+  <div id="guide-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-[#18262d] rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border-2 border-[#37464f] space-y-6">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-[#2b3940]">
+        <div class="flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-2xl bg-[#58cc02]/20 border border-[#58cc02]/40 flex items-center justify-center text-2xl shadow-sm">
+            🦉
+          </div>
+          <div>
+            <h3 class="font-black text-lg text-white">Hướng dẫn Học cùng MASCOT</h3>
+            <p class="text-xs text-[#8598a0]">Lớp học Đa tác nhân Chữa ngộ nhận (Active Tutoring)</p>
+          </div>
+        </div>
+        <button onclick="closeGuideModal()" class="text-2xl text-[#8598a0] hover:text-white font-black leading-none" title="Đóng">✕</button>
+      </div>
+
+      <!-- 3-Step Pedagogical Cards -->
+      <div class="flex-1 overflow-y-auto space-y-3.5 chat-scroll pr-1">
+        
+        <!-- Step 1 Card: Course Selection -->
+        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-2xl flex-shrink-0">
+            📚
+          </div>
+          <div class="space-y-1">
+            <div class="text-xs font-black uppercase text-[#1cb0f6] tracking-wider">Bước 1: Chọn môn học mong muốn</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Bạn có thể tự do đổi giữa các môn <strong>Java (CS102)</strong>, <strong>C (ICT1.002)</strong>, <strong>Python (CS105)</strong> bằng nút <strong>"CHỌN MÔN"</strong> ở thanh bên trái hoặc thanh đầu trang. Hệ thống tự động nạp bài giảng và ngữ cảnh tương ứng.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 Card: Peer Misconception & Code Playground -->
+        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl flex-shrink-0">
+            💻
+          </div>
+          <div class="space-y-1">
+            <div class="text-xs font-black uppercase text-amber-400 tracking-wider">Bước 2: Cùng bạn Bảo sửa ngộ nhận (Code Playground)</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Bạn học Bảo đang phát biểu một hiểu lầm sai lệch. Bạn hãy xem đoạn code của Bảo, chuyển sang tab <strong>"✏️ Sửa & Kiểm tra Fix"</strong> để trực tiếp gõ sửa và bấm <strong>"⚡ Chạy thử code đã sửa"</strong> để kiểm chứng thực tế.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 Card: Explain-back & Socratic TA -->
+        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-[#58cc02]/20 border border-[#58cc02]/40 flex items-center justify-center text-2xl flex-shrink-0">
+            🎙️
+          </div>
+          <div class="space-y-1">
+            <div class="text-xs font-black uppercase text-[#58cc02] tracking-wider">Bước 3: Giải thích lại bằng lời của bạn (Explain-Back)</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Sau khi chỉ ra lỗi sai, bạn hãy giải thích lại cho Bảo (bằng cách gõ phím hoặc bấm <strong>🎙️ Micro</strong> để nói). <strong>Thầy Hùng (Trợ giảng Socratic)</strong> sẽ đánh giá theo thang Rubric đa chiều, chỉ gợi ý định hướng chứ không giải hộ đáp án!
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-[#2b3940] flex items-center justify-between">
+        <label class="flex items-center space-x-2 text-xs text-[#8598a0] cursor-pointer">
+          <input type="checkbox" id="guide-dont-show-again" class="rounded bg-[#1b2b32] border-[#37464f] text-[#58cc02] focus:ring-0">
+          <span>Không tự động hiện lại</span>
+        </label>
+        <button onclick="closeGuideModal()" class="px-6 py-3 duo-btn-green rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg">
+          ĐÃ HIỂU • BẮT ĐẦU HỌC NGAY
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     let currentView = 'home';
     let sessionData = {};
     let isWaitingNext = false;
     let isAudioMuted = false;
+
+    function openGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      const dontShow = document.getElementById('guide-dont-show-again');
+      if (dontShow && dontShow.checked) {
+        localStorage.setItem('mascot_guide_seen', 'true');
+      }
+      if (modal) modal.classList.add('hidden');
+    }
 
     // Web Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2404,6 +2529,8 @@
 
       const sideTag = document.getElementById('sidebar-course-tag');
       if (sideTag) sideTag.innerText = `${selectedSubjectCode} · ${name}`;
+      const homeCourseName = document.getElementById('home-course-name');
+      if (homeCourseName) homeCourseName.innerText = `${selectedSubjectCode} • ${name}`;
 
       switchView('home');
     }
@@ -2938,12 +3065,21 @@
           if (sideTag) sideTag.innerText = `${sessionData.course_id} · ${sessionData.concept_id || 'OOP'}`;
           const unitLabel = document.getElementById('unit-header-label');
           if (unitLabel) unitLabel.innerText = `${sessionData.course_id.toUpperCase()}, BÀI 2`;
+          const homeCourseName = document.getElementById('home-course-name');
+          if (homeCourseName) homeCourseName.innerText = `${sessionData.course_id} • ${sessionData.concept_title || 'Lập trình'}`;
         }
         updateWordBank(sessionData.course_id);
         renderCodeSnippet(sessionData.code_snippet);
         renderChatFeed(sessionData.conversation_history);
         // Direct entry to main learning workspace without initial onboarding gate
         switchView('home');
+
+        // Check if user has seen onboarding guide, if not, auto-open once
+        if (!localStorage.getItem('mascot_guide_seen')) {
+          setTimeout(() => {
+            openGuideModal();
+          }, 450);
+        }
       } catch (e) {
         console.error("Init error:", e);
         switchView('home');
