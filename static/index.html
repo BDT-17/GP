@@ -227,17 +227,23 @@
     
     <!-- Top Selection Header -->
     <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
-      <!-- Left Logo: Owl + Mascot (click returns to landing) -->
-      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
-        <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
-        <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+      <!-- Left Logo: Owl + Mascot + Back Button -->
+      <div class="flex items-center space-x-3.5">
+        <button onclick="switchView('home')" title="Quay lại Lộ trình học tập" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+          <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('home')">
+          <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
+          <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+        </div>
       </div>
 
-      <!-- Right Language Selector -->
-      <div class="relative">
-        <button class="flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#8598a0] hover:text-white transition">
-          <span>SITE LANGUAGE: ENGLISH</span>
-          <span class="text-[10px]">▼</span>
+      <!-- Right Close Button -->
+      <div class="flex items-center space-x-2.5">
+        <button onclick="switchView('home')" class="px-3.5 py-1.5 rounded-full bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition shadow-sm" title="Quay lại học tập">
+          ✕ Đóng
         </button>
       </div>
     </header>
@@ -246,9 +252,12 @@
     <main class="w-full max-w-4xl mx-auto px-6 py-6 flex flex-col items-center justify-center flex-1 my-auto">
       
       <!-- Big Centered Title -->
-      <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-10 tracking-tight">
-        I want to learn...
+      <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-2 tracking-tight">
+        Chọn khối kiến thức
       </h1>
+      <p class="text-sm font-bold text-[#8598a0] text-center mb-8">
+        Bước 1/3: Chọn khối kiến thức (B0, B1, B2, B3) bạn muốn học
+      </p>
 
       <!-- 4 Course Level Blocks Grid (B0, B1, B2, B3) -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-5 w-full">
@@ -327,22 +336,25 @@
     <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
       <!-- Left: Back Button + Logo -->
       <div class="flex items-center space-x-3.5">
-        <button onclick="switchView('selection')" title="Quay lại chọn học phần" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+        <button onclick="switchView('selection')" title="Quay lại chọn khối kiến thức" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
           <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('home')">
           <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
           <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
         </div>
       </div>
 
-      <!-- Right Level Indicator Badge -->
-      <div class="relative">
+      <!-- Right Level Indicator Badge + Close Button -->
+      <div class="flex items-center space-x-2.5">
         <span id="semester-level-badge" class="px-3.5 py-1.5 rounded-full bg-[#18262d] border-2 border-[#2b3940] text-xs font-black uppercase tracking-wider text-[#1cb0f6] shadow-sm">
           B1 - ĐẠI CƯƠNG KHOA HỌC TỰ NHIÊN
         </span>
+        <button onclick="switchView('home')" class="px-3.5 py-1.5 rounded-full bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition shadow-sm" title="Quay lại học tập">
+          ✕ Đóng
+        </button>
       </div>
     </header>
 
@@ -353,8 +365,8 @@
       <h1 class="text-3xl md:text-4xl font-black text-white text-center mb-2 tracking-tight">
         Chọn học kỳ
       </h1>
-      <p id="semester-subtitle" class="text-sm md:text-base font-bold text-[#8598a0] text-center mb-10">
-        Đại cương khoa học tự nhiên
+      <p id="semester-subtitle" class="text-sm font-bold text-[#8598a0] text-center mb-8">
+        Bước 2/3: Chọn Kì 1 hoặc Kì 2 để hiển thị các môn học
       </p>
 
       <!-- 2 Semester Blocks Grid (Kì 1 & Kì 2) -->
@@ -408,7 +420,7 @@
     <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between flex-shrink-0">
       <!-- Left: Back Button + Logo -->
       <div class="flex items-center space-x-3.5">
-        <button onclick="switchView('home')" title="Quay lại Lộ trình học tập" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
+        <button onclick="switchView('semester')" title="Quay lại chọn học kỳ" class="w-10 h-10 rounded-2xl bg-[#18262d] border-2 border-[#2b3940] hover:border-[#1cb0f6] hover:bg-[#20313a] flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm group">
           <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
           </svg>
@@ -632,8 +644,8 @@
           <span class="leading-none pt-0.5">HỌC TẬP</span>
         </button>
 
-        <!-- 2. COURSES (Chọn môn học: CS102, ICT1.002, CS105...) -->
-        <button id="nav-subjects" onclick="switchView('subjects')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition" title="Chọn môn học (CS102, ICT1.002, CS105...)">
+        <!-- 2. COURSES (Chọn môn học: B0, B1, B2, B3) -->
+        <button id="nav-subjects" onclick="switchView('selection')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition" title="Chọn khối kiến thức & môn học (B0, B1, B2, B3)">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             📚
           </div>
@@ -690,7 +702,7 @@
           <span>☕</span>
           <span id="sidebar-course-tag">CS102 · OOP</span>
         </div>
-        <button onclick="switchView('subjects')" class="text-[#1cb0f6] hover:underline text-[10px] font-bold">Đổi môn</button>
+        <button onclick="switchView('selection')" class="text-[#1cb0f6] hover:underline text-[10px] font-bold">Đổi môn</button>
       </div>
       <div class="font-extrabold text-white text-xs mb-3 leading-snug">
         Lớp học chủ động cùng Trợ giảng AI
@@ -728,7 +740,7 @@
             </div>
           </div>
           <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-            <button onclick="switchView('subjects')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] hover:border-[#1cb0f6] text-xs font-black uppercase text-[#1cb0f6] transition flex items-center space-x-1 shadow-sm" title="Chọn môn học khác (C, Python, Java)">
+            <button onclick="switchView('selection')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] hover:border-[#1cb0f6] text-xs font-black uppercase text-[#1cb0f6] transition flex items-center space-x-1 shadow-sm" title="Chọn môn học khác (C, Python, Java)">
               <span>Đổi môn</span>
               <span>▾</span>
             </button>
@@ -1323,7 +1335,7 @@
 
         <!-- Right Quick Actions & Hearts -->
         <div class="flex items-center space-x-2 sm:space-x-2.5 ml-2">
-          <button onclick="switchView('subjects')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Chọn môn học khác">
+          <button onclick="switchView('selection')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Chọn khối kiến thức & môn học (B0, B1, B2, B3)">
             <span>📚</span>
             <span class="hidden sm:inline">Đổi môn</span>
           </button>
@@ -1832,7 +1844,7 @@
       const badge = document.getElementById('semester-level-badge');
       const subtitle = document.getElementById('semester-subtitle');
       if (badge) badge.innerText = info.title.toUpperCase();
-      if (subtitle) subtitle.innerText = info.sub;
+      if (subtitle) subtitle.innerHTML = `Bước 2/3: Chọn Kì 1 hoặc Kì 2 cho khối <span class="text-[#1cb0f6] font-bold">${info.title}</span>`;
       switchView('semester');
     }
 
@@ -2413,7 +2425,7 @@
         badge.innerText = `${level} • ${semester.toUpperCase()} (${cat})`;
       }
       if (subtitle) {
-        subtitle.innerHTML = `Các môn học thuộc <span class="text-[#1cb0f6]">${level} - ${semester} (${courses.length} môn)</span>`;
+        subtitle.innerHTML = `Bước 3/3: Danh sách môn học thuộc <span class="text-[#1cb0f6] font-bold">${level} - ${semester} (${courses.length} môn)</span>`;
       }
 
       if (!grid) return;
