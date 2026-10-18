@@ -176,6 +176,15 @@ class MascotOrchestrator:
             metadata={"attempt_number": self.learner_attempts},
         )
 
+        # Check emotional frustration (Empathy Scaffolding)
+        if self.ta.detect_frustration(learner_text):
+            self._log_event(
+                event_type="learner_sentiment",
+                role=Role.LEARNER.value,
+                content="frustrated",
+                metadata={"turn": self.learner_attempts, "snippet": learner_text[:100]},
+            )
+
         # 0. Adversarial & Security Inspection (AC6, P1)
         scan = self.security_guard.inspect(learner_text)
         if scan.is_suspicious:

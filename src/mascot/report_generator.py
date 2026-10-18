@@ -5,7 +5,82 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from typing import Any, Dict
+
+
+def generate_svg_radar_chart(scores: Dict[str, Any], width: int = 340, height: int = 240) -> str:
+    """Generates an embeddable, responsive SVG radar chart from rubric scores."""
+    if not scores:
+        return (
+            "<div style='color:#64748b; font-size:12px; padding:20px; text-align:center;'>"
+            "Chưa có dữ liệu đánh giá Rubric để vẽ biểu đồ."
+            "</div>"
+        )
+
+    items = list(scores.items())
+    # If fewer than 3 dimensions, pad with grounding indicator to form a polygon
+    if len(items) == 2:
+        items.append(("pedagogical_grounding", True))
+    n = len(items)
+
+    cx, cy = width / 2, height / 2
+    r = min(width, height) * 0.36
+
+    # Rings
+    grid_svg = ""
+    for level in [0.33, 0.66, 1.0]:
+        pts = []
+        for i in range(n):
+            angle = (2 * math.pi * i / n) - (math.pi / 2)
+            px = cx + r * level * math.cos(angle)
+            py = cy + r * level * math.sin(angle)
+            pts.append(f"{px:.1f},{py:.1f}")
+        grid_svg += f'<polygon points="{" ".join(pts)}" fill="none" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="3,3"/>'
+
+    axes_svg = ""
+    labels_svg = ""
+    data_pts = []
+
+    for i, (dim_name, val) in enumerate(items):
+        angle = (2 * math.pi * i / n) - (math.pi / 2)
+        end_x = cx + r * math.cos(angle)
+        end_y = cy + r * math.sin(angle)
+        axes_svg += f'<line x1="{cx}" y1="{cy}" x2="{end_x:.1f}" y2="{end_y:.1f}" stroke="#94a3b8" stroke-width="1.2"/>'
+
+        # Value
+        score_val = 1.0 if (val is True or val == 1) else 0.35
+        vx = cx + r * score_val * math.cos(angle)
+        vy = cy + r * score_val * math.sin(angle)
+        data_pts.append(f"{vx:.1f},{vy:.1f}")
+
+        # Label
+        lbl_x = cx + (r + 20) * math.cos(angle)
+        lbl_y = cy + (r + 14) * math.sin(angle)
+        anchor = "middle"
+        if lbl_x < cx - 15:
+            anchor = "end"
+        elif lbl_x > cx + 15:
+            anchor = "start"
+
+        clean_label = dim_name.replace("_", " ").title()[:18]
+        badge_color = "#15803d" if (val is True or val == 1) else "#b91c1c"
+        labels_svg += f'<text x="{lbl_x:.1f}" y="{lbl_y:.1f}" font-size="10" font-weight="bold" fill="{badge_color}" text-anchor="{anchor}">{clean_label}</text>'
+
+    val_polygon = f'<polygon points="{" ".join(data_pts)}" fill="rgba(59, 130, 246, 0.25)" stroke="#2563eb" stroke-width="2.2"/>'
+    dots_svg = ""
+    for pt in data_pts:
+        x, y = pt.split(",")
+        dots_svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#1d4ed8"/>'
+
+    svg = f"""<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">
+        {grid_svg}
+        {axes_svg}
+        {val_polygon}
+        {dots_svg}
+        {labels_svg}
+    </svg>"""
+    return svg
 
 
 def build_audit_payload(orchestrator: Any) -> Dict[str, Any]:
@@ -61,6 +136,7 @@ def render_html_report(data: Dict[str, Any]) -> str:
     # Rubric rows
     scores = rubric_assessment.get("scores", {})
     dim_feedback = rubric_assessment.get("dimension_feedback", {})
+    radar_chart_svg = generate_svg_radar_chart(scores)
     rubric_rows_html = ""
     for dim_name, passed in scores.items():
         status_badge = '<span class="badge pass">✓ ĐẠT CHUẨN</span>' if passed else '<span class="badge fail">✗ CHƯA ĐẠT</span>'
@@ -354,7 +430,18 @@ def render_html_report(data: Dict[str, Any]) -> str:
         {certificate_html}
 
         <h2>1. Đánh Giá Rubric Đa Tiêu Chí (Explain-Back Diagnostic)</h2>
-        <p><strong>Kết luận Sư phạm:</strong> {summary.get('terminal_reason', 'Chưa có kết luận')}</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin: 15px 0;">
+            <div style="flex: 1; min-width: 320px;">
+                <p><strong>Kết luận Sư phạm:</strong> {summary.get('terminal_reason', 'Chưa có kết luận')}</p>
+                <p style="font-size: 12px; color: #64748b; margin-top: 6px;">
+                    Biểu đồ mạng nhện đa giác (SVG Radar Chart) thể hiện trực quan hình thái năng lực và mức độ đạt chuẩn từng chiều cạnh Rubric sư phạm.
+                </p>
+            </div>
+            <div style="flex-shrink: 0; background: #f8fafc; padding: 10px 15px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: center;">
+                <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">BIỂU ĐỒ NĂNG LỰC RUBRIC</div>
+                {radar_chart_svg}
+            </div>
+        </div>
         <table>
             <thead>
                 <tr>

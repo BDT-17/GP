@@ -69,9 +69,16 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 - `tests/test_ingest_vlearn.py`: VLearn curriculum slide/lecture ingestion, chunk extraction, and corpus merging.
 - `tests/test_pedagogical_benchmark.py`: Automated pedagogical benchmark suite across 4 learner personas (AC1-AC7 invariants).
 - `tests/test_report_export.py`: Inspectable instructor audit report (PDF/HTML/JSON) with SHA-256 evidence seal and Certificate of Mastery.
+- `tests/test_frustration_and_voice.py`: Learner frustration/confusion detection and TA empathy scaffolding.
+- `tests/test_generate_scenario.py`: Automated scenario generation and schema validation from VLearn corpus.
+- `tests/test_ab_testing.py`: A/B comparative pedagogical evaluation comparing MASCOT vs baseline LLM.
 
 ## Change log
 
+- 2026-10-18: Implemented Pure SVG Multi-Dimensional Rubric Radar Chart in Instructor Dashboard and printable PDF/HTML reports (`src/mascot/report_generator.py`, `static/index.html`).
+- 2026-10-18: Built Comparative A/B Testing Evaluation Suite (`benchmarks/ab_testing_eval.py`, `tests/test_ab_testing.py`) demonstrating +200% active cognitive turns, 0% direct answer dependence, and 100% explain-back mastery vs baseline LLM.
+- 2026-10-18: Created Automated Scenario Generator (`tools/generate_scenario.py`, `tests/test_generate_scenario.py`) extracting misconceptions and generating schema-compliant scenarios from VLearn corpus.
+- 2026-10-18: Implemented Voice STT (Web Speech API) & Distinct Character Voice TTS (Bảo, Thầy Hùng, TS. Minh) and Frustration/Confusion Detection with TA Empathy Scaffolding (`src/mascot/agents.py`, `tests/test_frustration_and_voice.py`) (71 tests, 94% coverage).
 - 2026-10-18: Implemented Pedagogical Audit Report Export & Certificate of Mastery (`/api/instructor/report/export`, `src/mascot/report_generator.py`) in JSON & printable PDF/HTML with SHA-256 evidence seal and UI print button (63 tests, 93% coverage).
 - 2026-10-18: Built Automated Pedagogical Benchmark Suite (`benchmarks/run_pedagogical_eval.py`) simulating 4 learner personas (Lazy, Adversarial, Partial, Star), measuring 0.0% Direct Answer Leakage, 0.0% Future Leakage, 0.0% False Completion, and 100.0% Rubric Diagnostic Accuracy.
 - 2026-10-18: Created VLearn Curriculum Ingestion Tool (`tools/ingest_vlearn.py`) parsing markdown slides into standardized pedagogical chunks with slide metadata and corpus JSON merging.

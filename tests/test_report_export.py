@@ -93,3 +93,4 @@ def test_api_export_report_html(client: TestClient) -> None:
     assert "text/html" in resp.headers.get("content-type", "")
     assert "<!DOCTYPE html>" in resp.text
     assert "Hồ Sơ Giám Sát Sư Phạm" in resp.text
+

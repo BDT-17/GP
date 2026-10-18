@@ -1245,13 +1245,23 @@
             </div>
           </div>
 
-          <!-- Rubric Breakdown Live Audit in Current Session (P3) -->
-          <div>
-            <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
-              <span>📊 Chi Tiết Đánh Giá Rubric (Explain-Back Multi-Criteria Rubric):</span>
+          <!-- Rubric Breakdown & Radar Chart Live Audit (P3, Task 3.2) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+                <span>📊 Chi Tiết Đánh Giá Rubric (Explain-Back Multi-Criteria Rubric):</span>
+              </div>
+              <div id="inst-active-rubric-container" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] text-xs font-mono space-y-1.5 min-h-[160px]">
+                <span class="text-slate-400">Đang chờ học viên sửa hiểu lầm và nộp bài giải thích lại...</span>
+              </div>
             </div>
-            <div id="inst-active-rubric-container" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] text-xs font-mono space-y-1.5">
-              <span class="text-slate-400">Đang chờ học viên sửa hiểu lầm và nộp bài giải thích lại...</span>
+            <div>
+              <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+                <span>🕸️ Biểu Đồ Radar Năng Lực Rubric (Live SVG Radar):</span>
+              </div>
+              <div id="inst-active-radar-chart" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] flex items-center justify-center min-h-[160px]">
+                <span class="text-xs text-slate-500 font-mono">Biểu đồ Radar sẽ xuất hiện khi học viên giải thích lại</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1470,12 +1480,22 @@
               <input 
                 id="user-input" 
                 type="text" 
-                placeholder="Nhập câu giải thích hoặc phản hồi bạn Bảo... (Nhấn Enter để gửi)" 
+                placeholder="Nhập câu giải thích hoặc phản hồi bạn Bảo... (Nhấn Enter hoặc bấm Mic để nói)" 
                 class="w-full bg-transparent text-sm md:text-base font-bold text-white placeholder-[#52656d] outline-none"
                 autocomplete="off"
                 onkeydown="if(event.key === 'Enter') handleCheck()"
                 oninput="updateButtonState()"
               />
+              <!-- Voice Input (STT) Button -->
+              <button 
+                id="mic-btn" 
+                onclick="toggleSpeechRecognition()" 
+                type="button"
+                title="Bấm để nói bằng giọng nói (Voice Input)"
+                class="w-9 h-9 rounded-xl bg-[#20313a] hover:bg-[#2c404c] text-slate-300 hover:text-white flex items-center justify-center flex-shrink-0 transition border border-[#37464f]"
+              >
+                <span id="mic-icon" class="text-base">🎙️</span>
+              </button>
             </div>
 
             <button 
@@ -2574,14 +2594,104 @@
       }
     }
 
-    function playSpeechAudio(customText) {
+    function playSpeechAudio(customText, role = 'peer') {
       playDuoSound('hint');
       const text = customText || (sessionData ? sessionData.initial_misconception : '');
       if ('speechSynthesis' in window && text) {
-        const utter = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.cancel();
+        // Remove speaker prefix brackets like [TS. Minh]: or [Thầy Hùng]: for natural speech
+        const cleanText = text.replace(/^\[.*?\]:\s*/, '');
+        const utter = new SpeechSynthesisUtterance(cleanText);
         utter.lang = 'vi-VN';
+
+        // Distinct character acoustics:
+        if (role === 'peer') {
+          utter.pitch = 1.22; // Youthful student
+          utter.rate = 1.05;
+        } else if (role === 'ta') {
+          utter.pitch = 0.96; // Warm, supportive pedagogical tone
+          utter.rate = 0.95;
+        } else if (role === 'lecturer') {
+          utter.pitch = 0.82; // Deep, authoritative university lecturer
+          utter.rate = 0.88;
+        } else {
+          utter.pitch = 1.0;
+          utter.rate = 1.0;
+        }
+
         window.speechSynthesis.speak(utter);
       }
+    }
+
+    let speechRecognizer = null;
+    let isRecordingSpeech = false;
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+      const rec = new SpeechRecognition();
+      rec.lang = 'vi-VN';
+      rec.continuous = false;
+      rec.interimResults = false;
+
+      rec.onstart = () => {
+        isRecordingSpeech = true;
+        const btn = document.getElementById('mic-btn');
+        const icon = document.getElementById('mic-icon');
+        if (btn) btn.classList.add('bg-rose-600', 'animate-pulse', 'border-rose-400');
+        if (icon) icon.innerText = '🔴';
+      };
+
+      rec.onresult = (event) => {
+        if (event.results && event.results.length > 0) {
+          const transcript = event.results[0][0].transcript;
+          const input = document.getElementById('user-input');
+          if (input && transcript) {
+            input.value = (input.value ? input.value + ' ' : '') + transcript;
+            updateButtonState();
+          }
+        }
+      };
+
+      rec.onerror = (e) => {
+        console.warn("Speech recognition error:", e);
+        stopSpeechRecording();
+      };
+
+      rec.onend = () => {
+        stopSpeechRecording();
+      };
+
+      return rec;
+    }
+
+    function toggleSpeechRecognition() {
+      if (!speechRecognizer) {
+        speechRecognizer = initSpeechRecognition();
+      }
+      if (!speechRecognizer) {
+        alert("Trình duyệt hiện tại chưa hỗ trợ nhận diện giọng nói Web Speech API (Khuyên dùng Google Chrome hoặc Microsoft Edge).");
+        return;
+      }
+
+      if (isRecordingSpeech) {
+        try { speechRecognizer.stop(); } catch(e){}
+        stopSpeechRecording();
+      } else {
+        try {
+          speechRecognizer.start();
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function stopSpeechRecording() {
+      isRecordingSpeech = false;
+      const btn = document.getElementById('mic-btn');
+      const icon = document.getElementById('mic-icon');
+      if (btn) btn.classList.remove('bg-rose-600', 'animate-pulse', 'border-rose-400');
+      if (icon) icon.innerText = '🎙️';
     }
 
     function renderChatFeed(history) {
@@ -2600,6 +2710,7 @@
 
     function createChatMessageHtml(role, content) {
       const safeContent = (content || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const speechContent = safeContent.replace(/'/g, "\\'");
 
       if (role === 'learner' || role === 'user') {
         return `
@@ -2628,6 +2739,9 @@
                   <span class="text-xs font-black uppercase tracking-wider text-[#58cc02]">Thầy Hùng (Trợ giảng Socratic)</span>
                   <span class="text-[9px] font-bold bg-[#1d3d2a] text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-700">Gợi ý bậc thang</span>
                 </div>
+                <button onclick="playSpeechAudio('${speechContent}', 'ta')" class="text-xs text-[#8598a0] hover:text-emerald-400 p-1" title="Nghe Thầy Hùng nói">
+                  🔊
+                </button>
               </div>
               <div class="text-sm font-semibold text-emerald-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
             </div>
@@ -2645,9 +2759,14 @@
                   <span class="text-xs font-black uppercase tracking-wider text-[#ce93d8]">TS. Minh (Giảng viên)</span>
                   <span class="text-[9px] font-bold bg-[#331c47] text-purple-200 px-2 py-0.5 rounded-full border border-purple-700">Leo thang & Trích dẫn VLearn</span>
                 </div>
-                <button onclick="toggleSlideModal()" class="text-[10px] font-bold text-[#ce93d8] hover:underline flex items-center space-x-1">
-                  <span>📄 Xem Slide</span>
-                </button>
+                <div class="flex items-center space-x-2">
+                  <button onclick="playSpeechAudio('${speechContent}', 'lecturer')" class="text-xs text-[#8598a0] hover:text-purple-300 p-1" title="Nghe TS. Minh nói">
+                    🔊
+                  </button>
+                  <button onclick="toggleSlideModal()" class="text-[10px] font-bold text-[#ce93d8] hover:underline flex items-center space-x-1">
+                    <span>📄 Xem Slide</span>
+                  </button>
+                </div>
               </div>
               <div class="text-sm font-semibold text-purple-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
             </div>
@@ -2681,7 +2800,7 @@
                   <span class="text-xs font-black uppercase tracking-wider text-[#ff9600]">Bảo (Bạn học)</span>
                   <span class="text-[9px] font-bold bg-[#36210f] text-amber-300 px-2 py-0.5 rounded-full border border-amber-700">Ngộ nhận / Phản biện</span>
                 </div>
-                <button onclick="playSpeechAudio('${safeContent.replace(/'/g, "\\'")}')" class="text-xs text-[#8598a0] hover:text-white" title="Nghe đọc">
+                <button onclick="playSpeechAudio('${speechContent}', 'peer')" class="text-xs text-[#8598a0] hover:text-amber-400 p-1" title="Nghe Bảo nói">
                   🔊
                 </button>
               </div>
@@ -2878,6 +2997,7 @@
 
         // Append assistant response to feed
         appendChatMessage(data.reply.role, data.reply.message);
+        playSpeechAudio(data.reply.message, data.reply.role);
         updateUIFromState();
 
         if (sessionData.terminal_status === 'completed') {
@@ -3000,6 +3120,72 @@
       }).join('');
     }
 
+    function renderRadarChartSVG(scores) {
+      const el = document.getElementById('inst-active-radar-chart');
+      if (!el) return;
+      if (!scores || Object.keys(scores).length === 0) {
+        el.innerHTML = '<span class="text-xs text-slate-500 font-mono">Biểu đồ Radar sẽ xuất hiện khi học viên giải thích lại</span>';
+        return;
+      }
+
+      const items = Object.entries(scores);
+      if (items.length === 2) {
+        items.push(['pedagogical_grounding', true]);
+      }
+      const n = items.length;
+      const width = 280, height = 180;
+      const cx = width / 2, cy = height / 2;
+      const r = 62;
+
+      let gridSvg = '';
+      [0.33, 0.66, 1.0].forEach(level => {
+        const pts = [];
+        for (let i = 0; i < n; i++) {
+          const angle = (2 * Math.PI * i / n) - (Math.PI / 2);
+          const px = cx + r * level * Math.cos(angle);
+          const py = cy + r * level * Math.sin(angle);
+          pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+        }
+        gridSvg += `<polygon points="${pts.join(' ')}" fill="none" stroke="#2b3940" stroke-width="1.2" stroke-dasharray="2,2"/>`;
+      });
+
+      let axesSvg = '', labelsSvg = '', dataPts = [];
+      items.forEach(([dim, val], i) => {
+        const angle = (2 * Math.PI * i / n) - (Math.PI / 2);
+        const ex = cx + r * Math.cos(angle);
+        const ey = cy + r * Math.sin(angle);
+        axesSvg += `<line x1="${cx}" y1="${cy}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#37464f" stroke-width="1"/>`;
+
+        const scoreVal = val ? 1.0 : 0.35;
+        const vx = cx + r * scoreVal * Math.cos(angle);
+        const vy = cy + r * scoreVal * Math.sin(angle);
+        dataPts.push(`${vx.toFixed(1)},${vy.toFixed(1)}`);
+
+        const lx = cx + (r + 18) * Math.cos(angle);
+        const ly = cy + (r + 12) * Math.sin(angle);
+        const anchor = lx < cx - 10 ? 'end' : (lx > cx + 10 ? 'start' : 'middle');
+        const color = val ? '#34d399' : '#f87171';
+        const shortName = dim.replace('_', ' ').substring(0, 15);
+        labelsSvg += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="9" font-weight="bold" fill="${color}" text-anchor="${anchor}">${shortName}</text>`;
+      });
+
+      const polySvg = `<polygon points="${dataPts.join(' ')}" fill="rgba(45, 212, 191, 0.25)" stroke="#2dd4bf" stroke-width="2"/>`;
+      const dotsSvg = dataPts.map(pt => {
+        const [x, y] = pt.split(',');
+        return `<circle cx="${x}" cy="${y}" r="3.5" fill="#14b8a6"/>`;
+      }).join('');
+
+      el.innerHTML = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" class="overflow-visible">
+          ${gridSvg}
+          ${axesSvg}
+          ${polySvg}
+          ${dotsSvg}
+          ${labelsSvg}
+        </svg>
+      `;
+    }
+
     async function loadInstructorDashboard() {
       try {
         const res = await fetch('/api/instructor/audit');
@@ -3110,8 +3296,10 @@
               </div>
               <div class="space-y-1.5">${rows}</div>
             `;
+            renderRadarChartSVG(rub.scores);
           } else {
             elRubricBox.innerHTML = '<span class="text-slate-400">Đang chờ học viên sửa hiểu lầm và nộp bài giải thích lại...</span>';
+            renderRadarChartSVG(null);
           }
         }
 

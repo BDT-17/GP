@@ -46,3 +46,4 @@ def test_pedagogical_benchmark_single_run_invariants(tmp_path: Path) -> None:
         data = json.load(f)
     assert data["total"] == 12
     assert data["false_comp_rate"] == 0.0
+
