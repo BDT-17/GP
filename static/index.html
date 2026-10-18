@@ -810,29 +810,8 @@
       <!-- Center Path Area -->
       <div class="flex-1 flex flex-col items-center py-6 px-4 max-w-2xl mx-auto w-full">
         
-        <!-- Course Selector Bar & Quick Guide Trigger -->
-        <div id="tour-course-selector" class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-xl flex-shrink-0">
-              📚
-            </div>
-            <div>
-              <div class="text-[10px] font-black uppercase tracking-wider text-[#8598a0]">Môn học hiện tại:</div>
-              <div class="text-sm font-black text-white flex items-center space-x-2">
-                <span id="home-course-name">CS102 • Lập trình Hướng đối tượng</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-            <button onclick="switchView('selection')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] border border-[#37464f] hover:border-[#1cb0f6] text-xs font-black uppercase text-[#1cb0f6] transition flex items-center space-x-1 shadow-sm" title="Chọn môn học khác (C, Python, Java)">
-              <span>Đổi môn</span>
-              <span>▾</span>
-            </button>
-          </div>
-        </div>
-
         <!-- Unit Header Banner (Section 1, Unit 2) -->
-        <div class="w-full bg-[#00cd9c] text-white rounded-2xl p-5 mb-8 shadow-lg flex items-center justify-between border-b-4 border-[#00a880]">
+        <div id="tour-unit-banner" class="w-full bg-[#00cd9c] text-white rounded-2xl p-5 mb-8 shadow-lg flex items-center justify-between border-b-4 border-[#00a880]">
           <div>
             <div class="text-xs font-black uppercase tracking-wider opacity-90 flex items-center space-x-1">
               <span>←</span>
@@ -1766,11 +1745,11 @@
         placement: 'right'
       },
       {
-        target: '#tour-course-selector',
+        target: '#tour-unit-banner',
         view: 'home',
-        icon: '🎓',
-        title: 'Môn học hiện tại',
-        desc: 'Hiển thị môn bạn đang học (CS102, ICT1.002, CS105...) và nút Đổi môn nhanh chóng.',
+        icon: '📗',
+        title: 'Chủ đề & Sổ tay bài học',
+        desc: 'Hiển thị chủ đề bài học hiện tại và nút mở nhanh Sổ tay giáo trình VLearn.',
         placement: 'bottom'
       },
       {
