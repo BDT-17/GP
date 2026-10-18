@@ -64,6 +64,14 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
     }
 
+    /* Chữ các mục menu thanh bên (Ảnh 2) áp dụng chuẩn màu và font chữ giống Ảnh 1 (#dce6ec) */
+    #view-app nav button span,
+    #view-app nav button div span {
+      color: #dce6ec !important;
+      font-family: var(--font-heading) !important;
+      letter-spacing: 0.05em;
+    }
+
     /* Duolingo 3D Tactile Buttons */
     .duo-btn-green {
       background-color: #58cc02;
@@ -703,9 +711,9 @@
 
       <!-- Navigation Menu (Exact layout, icons, font & active cyan border from Image 2) -->
       <!-- Navigation Menu (Core Pedagogical Items with Course Selection) -->
-      <nav class="space-y-2 text-[14px] font-black uppercase tracking-wider">
+      <nav class="space-y-2 text-[14px] font-black uppercase tracking-wider font-heading">
         <!-- 1. LEARN (Học tập & Lộ trình môn học) -->
-        <button id="nav-learn" onclick="switchView('home')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition">
+        <button id="nav-learn" onclick="switchView('home')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#dce6ec] transition">
           <svg class="w-6 h-6 flex-shrink-0" viewBox="0 0 32 32" fill="none">
             <path d="M16 4L4 14H28L16 4Z" fill="#ff4b4b" stroke="#ea2b2b" stroke-width="1.2" stroke-linejoin="round"/>
             <path d="M6 14H26V26C26 27.1 25.1 28 24 28H8C6.9 28 6 27.1 6 26V14Z" fill="#ffc800"/>
@@ -715,7 +723,7 @@
         </button>
 
         <!-- 2. COURSES (Chọn môn học: B0, B1, B2, B3) -->
-        <button id="nav-subjects" onclick="switchView('selection')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition" title="Chọn khối kiến thức & môn học (B0, B1, B2, B3)">
+        <button id="nav-subjects" onclick="switchView('selection')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition" title="Chọn khối kiến thức & môn học (B0, B1, B2, B3)">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             📚
           </div>
@@ -723,7 +731,7 @@
         </button>
 
         <!-- 3. CLASSROOM (Lớp học mô phỏng đa tác nhân - Active Tutoring) -->
-        <button id="nav-classroom" onclick="switchView('exercise')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
+        <button id="nav-classroom" onclick="switchView('exercise')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             🎓
           </div>
@@ -731,7 +739,7 @@
         </button>
 
         <!-- 4. CURRICULUM (Giáo trình VLearn & Cơ sở tri thức) -->
-        <button id="nav-curriculum" onclick="toggleSlideModal()" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
+        <button id="nav-curriculum" onclick="toggleSlideModal()" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl">
             📖
           </div>
@@ -739,7 +747,7 @@
         </button>
 
         <!-- 5. INSTRUCTOR (Thanh tra Sư phạm, Radar Rubric & Audit) -->
-        <button id="nav-instructor" onclick="switchView('instructor')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
+        <button id="nav-instructor" onclick="switchView('instructor')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -753,7 +761,7 @@
         </button>
 
         <!-- 6. PROFILE (Hồ sơ học viên & Chứng chỉ Mastery) -->
-        <button id="nav-profile" onclick="switchView('profile')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
+        <button id="nav-profile" onclick="switchView('profile')" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition">
           <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
               <circle cx="16" cy="16" r="13" stroke="#52656d" stroke-width="2" stroke-dasharray="3 3"/>
@@ -764,7 +772,7 @@
         </button>
 
         <!-- 7. GUIDE (Hướng dẫn tương tác) -->
-        <button id="nav-guide" onclick="openGuideModal()" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:text-[#58cc02] hover:bg-[#18262d] transition group cursor-pointer" title="Xem hướng dẫn sử dụng tương tác">
+        <button id="nav-guide" onclick="openGuideModal()" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition group cursor-pointer" title="Xem hướng dẫn sử dụng tương tác">
           <div class="flex items-center space-x-3.5">
             <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl group-hover:scale-110 transition transform">
               ❓
@@ -2096,8 +2104,8 @@
       const navInstructor = document.getElementById('nav-instructor');
       const navProfile = document.getElementById('nav-profile');
 
-      const activeClass = "w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition";
-      const inactiveClass = "w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition";
+      const activeClass = "w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#dce6ec] transition";
+      const inactiveClass = "w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#dce6ec] hover:bg-[#18262d] transition";
 
       if (landingView) landingView.classList.add('hidden');
       if (selectionView) selectionView.classList.add('hidden');
