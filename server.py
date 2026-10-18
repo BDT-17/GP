@@ -65,6 +65,18 @@ class UpdateProfileRequest(BaseModel):
     gems_delta: int = 0
     streak_increment: bool = False
     hearts: Optional[int] = None
+    hearts_delta: Optional[int] = None
+
+
+class RefillHeartsRequest(BaseModel):
+    reason: str = "gems"  # "gems" or "practice"
+
+
+class AuthRequest(BaseModel):
+    username: str
+    password: Optional[str] = None
+    display_name: Optional[str] = None
+    is_register: bool = False
 
 
 @app.get("/")
@@ -284,11 +296,19 @@ async def chat(req: ChatRequest):
     # Record user message to DB
     db.add_chat_message(orchestrator.session_id, Role.LEARNER.value, user_msg)
 
+    # Track security alerts count before turn
+    alerts_before = len(orchestrator.security_alerts)
+
     # Process orchestrator turn
     result = orchestrator.process_turn(user_msg)
 
     # Record assistant response to DB
     db.add_chat_message(orchestrator.session_id, result["role"], result["message"])
+
+    # If adversarial threat detected, deduct 1 heart from learner profile
+    alerts_after = len(orchestrator.security_alerts)
+    if alerts_after > alerts_before:
+        db.update_learner_profile(hearts_delta=-1)
 
     # Check completion and sync DB
     is_completed = orchestrator.terminal_status.value == "completed"
@@ -296,7 +316,7 @@ async def chat(req: ChatRequest):
 
     # If completed, reward learner XP and Gems
     if is_completed:
-        db.update_profile(xp_delta=50, gems_delta=15, streak_increment=True)
+        db.update_learner_profile(xp_delta=50, gems_delta=15, streak_increment=True)
 
     session_state = await get_session()
 
@@ -320,8 +340,28 @@ async def update_profile(req: UpdateProfileRequest):
         gems_delta=req.gems_delta,
         streak_increment=req.streak_increment,
         hearts=req.hearts,
+        hearts_delta=req.hearts_delta,
     )
     return updated
+
+
+@app.post("/api/profile/refill-hearts")
+async def refill_hearts(req: RefillHeartsRequest):
+    """Refills learner hearts to 5 (consumes 20 gems if reason is 'gems')."""
+    res = db.refill_hearts(reason=req.reason)
+    if "error" in res:
+        raise HTTPException(status_code=400, detail="Không đủ Đá quý để hồi phục tim.")
+    return res
+
+
+@app.post("/api/auth")
+async def auth_user(req: AuthRequest):
+    """Authenticates learner or registers new account."""
+    uname = req.username.strip()
+    if not uname:
+        raise HTTPException(status_code=400, detail="Tên người dùng không được để trống.")
+    profile = db.authenticate_or_register(username=uname, display_name=req.display_name)
+    return {"status": "success", "profile": profile}
 
 
 @app.get("/api/sessions")

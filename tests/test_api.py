@@ -164,5 +164,21 @@ def test_adversarial_input_via_chat_api(client):
     assert session["security_alerts"][0]["threat_type"] == "prompt_injection"
 
 
+def test_auth_endpoint(client):
+    """Test login/register auth endpoint."""
+    # Empty username rejected
+    bad_res = client.post("/api/auth", json={"username": "  "})
+    assert bad_res.status_code == 400
+
+    # Valid auth succeeds
+    res = client.post("/api/auth", json={"username": "sv_mascot", "display_name": "Nguyen Van A"})
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert data["profile"]["username"] == "sv_mascot"
+    assert data["profile"]["display_name"] == "Nguyen Van A"
+
+
+
 
 

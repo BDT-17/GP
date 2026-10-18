@@ -118,3 +118,46 @@ def test_api_database_endpoints():
         assert "history" in res_hist.json()
         assert len(res_hist.json()["history"]) >= 1
 
+        # 5. POST /api/profile/refill-hearts (gems)
+        res_refill_gems = client.post("/api/profile/refill-hearts", json={"reason": "gems"})
+        assert res_refill_gems.status_code == 200
+        assert res_refill_gems.json()["hearts"] == 5
+
+        # 6. POST /api/profile/refill-hearts (practice)
+        res_refill_practice = client.post("/api/profile/refill-hearts", json={"reason": "practice"})
+        assert res_refill_practice.status_code == 200
+        assert res_refill_practice.json()["hearts"] == 5
+
+
+def test_refill_hearts_logic(temp_db):
+    """Verify hearts refill with gems and practice, and gem insufficiency check."""
+    # Start with 1 heart and 10 gems (insufficient for 20 gems refill)
+    temp_db.update_learner_profile(hearts=1, gems_delta=-762)  # 772 - 762 = 10 gems
+    prof = temp_db.get_learner_profile()
+    assert prof["hearts"] == 1
+    assert prof["gems"] == 10
+
+    # Attempt refill with gems should fail
+    fail_res = temp_db.refill_hearts(reason="gems")
+    assert fail_res.get("error") == "not_enough_gems"
+
+    # Refill with practice should succeed
+    succ_res = temp_db.refill_hearts(reason="practice")
+    assert succ_res["hearts"] == 5
+    assert succ_res["gems"] == 10
+
+    # Add gems and refill with gems
+    temp_db.update_learner_profile(gems_delta=30)
+    succ_gems = temp_db.refill_hearts(reason="gems")
+    assert succ_gems["hearts"] == 5
+    assert succ_gems["gems"] == 20  # 40 - 20 = 20
+
+
+def test_authenticate_or_register_logic(temp_db):
+    """Verify authenticate_or_register updates profile username and display_name."""
+    prof = temp_db.authenticate_or_register(username="mascot_student", display_name="Học Viên Mascot")
+    assert prof["username"] == "mascot_student"
+    assert prof["display_name"] == "Học Viên Mascot"
+
+
+

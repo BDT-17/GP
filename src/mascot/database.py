@@ -107,6 +107,9 @@ class DatabaseManager:
         gems_delta: int = 0,
         streak_increment: bool = False,
         hearts: Optional[int] = None,
+        hearts_delta: Optional[int] = None,
+        username: Optional[str] = None,
+        display_name: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Updates learner stats and returns updated profile."""
         with self._get_connection() as conn:
@@ -119,14 +122,83 @@ class DatabaseManager:
             new_xp = max(0, current["xp"] + xp_delta)
             new_gems = max(0, current["gems"] + gems_delta)
             new_streak = current["streak"] + (1 if streak_increment else 0)
-            new_hearts = hearts if hearts is not None else current["hearts"]
+            if hearts is not None:
+                new_hearts = max(0, min(5, hearts))
+            elif hearts_delta is not None:
+                new_hearts = max(0, min(5, current["hearts"] + hearts_delta))
+            else:
+                new_hearts = current["hearts"]
+            new_user = username if username else current["username"]
+            new_disp = display_name if display_name else current["display_name"]
             now_iso = datetime.now(timezone.utc).isoformat()
 
             cursor.execute("""
                 UPDATE learner_profile
-                SET xp = ?, gems = ?, streak = ?, hearts = ?, last_active_date = ?
+                SET xp = ?, gems = ?, streak = ?, hearts = ?, username = ?, display_name = ?, last_active_date = ?
                 WHERE id = ?
-            """, (new_xp, new_gems, new_streak, new_hearts, now_iso, user_id))
+            """, (new_xp, new_gems, new_streak, new_hearts, new_user, new_disp, now_iso, user_id))
+            conn.commit()
+
+        return self.get_learner_profile(user_id)
+
+    def authenticate_or_register(
+        self,
+        username: str,
+        display_name: Optional[str] = None,
+        user_id: int = 1,
+    ) -> Dict[str, Any]:
+        """Authenticates or updates current learner profile with login/registration details."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM learner_profile WHERE id = ?", (user_id,))
+            current = cursor.fetchone()
+            now_iso = datetime.now(timezone.utc).isoformat()
+            final_disp = display_name if display_name else (current["display_name"] if current else username)
+            if current:
+                cursor.execute("""
+                    UPDATE learner_profile
+                    SET username = ?, display_name = ?, last_active_date = ?
+                    WHERE id = ?
+                """, (username, final_disp, now_iso, user_id))
+            else:
+                cursor.execute("""
+                    INSERT INTO learner_profile (id, username, display_name, streak, xp, gems, hearts, league, top3_finishes, last_active_date)
+                    VALUES (?, ?, ?, 1, 50, 20, 5, 'Bronze', 0, ?)
+                """, (user_id, username, final_disp, now_iso))
+            conn.commit()
+        return self.get_learner_profile(user_id)
+
+    # Convenience alias
+    update_profile = update_learner_profile
+
+    def refill_hearts(
+        self,
+        user_id: int = 1,
+        reason: str = "gems",
+    ) -> Dict[str, Any]:
+        """Refills hearts to 5. If reason is 'gems', consumes 20 gems if available."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM learner_profile WHERE id = ?", (user_id,))
+            current = cursor.fetchone()
+            if not current:
+                return {}
+
+            gems = current["gems"]
+            if reason == "gems":
+                if gems < 20:
+                    return {"error": "not_enough_gems", "profile": dict(current)}
+                new_gems = gems - 20
+            else:
+                new_gems = gems
+
+            new_hearts = 5
+            now_iso = datetime.now(timezone.utc).isoformat()
+            cursor.execute("""
+                UPDATE learner_profile
+                SET hearts = ?, gems = ?, last_active_date = ?
+                WHERE id = ?
+            """, (new_hearts, new_gems, now_iso, user_id))
             conn.commit()
 
         return self.get_learner_profile(user_id)

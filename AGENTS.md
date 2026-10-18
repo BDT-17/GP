@@ -75,6 +75,8 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 
 ## Change log
 
+- 2026-10-18: Implemented Cinematic Mascot Light-Sweep Intro Animation & Modern Authentication Screen (Login/Register) (`static/index.html`, `server.py`, `src/mascot/database.py`, `tests/test_api.py`, `tests/test_database.py`): Beam-sweep typography animation lighting up M-A-S-C-O-T with musical chimes, smooth dissolve into split-view Auth screen featuring 3D Owl Teacher and Duolingo-styled Login/Register forms with guest mode and logout controls (74 tests, 95% coverage).
+- 2026-10-18: Implemented Learner Experience Polish (Giai đoạn 3) & Classroom Owl Mascot Hero Redesign (`static/index.html`, `static/mascot_teacher.png`): Aesthetic Hero banner with graduation-cap Owl mascot pointing to blackboard, Code Playground side-by-side Diff Viewer, Out of Hearts refill modal (20 gems or free review), Mastery Celebration modal with Web Audio fanfare, and user sessions/certificates profile history (72 tests, 94% coverage).
 - 2026-10-18: Implemented Pure SVG Multi-Dimensional Rubric Radar Chart in Instructor Dashboard and printable PDF/HTML reports (`src/mascot/report_generator.py`, `static/index.html`).
 - 2026-10-18: Built Comparative A/B Testing Evaluation Suite (`benchmarks/ab_testing_eval.py`, `tests/test_ab_testing.py`) demonstrating +200% active cognitive turns, 0% direct answer dependence, and 100% explain-back mastery vs baseline LLM.
 - 2026-10-18: Created Automated Scenario Generator (`tools/generate_scenario.py`, `tests/test_generate_scenario.py`) extracting misconceptions and generating schema-compliant scenarios from VLearn corpus.

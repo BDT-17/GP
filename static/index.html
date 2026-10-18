@@ -171,128 +171,508 @@
     #tour-popover {
       transition: top 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease-in-out;
     }
+
+    /* Mascot Intro Cinematic Light Sweep (GPU Compositor Accelerated & Bulletproof) */
+    .mascot-letter {
+      display: inline-block;
+      opacity: 0.15;
+      transform: translateY(8px) scale(0.96);
+      filter: blur(2px);
+      color: #37464f;
+      letter-spacing: 0.15em;
+      will-change: transform, opacity, color;
+    }
+    .mascot-letter.illuminated {
+      opacity: 1;
+      transform: translateY(0) scale(1.06);
+      filter: blur(0);
+      color: #ffffff;
+      text-shadow: 0 0 25px #58cc02, 0 0 50px rgba(88, 204, 2, 0.9), 0 0 80px rgba(88, 204, 2, 0.6);
+    }
+    .mascot-letter.gold-final {
+      color: #58cc02;
+      transform: translateY(0) scale(1);
+      text-shadow: 0 0 20px rgba(88, 204, 2, 0.8), 0 4px 12px rgba(0, 0, 0, 0.9);
+    }
+
+    .beam-shimmer {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 140px;
+      height: 420px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), rgba(88, 204, 2, 0.95), #ffffff, rgba(88, 204, 2, 0.95), rgba(255, 255, 255, 0.3), transparent);
+      filter: blur(14px);
+      pointer-events: none;
+      z-index: 20;
+      will-change: transform, opacity;
+      transform: translate3d(-350px, -50%, 0) rotate(18deg);
+    }
+
+    @keyframes beamSweepGPU {
+      0% {
+        transform: translate3d(-350px, -50%, 0) rotate(18deg);
+        opacity: 0;
+      }
+      12% {
+        opacity: 0.95;
+      }
+      88% {
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate3d(1200px, -50%, 0) rotate(18deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes letterKeyframeSweep {
+      0% {
+        opacity: 0.15;
+        transform: translateY(8px) scale(0.96);
+        filter: blur(2px);
+        color: #37464f;
+        text-shadow: none;
+      }
+      26% {
+        opacity: 1;
+        transform: translateY(0) scale(1.08);
+        filter: blur(0);
+        color: #ffffff;
+        text-shadow: 0 0 25px #58cc02, 0 0 50px rgba(88, 204, 2, 0.95), 0 0 80px rgba(88, 204, 2, 0.7);
+      }
+      65%, 100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        color: #58cc02;
+        text-shadow: 0 0 20px rgba(88, 204, 2, 0.8), 0 4px 12px rgba(0, 0, 0, 0.9);
+      }
+    }
+
+    @keyframes introSubtextKeyframeFade {
+      0% {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes introScreenKeyframeDissolve {
+      0%, 82% {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+        visibility: visible;
+      }
+      99% {
+        opacity: 0;
+        transform: scale(1.04);
+        pointer-events: none;
+        visibility: visible;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.04);
+        pointer-events: none;
+        visibility: hidden;
+      }
+    }
+
+    /* CSS Compositor Driven Intro Animation Rules */
+    #mascot-intro-screen.play-intro {
+      animation: introScreenKeyframeDissolve 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    #mascot-intro-screen.play-intro .beam-shimmer {
+      animation: beamSweepGPU 2.2s cubic-bezier(0.25, 1, 0.5, 1) 0.12s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="0"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.20s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="1"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.52s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="2"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.84s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="3"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.16s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="4"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.48s forwards !important;
+    }
+    #mascot-intro-screen.play-intro .mascot-letter[data-index="5"] {
+      animation: letterKeyframeSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.80s forwards !important;
+    }
+    #mascot-intro-screen.play-intro #intro-subtext {
+      animation: introSubtextKeyframeFade 0.7s ease-out 2.15s forwards !important;
+    }
+
+    /* Floating Chip Animations for Mascot Showcase */
+    @keyframes floatSlow1 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(-1.5deg); }
+    }
+    @keyframes floatSlow2 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(7px) rotate(1.5deg); }
+    }
+    @keyframes floatSlow3 {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.03); }
+    }
+    .animate-float-1 { animation: floatSlow1 4.5s ease-in-out infinite; }
+    .animate-float-2 { animation: floatSlow2 5.2s ease-in-out infinite; }
+    .animate-float-3 { animation: floatSlow3 4.8s ease-in-out infinite; }
+
+    /* Shiny sweep button */
+    .btn-shine-sweep {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shine-sweep::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: rotate(25deg);
+      transition: all 0.75s ease;
+    }
+    .btn-shine-sweep:hover::after {
+      left: 140%;
+    }
   </style>
 </head>
 <body class="h-full flex overflow-hidden">
 
   <!-- ======================================================== -->
-  <!-- 0. LANDING / WELCOME SCREEN (DUOLINGO DARK MODE)         -->
+  <!-- INTRO ANIMATION OVERLAY: CINEMATIC LIGHT SWEEP           -->
   <!-- ======================================================== -->
-  <div id="view-landing" class="w-full h-full flex flex-col justify-between overflow-x-hidden bg-[#131f24] text-white select-none">
-    
-    <!-- Top Landing Header -->
-    <header class="w-full max-w-6xl mx-auto px-8 pt-8 flex items-center justify-between">
-      <!-- Left Logo: Owl + Mascot -->
-      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('landing')">
-        <img src="/static/owl.png" alt="Owl Logo" class="w-10 h-10 object-contain drop-shadow-md" />
-        <span class="text-[#58cc02] font-black text-[28px] tracking-tight">Mascot</span>
+  <div id="mascot-intro-screen" translate="no" class="notranslate fixed inset-0 z-[100] bg-[#0b1215] flex flex-col items-center justify-center select-none overflow-hidden transition-all duration-700 play-intro">
+    <!-- Ambient glowing backdrop aura -->
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-[#58cc02]/15 blur-[130px] pointer-events-none"></div>
+
+    <!-- Center Typography & Sweep Stage -->
+    <div translate="no" class="notranslate relative px-8 py-12 flex flex-col items-center justify-center z-10 overflow-hidden">
+      <!-- Light beam scanner -->
+      <div id="intro-beam" class="beam-shimmer"></div>
+
+      <!-- Letter by letter MASCOT -->
+      <div id="mascot-letters-container" translate="no" class="notranslate flex items-center space-x-3 sm:space-x-6 text-5xl sm:text-7xl md:text-8xl font-black font-heading tracking-widest relative z-10">
+        <span class="mascot-letter" data-index="0">M</span>
+        <span class="mascot-letter" data-index="1">A</span>
+        <span class="mascot-letter" data-index="2">S</span>
+        <span class="mascot-letter" data-index="3">C</span>
+        <span class="mascot-letter" data-index="4">O</span>
+        <span class="mascot-letter" data-index="5">T</span>
       </div>
 
-      <!-- Right Language Selector -->
-      <div class="relative">
-        <button class="flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#8598a0] hover:text-white transition">
-          <span>SITE LANGUAGE: ENGLISH</span>
-          <span class="text-[10px]">▼</span>
-        </button>
+      <!-- Subtitle reveal -->
+      <p id="intro-subtext" translate="no" class="notranslate text-xs sm:text-sm font-black uppercase tracking-[0.35em] text-[#8598a0] mt-7 opacity-0 transition-opacity duration-700">
+        Active Tutoring & Simulated Classroom
+      </p>
+    </div>
+
+    <!-- Skip button -->
+    <button onclick="skipMascotIntro()" class="absolute top-6 right-6 px-4 py-2 rounded-xl bg-[#18262d]/80 hover:bg-[#20313a] border border-[#2b3940] text-xs font-bold text-[#8598a0] hover:text-white transition flex items-center space-x-1.5 z-20">
+      <span>Bỏ qua</span>
+      <span>➔</span>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 0. MASCOT AUTH & WELCOME SCREEN (GRAND STAGE & GLASS)    -->
+  <!-- ======================================================== -->
+  <div id="view-landing" class="w-full h-full flex flex-col justify-between overflow-x-hidden overflow-y-auto chat-scroll bg-[#0c1317] text-white select-none relative">
+    
+    <!-- Ambient glowing backdrop lighting -->
+    <div class="absolute -top-32 -left-32 w-[550px] h-[550px] rounded-full bg-[#58cc02]/12 blur-[140px] pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-[600px] h-[600px] rounded-full bg-[#1cb0f6]/12 blur-[150px] pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#ce82ff]/5 blur-[160px] pointer-events-none"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="w-full max-w-6xl mx-auto px-6 pt-6 flex items-center justify-between flex-shrink-0 relative z-10">
+      <!-- Left Logo: Owl + Mascot -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="playMascotIntroAnimation()" title="Bấm để xem lại hiệu ứng ánh sáng lướt">
+        <div class="relative">
+          <img src="/static/owl.png" alt="Owl Logo" class="w-11 h-11 object-contain drop-shadow-[0_4px_12px_rgba(88,204,2,0.4)] group-hover:scale-110 transition transform duration-300" />
+          <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-[#58cc02] border-2 border-[#0c1317] animate-ping"></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[#58cc02] font-black text-3xl tracking-tight leading-none">Mascot</span>
+          <span class="text-[10px] font-black tracking-widest text-[#8598a0] uppercase">Active Tutoring</span>
+        </div>
       </div>
     </header>
 
-    <!-- Hero Content (Two Columns: Graphic on Left, Text & CTAs on Right) -->
-    <main class="w-full max-w-5xl mx-auto px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-12 flex-1 my-auto">
+    <!-- Main Grand Stage Container (Unified Glassmorphic Portal) -->
+    <main class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-center flex-1 my-auto relative z-10">
       
-      <!-- Left: Character Gang Graphic -->
-      <div class="w-full md:w-1/2 flex items-center justify-center">
-        <div class="relative w-80 h-80 flex items-center justify-center">
-          <div class="absolute inset-0 bg-[#58cc02]/10 rounded-full blur-3xl"></div>
+      <div class="relative w-full rounded-[36px] bg-[#142127]/85 backdrop-blur-2xl border-2 border-[#2b3d47]/80 shadow-[0_30px_90px_rgba(0,0,0,0.85)] p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12 overflow-hidden">
+        
+        <!-- Top border accent glow bar -->
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#58cc02] to-transparent opacity-70"></div>
+
+        <!-- ---------------------------------------------------- -->
+        <!-- LEFT: MASCOT SHOWCASE & PEDAGOGICAL HIGHLIGHTS       -->
+        <!-- ---------------------------------------------------- -->
+        <div class="w-full lg:w-7/12 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
           
-          <!-- Central Mascot Owl + Floating Character Friends -->
-          <div class="relative z-10 flex flex-col items-center">
-            <img src="/static/owl.png" alt="Mascot Owl" class="w-40 h-40 object-contain drop-shadow-2xl animate-bounce" style="animation-duration: 2.8s;" />
+          <!-- Interactive 3D Owl Teacher Card with Floating Micro-chips -->
+          <div class="relative w-full max-w-lg aspect-video rounded-3xl overflow-visible group">
             
-            <div class="absolute -top-3 -left-8 w-14 h-14 rounded-2xl bg-[#ce82ff] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
-              👧
+            <!-- Outer Glow Halo -->
+            <div class="absolute inset-0 bg-[#58cc02]/20 rounded-3xl blur-2xl group-hover:bg-[#58cc02]/35 transition-all duration-500"></div>
+
+            <!-- Card Frame with Image -->
+            <div class="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)] border-4 border-[#2b3d47] group-hover:border-[#58cc02] transition-all duration-500">
+              <img 
+                src="/static/mascot_teacher.png" 
+                alt="Mascot Teacher" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <!-- Bottom gradient for depth -->
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0c1317]/60 via-transparent to-transparent pointer-events-none"></div>
             </div>
-            <div class="absolute -top-6 right-0 w-14 h-14 rounded-2xl bg-[#ff9600] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
-              🦊
+
+          </div>
+
+          <!-- Hero Headline & Subtitle -->
+          <div class="space-y-2.5 max-w-lg">
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
+              Học lập trình chủ động cùng <span class="text-[#58cc02]">AI Mascot</span>
+            </h1>
+            <p class="text-sm text-[#8598a0] font-bold leading-relaxed">
+              Trực tiếp đối thoại, sửa lỗi ngộ nhận thực tế cho bạn học Bảo và nhận gợi mở từng bước từ Trợ giảng Socratic!
+            </p>
+          </div>
+
+          <!-- 3 Pedagogical Features Badges -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
+            <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#18262d] border border-[#2b3d47] text-xs font-extrabold text-slate-300">
+              <span class="text-base">👥</span>
+              <span>Bạn học ảo Bảo</span>
             </div>
-            <div class="absolute bottom-2 -left-10 w-14 h-14 rounded-2xl bg-[#1cb0f6] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
-              🧑‍🎓
+            <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#18262d] border border-[#2b3d47] text-xs font-extrabold text-slate-300">
+              <span class="text-base">💡</span>
+              <span>Gợi mở Socratic</span>
             </div>
-            <div class="absolute bottom-0 -right-4 w-14 h-14 rounded-2xl bg-[#ff4b4b] border-2 border-white/20 flex items-center justify-center text-3xl shadow-lg">
-              👨‍🏫
+            <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#18262d] border border-[#2b3d47] text-xs font-extrabold text-slate-300">
+              <span class="text-base">📄</span>
+              <span>Giáo trình VLearn</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Right: Main Hero Heading & Action Buttons -->
-      <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left max-w-md space-y-7">
-        <h1 class="text-3xl md:text-4xl font-black text-white leading-tight tracking-tight">
-          The most fun way to learn languages, chess, and more!
-        </h1>
-
-        <div class="w-full space-y-3">
-          <!-- GET STARTED (Green Button -> Switches to Selection Screen) -->
-          <button onclick="switchView('selection')" class="w-full py-4 duo-btn-green rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl">
-            GET STARTED
-          </button>
-          <!-- I ALREADY HAVE AN ACCOUNT (Outline Button -> Switches to Selection Screen) -->
-          <button onclick="switchView('selection')" class="w-full py-3.5 bg-[#18262d] border-2 border-[#37464f] hover:bg-[#20313a] text-[#1cb0f6] rounded-2xl font-black text-xs uppercase tracking-wider transition">
-            I ALREADY HAVE AN ACCOUNT
-          </button>
         </div>
+
+        <!-- ---------------------------------------------------- -->
+        <!-- RIGHT: ULTRA-POLISHED AUTH FORM (TACTILE 3D CARD)    -->
+        <!-- ---------------------------------------------------- -->
+        <div class="w-full lg:w-5/12 max-w-md bg-[#131f24]/95 border-2 border-[#2b3d47] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative flex-shrink-0">
+          
+          <!-- Top Tab Switcher: Login vs Register -->
+          <div class="flex items-center p-1.5 bg-[#0e171b] rounded-2xl border-2 border-[#20313a] shadow-inner">
+            <button 
+              id="auth-tab-login" 
+              onclick="switchAuthTab('login')" 
+              class="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition bg-[#20313a] text-white border border-[#37464f] shadow-md flex items-center justify-center space-x-1.5"
+            >
+              <span>🔑</span>
+              <span>ĐĂNG NHẬP</span>
+            </button>
+            <button 
+              id="auth-tab-register" 
+              onclick="switchAuthTab('register')" 
+              class="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition text-[#8598a0] hover:text-white flex items-center justify-center space-x-1.5"
+            >
+              <span>✨</span>
+              <span>ĐĂNG KÝ</span>
+            </button>
+          </div>
+
+          <!-- Quick Autofill Presets -->
+          <div class="flex items-center justify-between px-1 text-[11px] font-bold text-[#8598a0]">
+            <span>Chọn nhanh tài khoản:</span>
+            <div class="flex items-center space-x-2">
+              <button onclick="autofillDemoUser('quocanh')" class="px-2 py-0.5 rounded-lg bg-[#18262d] hover:bg-[#20313a] border border-[#2b3d47] text-[#58cc02] hover:underline font-black transition">
+                Quốc Anh
+              </button>
+              <button onclick="switchAuthTab('register')" class="px-2 py-0.5 rounded-lg bg-[#18262d] hover:bg-[#20313a] border border-[#2b3d47] text-[#1cb0f6] hover:underline font-black transition">
+                + Tạo mới
+              </button>
+            </div>
+          </div>
+
+          <!-- Notification Alert Banner -->
+          <div id="auth-alert-msg" class="hidden p-3.5 rounded-2xl text-xs font-extrabold border transition shadow-sm"></div>
+
+          <!-- FORM A: LOGIN -->
+          <div id="auth-form-login" class="space-y-4">
+            <!-- Username Input -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-black uppercase tracking-wider text-[#8598a0]">
+                Tên tài khoản / Email
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-base text-slate-400">👤</span>
+                <input 
+                  id="login-username" 
+                  type="text" 
+                  placeholder="VD: QuocAnh162480" 
+                  value="QuocAnh162480"
+                  class="w-full bg-[#0c1317] border-2 border-[#2b3d47] focus:border-[#58cc02] focus:ring-4 focus:ring-[#58cc02]/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-extrabold text-white placeholder-slate-500 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-black uppercase tracking-wider text-[#8598a0]">
+                  Mật khẩu
+                </label>
+                <span class="text-[11px] font-bold text-[#52656d]">Tối thiểu 6 ký tự</span>
+              </div>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-base text-slate-400">🔒</span>
+                <input 
+                  id="login-password" 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value="mascot123"
+                  class="w-full bg-[#0c1317] border-2 border-[#2b3d47] focus:border-[#58cc02] focus:ring-4 focus:ring-[#58cc02]/20 rounded-2xl py-3.5 pl-11 pr-11 text-sm font-extrabold text-white placeholder-slate-500 outline-none transition"
+                />
+                <button 
+                  type="button" 
+                  onclick="togglePasswordVisibility('login-password', this)" 
+                  class="absolute right-3.5 text-slate-400 hover:text-white transition text-sm p-1"
+                  title="Ẩn / hiện mật khẩu"
+                >
+                  👁️
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Login Button -->
+            <button 
+              onclick="submitAuth('login')" 
+              class="w-full py-4 duo-btn-green btn-shine-sweep rounded-2xl font-black text-sm uppercase tracking-wider shadow-[0_6px_0_#46a302] hover:shadow-[0_4px_0_#46a302] active:translate-y-1 flex items-center justify-center space-x-2.5 transition mt-2 cursor-pointer"
+            >
+              <span>🚀</span>
+              <span>ĐĂNG NHẬP VÀO HỌC</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <!-- FORM B: REGISTER -->
+          <div id="auth-form-register" class="space-y-4 hidden">
+            <!-- Full Name -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-black uppercase tracking-wider text-[#8598a0]">
+                Họ và tên người học
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-base text-slate-400">🎓</span>
+                <input 
+                  id="register-displayname" 
+                  type="text" 
+                  placeholder="VD: Nguyễn Quốc Anh" 
+                  class="w-full bg-[#0c1317] border-2 border-[#2b3d47] focus:border-[#1cb0f6] focus:ring-4 focus:ring-[#1cb0f6]/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-extrabold text-white placeholder-slate-500 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <!-- New Username -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-black uppercase tracking-wider text-[#8598a0]">
+                Tên tài khoản mới
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-base text-slate-400">✉️</span>
+                <input 
+                  id="register-username" 
+                  type="text" 
+                  placeholder="VD: quocanh_mascot" 
+                  class="w-full bg-[#0c1317] border-2 border-[#2b3d47] focus:border-[#1cb0f6] focus:ring-4 focus:ring-[#1cb0f6]/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-extrabold text-white placeholder-slate-500 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-black uppercase tracking-wider text-[#8598a0]">
+                Mật khẩu
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-base text-slate-400">🔒</span>
+                <input 
+                  id="register-password" 
+                  type="password" 
+                  placeholder="Tối thiểu 6 ký tự" 
+                  class="w-full bg-[#0c1317] border-2 border-[#2b3d47] focus:border-[#1cb0f6] focus:ring-4 focus:ring-[#1cb0f6]/20 rounded-2xl py-3.5 pl-11 pr-11 text-sm font-extrabold text-white placeholder-slate-500 outline-none transition"
+                />
+                <button 
+                  type="button" 
+                  onclick="togglePasswordVisibility('register-password', this)" 
+                  class="absolute right-3.5 text-slate-400 hover:text-white transition text-sm p-1"
+                  title="Ẩn / hiện mật khẩu"
+                >
+                  👁️
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Register Button -->
+            <button 
+              onclick="submitAuth('register')" 
+              class="w-full py-4 duo-btn-blue btn-shine-sweep rounded-2xl font-black text-sm uppercase tracking-wider shadow-[0_6px_0_#1899d6] hover:shadow-[0_4px_0_#1899d6] active:translate-y-1 flex items-center justify-center space-x-2.5 transition mt-2 cursor-pointer"
+            >
+              <span>✨</span>
+              <span>TẠO TÀI KHOẢN MỚI</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <!-- Quick Access Mode (Guest Entry) -->
+          <div class="pt-3 border-t border-[#20313a] flex flex-col items-center space-y-2">
+            <button 
+              onclick="guestLogin()" 
+              class="w-full py-3.5 bg-[#16252d] border-2 border-[#283d47] hover:border-[#1cb0f6] hover:bg-[#1d313c] text-[#1cb0f6] hover:text-white rounded-2xl font-black text-xs uppercase tracking-wider transition flex items-center justify-center space-x-2 shadow-sm group"
+            >
+              <span class="text-sm group-hover:scale-125 transition transform">⚡</span>
+              <span>VÀO HỌC NGAY (CHẾ ĐỘ KHÁCH)</span>
+              <span>➔</span>
+            </button>
+            <div class="text-[11px] font-bold text-[#627780] text-center">
+              Dành cho kiểm thử hoặc trải nghiệm tức thì không cần mật khẩu
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
     </main>
 
-    <!-- Bottom Language Bar (Exactly 3 Languages: Vietnam, English, France) -->
-    <footer class="w-full border-t border-[#202f36] bg-[#131f24] py-5 px-6 flex-shrink-0">
-      <div class="max-w-4xl mx-auto flex items-center justify-center space-x-8 text-xs font-black uppercase tracking-wider text-[#8598a0]">
-        <!-- Left Arrow -->
-        <span class="text-slate-500 cursor-pointer hover:text-white transition">‹</span>
-
-        <!-- 1. VIETNAM -->
-        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
-          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
-            <svg viewBox="0 0 3 2" class="w-full h-full">
-              <rect width="3" height="2" fill="#da251d"/>
-              <polygon points="1.5,0.4 1.62,0.76 2,0.76 1.69,0.98 1.81,1.34 1.5,1.12 1.19,1.34 1.31,0.98 1,0.76 1.38,0.76" fill="#ffff00"/>
-            </svg>
-          </span>
-          <span>VIETNAM</span>
+    <!-- Bottom Footer -->
+    <footer class="w-full border-t border-[#1d2b33] bg-[#0c1317] py-4 px-6 flex-shrink-0 relative z-10">
+      <div class="max-w-6xl mx-auto flex items-center justify-between text-xs font-black text-[#8598a0]">
+        <div class="flex items-center space-x-2">
+          <span>MASCOT Active Tutoring System • 2026</span>
+          <span>•</span>
+          <span class="text-[#58cc02]">Hệ thống sẵn sàng</span>
         </div>
-
-        <!-- 2. ENGLISH -->
-        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
-          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
-            <svg viewBox="0 0 19 10" class="w-full h-full">
-              <rect width="19" height="10" fill="#b22234"/>
-              <rect y="1.5" width="19" height="0.8" fill="#ffffff"/>
-              <rect y="3.1" width="19" height="0.8" fill="#ffffff"/>
-              <rect y="4.6" width="19" height="0.8" fill="#ffffff"/>
-              <rect y="6.2" width="19" height="0.8" fill="#ffffff"/>
-              <rect y="7.7" width="19" height="0.8" fill="#ffffff"/>
-              <rect y="9.2" width="19" height="0.8" fill="#ffffff"/>
-              <rect width="7.6" height="5.4" fill="#3c3b6e"/>
-            </svg>
-          </span>
-          <span>ENGLISH</span>
+        <div class="flex items-center space-x-4">
+          <span class="text-white hover:underline cursor-pointer">Tiếng Việt</span>
+          <span>•</span>
+          <span class="hover:underline cursor-pointer">English</span>
         </div>
-
-        <!-- 3. FRANCE -->
-        <div onclick="switchView('selection')" class="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl hover:bg-[#18262d] hover:text-white transition cursor-pointer">
-          <span class="w-5 h-3.5 rounded overflow-hidden shadow-sm inline-block">
-            <svg viewBox="0 0 3 2" class="w-full h-full">
-              <rect width="1" height="2" fill="#002395"/>
-              <rect x="1" width="1" height="2" fill="#ffffff"/>
-              <rect x="2" width="1" height="2" fill="#ed2939"/>
-            </svg>
-          </span>
-          <span>FRANCE</span>
-        </div>
-
-        <!-- Right Arrow -->
-        <span class="text-slate-500 cursor-pointer hover:text-white transition">›</span>
       </div>
     </footer>
 
@@ -784,6 +1164,14 @@
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#58cc02]"></span>
           </span>
         </button>
+
+        <!-- 8. LOGOUT (Đăng xuất / Về màn hình đăng nhập) -->
+        <button onclick="logoutUser()" class="w-full flex items-center space-x-3.5 px-3.5 py-3 rounded-2xl text-[#8598a0] hover:text-rose-400 hover:bg-[#20161a] transition" title="Đăng xuất tài khoản & xem lại màn hình chào">
+          <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-lg">
+            🚪
+          </div>
+          <span class="leading-none pt-0.5">ĐĂNG XUẤT</span>
+        </button>
       </nav>
     </div>
 
@@ -833,64 +1221,56 @@
           </button>
         </div>
 
-        <div class="text-xs font-black uppercase tracking-widest text-[#52656d] mb-10 flex items-center space-x-3 w-full justify-center">
-          <span class="h-0.5 w-16 bg-[#2b3940]"></span>
-          <span>LỘ TRÌNH BÀI HỌC</span>
-          <span class="h-0.5 w-16 bg-[#2b3940]"></span>
-        </div>
-
-        <!-- Snake / Curved Learning Path -->
-        <div class="relative w-full flex flex-col items-center space-y-9 pb-16">
+        <!-- HERO CLASSROOM SHOWCASE (DUOLINGO OWL TEACHER) -->
+        <div class="w-full flex flex-col items-center text-center py-4 px-2 max-w-xl mx-auto space-y-6">
           
-          <!-- Node 1: START (Active Green Node with Tooltip Bubble) -->
-          <div id="tour-start-node" class="relative flex flex-col items-center">
-            <!-- Start Speech Tooltip Bubble -->
-            <div class="mb-3 px-4 py-2 bg-[#1b262c] border-2 border-[#37464f] rounded-2xl font-black text-xs uppercase tracking-wider text-[#58cc02] shadow-lg animate-bounce flex items-center space-x-1">
-              <span>BẮT ĐẦU</span>
+          <!-- Big 3D Mascot Illustration Card with soft glow & rounded frame -->
+          <div class="relative w-full max-w-lg aspect-video rounded-3xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.6)] border-4 border-[#283842] group hover:border-[#58cc02] transition-all duration-300">
+            <img 
+              src="/static/mascot_teacher.png" 
+              alt="Mascot Owl Teacher in Classroom" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <!-- Soft bottom gradient overlay for depth -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#131f24]/70 via-transparent to-transparent pointer-events-none"></div>
+          </div>
+
+          <!-- Engaging Clean Headline & Welcome -->
+          <div class="space-y-2">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              Sẵn sàng làm chủ bài học hôm nay?
+            </h3>
+            <p class="text-sm text-[#8598a0] font-bold max-w-md mx-auto leading-relaxed">
+              Cùng bạn học Bảo và các trợ giảng AI thảo luận, sửa ngộ nhận và chinh phục kiến thức một cách chủ động!
+            </p>
+          </div>
+
+          <!-- Big Primary CTA Button (Tactile 3D Green) -->
+          <div id="tour-start-node" class="w-full max-w-sm pt-2">
+            <button 
+              onclick="switchView('exercise')" 
+              class="w-full py-4 duo-btn-green rounded-2xl font-black text-base uppercase tracking-wider shadow-[0_6px_0_#46a302] hover:shadow-[0_4px_0_#46a302] active:translate-y-1 flex items-center justify-center space-x-2.5 transition"
+            >
+              <span>🚀</span>
+              <span>BẮT ĐẦU BUỔI HỌC</span>
+              <span>➔</span>
+            </button>
+            <div class="text-xs text-[#8598a0] font-bold flex items-center justify-center space-x-4 pt-3">
+              <span class="flex items-center space-x-1">
+                <span>⏱️</span>
+                <span>5 - 10 phút</span>
+              </span>
+              <span>•</span>
+              <span class="flex items-center space-x-1 text-amber-400">
+                <span>⚡</span>
+                <span>+50 XP</span>
+              </span>
+              <span>•</span>
+              <span class="flex items-center space-x-1 text-[#1cb0f6]">
+                <span>💎</span>
+                <span>+15 Gems</span>
+              </span>
             </div>
-            <!-- Big Glowing Circular 3D Node -->
-            <button onclick="switchView('exercise')" class="path-node w-20 h-20 rounded-full bg-[#00cd9c] border-b-8 border-[#00a880] flex items-center justify-center text-3xl shadow-[0_10px_20px_rgba(0,205,156,0.3)] text-white">
-              ⭐
-            </button>
-          </div>
-
-          <!-- Character illustration next to path (Oscar with Bees) -->
-          <div class="w-full flex justify-end pr-12 relative -my-4">
-            <div class="flex flex-col items-center">
-              <span class="text-xs animate-pulse">🐝 🐝</span>
-              <div class="w-24 h-24 bg-[#18262d] border-2 border-[#37464f] rounded-full flex items-center justify-center text-4xl shadow-md">
-                🦊
-              </div>
-              <span class="text-[11px] font-black text-[#8598a0] mt-1">Bảo đang đợi bạn</span>
-            </div>
-          </div>
-
-          <!-- Node 2: Star Node (Pending) -->
-          <div class="relative flex justify-center -translate-x-12">
-            <button onclick="switchView('exercise')" class="path-node w-16 h-16 rounded-full bg-[#37464f] border-b-6 border-[#27343b] flex items-center justify-center text-2xl text-[#8598a0]">
-              ⭐
-            </button>
-          </div>
-
-          <!-- Node 3: Headphone Node (Audio Concept) -->
-          <div class="relative flex justify-center translate-x-12">
-            <button onclick="switchView('exercise')" class="path-node w-16 h-16 rounded-full bg-[#37464f] border-b-6 border-[#27343b] flex items-center justify-center text-2xl text-[#8598a0]">
-              🎧
-            </button>
-          </div>
-
-          <!-- Node 4: Treasure Chest -->
-          <div class="relative flex justify-center -translate-x-8">
-            <button class="path-node w-16 h-16 rounded-2xl bg-[#37464f] border-b-6 border-[#27343b] flex items-center justify-center text-2xl text-[#8598a0]">
-              🎁
-            </button>
-          </div>
-
-          <!-- Node 5: Final Trophy Node -->
-          <div class="relative flex justify-center translate-x-6">
-            <button class="path-node w-16 h-16 rounded-full bg-[#37464f] border-b-6 border-[#27343b] flex items-center justify-center text-2xl text-[#8598a0]">
-              🏆
-            </button>
           </div>
 
         </div>
@@ -1110,6 +1490,25 @@
           </div>
         </div>
 
+        <!-- My Learning Sessions & Mastery Certificates Section -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">🎓</span>
+              <h3 class="text-lg font-black text-white">Lịch Sử Buổi Học & Chứng Chỉ Của Tôi</h3>
+            </div>
+            <button onclick="loadLearnerProfileAndSessions()" class="text-xs font-black text-[#1cb0f6] uppercase tracking-wider hover:underline cursor-pointer flex items-center space-x-1">
+              <span>🔄 Làm mới</span>
+            </button>
+          </div>
+
+          <div id="profile-sessions-list" class="space-y-3">
+            <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl text-center text-xs text-slate-400 font-bold">
+              Đang tải lịch sử các buổi học...
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Right Column Cards for Profile (Matching Screenshot) -->
@@ -1127,17 +1526,17 @@
             </span>
             <span>6</span>
           </div>
-          <div class="flex items-center space-x-1 text-slate-500">
+          <div class="flex items-center space-x-1 text-[#ff9600]">
             <span class="text-lg">🔥</span>
-            <span>0</span>
+            <span id="profile-right-streak">1</span>
           </div>
           <div class="flex items-center space-x-1 text-[#1cb0f6]">
             <span class="text-lg">💎</span>
-            <span>772</span>
+            <span id="profile-right-gems">772</span>
           </div>
           <div class="flex items-center space-x-1 text-[#ff4b4b]">
             <span class="text-lg">❤️</span>
-            <span>5</span>
+            <span id="profile-right-hearts">5</span>
           </div>
         </div>
 
@@ -1461,6 +1860,9 @@
               <button id="tab-code-edit" onclick="switchCodeTab('edit')" class="px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition">
                 ✏️ Sửa & Kiểm tra Fix
               </button>
+              <button id="tab-code-diff" onclick="switchCodeTab('diff')" class="px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition" title="So sánh code lỗi gốc của Bảo với code bạn đang sửa">
+                ⚖️ So sánh (Diff)
+              </button>
             </div>
           </div>
 
@@ -1476,6 +1878,24 @@
               <button onclick="resetEditorCode()" class="text-[#1cb0f6] hover:underline text-[11px]">Khôi phục code gốc</button>
             </div>
             <textarea id="code-snippet-editor" rows="6" class="w-full bg-[#0d1519] text-[#00e676] font-mono text-xs p-3 rounded-xl border border-[#2b3940] outline-none focus:border-[#1cb0f6] resize-y chat-scroll" spellcheck="false"></textarea>
+          </div>
+
+          <!-- Code Diff Area (Side-by-side comparison) -->
+          <div id="code-diff-container" class="hidden p-3 bg-[#0a1013] border-b border-[#202f36]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+              <div class="p-3 bg-[#160f12] rounded-xl border border-rose-900/60">
+                <div class="text-[11px] font-black text-rose-400 uppercase mb-1.5 flex items-center justify-between">
+                  <span>❌ Code gốc ngộ nhận (Bảo)</span>
+                </div>
+                <pre class="text-[#fca5a5] overflow-x-auto leading-relaxed max-h-48 chat-scroll whitespace-pre-wrap" id="code-diff-original"></pre>
+              </div>
+              <div class="p-3 bg-[#0d1c15] rounded-xl border border-emerald-900/60">
+                <div class="text-[11px] font-black text-emerald-400 uppercase mb-1.5 flex items-center justify-between">
+                  <span>✓ Code của bạn (Đã sửa)</span>
+                </div>
+                <pre class="text-[#86efac] overflow-x-auto leading-relaxed max-h-48 chat-scroll whitespace-pre-wrap" id="code-diff-modified"></pre>
+              </div>
+            </div>
           </div>
 
           <!-- Code Actions & Console Output Drawer -->
@@ -1668,7 +2088,85 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- 5. DYNAMIC INTERACTIVE GUIDED TOUR (WALKTHROUGH)         -->
+  <!-- 5. OUT OF HEARTS REFILL MODAL                            -->
+  <!-- ======================================================== -->
+  <div id="hearts-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+    <div class="bg-[#18262d] rounded-3xl p-6 max-w-md w-full shadow-2xl border-2 border-[#37464f] text-center space-y-4">
+      <div class="w-16 h-16 rounded-full bg-rose-950/80 border-2 border-rose-600 mx-auto flex items-center justify-center text-3xl animate-bounce">
+        💔
+      </div>
+      <div>
+        <h3 class="text-xl font-black text-white">Bạn Đã Hết Tim!</h3>
+        <p class="text-xs text-[#8598a0] mt-1.5 leading-relaxed font-bold">
+          Đừng nản lòng! Bạn có thể dùng Đá quý tích lũy để nạp đầy lại tim, hoặc mở ôn tập Sổ tay bài giảng VLearn để nhận lại 5 tim miễn phí.
+        </p>
+      </div>
+
+      <div class="space-y-2.5 pt-2">
+        <button onclick="refillHeartsAction('gems')" class="w-full py-3 duo-btn-green rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2">
+          <span>💎 DÙNG 20 ĐÁ QUÝ ĐỂ HỒI 5 TIM</span>
+        </button>
+        <button onclick="refillHeartsAction('practice')" class="w-full py-3 duo-btn-blue rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2">
+          <span>📖 ÔN TẬP GIÁO TRÌNH (HỒI MIỄN PHÍ)</span>
+        </button>
+        <button onclick="closeHeartsModal()" class="w-full py-2.5 text-xs font-bold text-[#8598a0] hover:text-white transition">
+          Để sau
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 6. MASTERY CELEBRATION MODAL                             -->
+  <!-- ======================================================== -->
+  <div id="celebration-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+    <div class="bg-[#18262d] rounded-3xl p-7 max-w-lg w-full shadow-2xl border-2 border-[#58cc02] text-center space-y-5">
+      <div class="w-20 h-20 rounded-3xl bg-[#58cc02]/20 border-2 border-[#58cc02] mx-auto flex items-center justify-center text-4xl shadow-lg">
+        🏆
+      </div>
+      <div>
+        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-[#58cc02]/20 text-[#58cc02] border border-[#58cc02]/40 tracking-wider">
+          XUẤT SẮC HOÀN THÀNH
+        </span>
+        <h3 class="text-2xl font-black text-white mt-2">Chúc Mừng Bạn Đã Làm Chủ Kiến Thức!</h3>
+        <p class="text-xs text-[#8598a0] mt-1.5 leading-relaxed font-bold">
+          Bạn đã sửa thành công ngộ nhận cho bạn học Bảo và vượt qua thử thách Explain-Back với đánh giá Rubric toàn diện 100%!
+        </p>
+      </div>
+
+      <!-- Rewards Grid -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="p-3 bg-[#131f24] rounded-2xl border border-[#2b3940]">
+          <div class="text-2xl">⚡</div>
+          <div class="text-base font-black text-amber-400 mt-1">+50 XP</div>
+          <div class="text-[10px] font-bold text-[#8598a0] uppercase">Kinh nghiệm</div>
+        </div>
+        <div class="p-3 bg-[#131f24] rounded-2xl border border-[#2b3940]">
+          <div class="text-2xl">💎</div>
+          <div class="text-base font-black text-[#1cb0f6] mt-1">+15 Gems</div>
+          <div class="text-[10px] font-bold text-[#8598a0] uppercase">Đá quý</div>
+        </div>
+        <div class="p-3 bg-[#131f24] rounded-2xl border border-[#2b3940]">
+          <div class="text-2xl">🔥</div>
+          <div class="text-base font-black text-[#ff9600] mt-1">+1 Streak</div>
+          <div class="text-[10px] font-bold text-[#8598a0] uppercase">Chuỗi ngày</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2.5 pt-2">
+        <button onclick="openPrintableReport(); closeCelebrationModal();" class="w-full py-3.5 duo-btn-green rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2 shadow-lg">
+          <span>📜 XEM & IN CHỨNG CHỈ MASTERY (PDF)</span>
+        </button>
+        <button onclick="closeCelebrationModal(); switchView('home');" class="w-full py-3 duo-btn-blue rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2">
+          <span>Tiếp tục lộ trình học tập →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 7. DYNAMIC INTERACTIVE GUIDED TOUR (WALKTHROUGH)         -->
   <!-- ======================================================== -->
   <div id="dynamic-tour-container" class="fixed inset-0 z-[9990] hidden pointer-events-none select-none">
     
@@ -2083,6 +2581,26 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
         osc.start(now);
         osc.stop(now + 0.45);
+      } else if (type === 'victory' || type === 'success') {
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const oscNode = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          oscNode.type = 'triangle';
+          oscNode.frequency.setValueAtTime(freq, now + idx * 0.12);
+          gainNode.gain.setValueAtTime(0.3, now + idx * 0.12);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.5);
+          oscNode.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          oscNode.start(now + idx * 0.12);
+          oscNode.stop(now + idx * 0.12 + 0.5);
+        });
+      } else if (type === 'pop') {
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
       }
     }
 
@@ -2157,6 +2675,7 @@
       } else if (viewName === 'profile') {
         if (profileView) profileView.classList.remove('hidden');
         if (navProfile) navProfile.className = activeClass;
+        loadLearnerProfileAndSessions();
       } else if (viewName === 'instructor') {
         if (instructorView) instructorView.classList.remove('hidden');
         if (navInstructor) navInstructor.className = activeClass;
@@ -2914,6 +3433,10 @@
       if (codeEl) codeEl.innerText = snippet.code || '';
       const editorEl = document.getElementById('code-snippet-editor');
       if (editorEl) editorEl.value = snippet.code || '';
+      const diffOrig = document.getElementById('code-diff-original');
+      if (diffOrig) diffOrig.innerText = snippet.code || '';
+      const diffMod = document.getElementById('code-diff-modified');
+      if (diffMod) diffMod.innerText = snippet.code || '';
 
       const drawer = document.getElementById('code-console-drawer');
       if (drawer) drawer.classList.add('hidden');
@@ -2922,21 +3445,41 @@
     function switchCodeTab(tab) {
       const tabView = document.getElementById('tab-code-view');
       const tabEdit = document.getElementById('tab-code-edit');
+      const tabDiff = document.getElementById('tab-code-diff');
       const viewContainer = document.getElementById('code-view-container');
       const editContainer = document.getElementById('code-edit-container');
+      const diffContainer = document.getElementById('code-diff-container');
+
+      const activeClass = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
+      const inactiveClass = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
+
+      if (tabView) tabView.className = inactiveClass;
+      if (tabEdit) tabEdit.className = inactiveClass;
+      if (tabDiff) tabDiff.className = inactiveClass;
+      if (viewContainer) viewContainer.classList.add('hidden');
+      if (editContainer) editContainer.classList.add('hidden');
+      if (diffContainer) diffContainer.classList.add('hidden');
 
       if (tab === 'edit') {
-        tabEdit.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
-        tabView.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
-        viewContainer.classList.add('hidden');
-        editContainer.classList.remove('hidden');
+        if (tabEdit) tabEdit.className = activeClass;
+        if (editContainer) editContainer.classList.remove('hidden');
         const editor = document.getElementById('code-snippet-editor');
         if (editor) editor.focus();
+      } else if (tab === 'diff') {
+        if (tabDiff) tabDiff.className = activeClass;
+        if (diffContainer) diffContainer.classList.remove('hidden');
+        const diffOrig = document.getElementById('code-diff-original');
+        const diffMod = document.getElementById('code-diff-modified');
+        const editor = document.getElementById('code-snippet-editor');
+        if (diffOrig && sessionData && sessionData.code_snippet) {
+          diffOrig.innerText = sessionData.code_snippet.code || '';
+        }
+        if (diffMod && editor) {
+          diffMod.innerText = editor.value || (sessionData && sessionData.code_snippet ? sessionData.code_snippet.code : '');
+        }
       } else {
-        tabView.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
-        tabEdit.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
-        editContainer.classList.add('hidden');
-        viewContainer.classList.remove('hidden');
+        if (tabView) tabView.className = activeClass;
+        if (viewContainer) viewContainer.classList.remove('hidden');
       }
     }
 
@@ -3409,11 +3952,251 @@
       feed.scrollTop = feed.scrollHeight;
     }
 
+    let introTimer = null;
+    let letterTimers = [];
+
+    function startMascotIntro() {
+      const introScreen = document.getElementById('mascot-intro-screen');
+      if (!introScreen) return;
+
+      // Clear any prior timer
+      if (introTimer) clearTimeout(introTimer);
+      letterTimers.forEach(t => clearTimeout(t));
+      letterTimers = [];
+
+      // Reset state and re-trigger GPU compositor CSS animation
+      introScreen.classList.remove('opacity-0', 'pointer-events-none', 'scale-105', 'hidden');
+      introScreen.classList.remove('play-intro');
+      void introScreen.offsetWidth; // Force reflow to cleanly restart CSS keyframes
+      introScreen.classList.add('play-intro');
+
+      // Schedule soft sound chimes (non-blocking, safely silenced if browser policy blocks)
+      const delays = [200, 520, 840, 1160, 1480, 1800];
+      delays.forEach((d, idx) => {
+        const t = setTimeout(() => playLetterChime(idx), d);
+        letterTimers.push(t);
+      });
+
+      // Cleanup overlay after animation finishes
+      introTimer = setTimeout(() => {
+        introScreen.classList.add('hidden');
+        introScreen.classList.remove('play-intro');
+      }, 3600);
+    }
+
+    function playLetterChime(idx) {
+      if (isAudioMuted) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') {
+          ctx.close().catch(() => {});
+          return;
+        }
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const freqs = [392.00, 440.00, 523.25, 587.33, 659.25, 783.99]; // G4, A4, C5, D5, E5, G5
+        const now = ctx.currentTime;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+        setTimeout(() => {
+          try { ctx.close(); } catch (e) {}
+        }, 300);
+      } catch (e) {}
+    }
+
+    function skipMascotIntro() {
+      const introScreen = document.getElementById('mascot-intro-screen');
+      if (introTimer) clearTimeout(introTimer);
+      letterTimers.forEach(t => clearTimeout(t));
+      if (introScreen) {
+        introScreen.classList.remove('play-intro');
+        introScreen.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
+        setTimeout(() => {
+          introScreen.classList.add('hidden');
+        }, 300);
+      }
+      switchView('landing');
+    }
+
+    function playMascotIntroAnimation() {
+      startMascotIntro();
+    }
+
+    // Attach animationend listener to cleanly hide intro overlay once keyframe finishes
+    document.addEventListener('DOMContentLoaded', () => {
+      const introScreen = document.getElementById('mascot-intro-screen');
+      if (introScreen) {
+        introScreen.addEventListener('animationend', (e) => {
+          if (e.target === introScreen && e.animationName === 'introScreenKeyframeDissolve') {
+            introScreen.classList.add('hidden');
+            introScreen.classList.remove('play-intro');
+          }
+        });
+      }
+    });
+
+    function switchAuthTab(tab) {
+      playDuoSound('pop');
+      const tabLogin = document.getElementById('auth-tab-login');
+      const tabRegister = document.getElementById('auth-tab-register');
+      const formLogin = document.getElementById('auth-form-login');
+      const formRegister = document.getElementById('auth-form-register');
+      const alertBox = document.getElementById('auth-alert-msg');
+      if (alertBox) alertBox.classList.add('hidden');
+
+      const activeClass = "flex-1 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition bg-[#20313a] text-white border border-[#37464f] shadow-sm";
+      const inactiveClass = "flex-1 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition text-[#8598a0] hover:text-white";
+
+      if (tab === 'register') {
+        if (tabRegister) tabRegister.className = activeClass;
+        if (tabLogin) tabLogin.className = inactiveClass;
+        if (formRegister) formRegister.classList.remove('hidden');
+        if (formLogin) formLogin.classList.add('hidden');
+      } else {
+        if (tabLogin) tabLogin.className = activeClass;
+        if (tabRegister) tabRegister.className = inactiveClass;
+        if (formLogin) formLogin.classList.remove('hidden');
+        if (formRegister) formRegister.classList.add('hidden');
+      }
+    }
+
+    function showAuthAlert(msg, isSuccess = false) {
+      const alertBox = document.getElementById('auth-alert-msg');
+      if (!alertBox) return;
+      alertBox.innerText = msg;
+      alertBox.classList.remove('hidden', 'bg-rose-950/70', 'border-rose-800', 'text-rose-300', 'bg-emerald-950/70', 'border-emerald-800', 'text-emerald-300');
+      if (isSuccess) {
+        alertBox.classList.add('bg-emerald-950/70', 'border-emerald-800', 'text-emerald-300');
+      } else {
+        alertBox.classList.add('bg-rose-950/70', 'border-rose-800', 'text-rose-300');
+      }
+    }
+
+    async function submitAuth(type) {
+      let username = '';
+      let displayName = '';
+      let password = '';
+
+      if (type === 'register') {
+        displayName = (document.getElementById('register-displayname')?.value || '').trim();
+        username = (document.getElementById('register-username')?.value || '').trim();
+        password = (document.getElementById('register-password')?.value || '').trim();
+
+        if (!displayName) {
+          showAuthAlert("Vui lòng nhập Họ và tên người học.");
+          return;
+        }
+        if (!username) {
+          showAuthAlert("Vui lòng nhập Tên tài khoản.");
+          return;
+        }
+        if (password.length < 6) {
+          showAuthAlert("Mật khẩu cần tối thiểu 6 ký tự.");
+          return;
+        }
+      } else {
+        username = (document.getElementById('login-username')?.value || '').trim();
+        password = (document.getElementById('login-password')?.value || '').trim();
+
+        if (!username) {
+          showAuthAlert("Vui lòng nhập Tên tài khoản hoặc Email.");
+          return;
+        }
+        if (!password) {
+          showAuthAlert("Vui lòng nhập Mật khẩu.");
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: username,
+            display_name: displayName || username,
+            password: password,
+            is_register: type === 'register'
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          showAuthAlert(err.detail || "Không thể xác thực tài khoản.");
+          return;
+        }
+
+        const data = await res.json();
+        showAuthAlert(type === 'register' ? "Đăng ký thành công! Đang chuyển vào lớp học..." : "Đăng nhập thành công! Đang tải phiên học...", true);
+        playDuoSound('victory');
+        localStorage.setItem('mascot_logged_in', username);
+
+        // Update profile in local state
+        if (data.profile) {
+          const pName = document.getElementById('profile-name');
+          if (pName && data.profile.display_name) pName.innerText = data.profile.display_name;
+          const pUser = document.getElementById('profile-user');
+          if (pUser && data.profile.username) pUser.innerText = data.profile.username;
+        }
+
+        setTimeout(() => {
+          switchView('home');
+        }, 650);
+
+      } catch (err) {
+        showAuthAlert("Lỗi kết nối máy chủ xác thực.");
+      }
+    }
+
+    function guestLogin() {
+      playDuoSound('pop');
+      localStorage.setItem('mascot_logged_in', 'guest');
+      switchView('home');
+    }
+
+    function logoutUser() {
+      playDuoSound('pop');
+      localStorage.removeItem('mascot_logged_in');
+      document.documentElement.classList.remove('mascot-auth-active');
+      switchView('landing');
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerText = '🙈';
+      } else {
+        input.type = 'password';
+        btn.innerText = '👁️';
+      }
+    }
+
+    function autofillDemoUser(preset) {
+      playDuoSound('hint');
+      switchAuthTab('login');
+      const uInput = document.getElementById('login-username');
+      const pInput = document.getElementById('login-password');
+      if (uInput) uInput.value = 'QuocAnh162480';
+      if (pInput) pInput.value = 'mascot123';
+      showAuthAlert("Đã điền sẵn tài khoản mẫu Quốc Anh. Bấm Đăng Nhập để vào học ngay!", true);
+    }
+
     async function init() {
       try {
         const res = await fetch('/api/session');
         sessionData = await res.json();
         updateUIFromState();
+        loadLearnerProfileAndSessions();
         if (sessionData && sessionData.concept_title) {
           const topicTitle = document.getElementById('unit-topic-title');
           if (topicTitle) topicTitle.innerText = sessionData.concept_title;
@@ -3432,18 +4215,16 @@
         updateWordBank(sessionData.course_id);
         renderCodeSnippet(sessionData.code_snippet);
         renderChatFeed(sessionData.conversation_history);
-        // Direct entry to main learning workspace without initial onboarding gate
-        switchView('home');
 
-        // Check if user has seen onboarding guide, if not, auto-open once
-        if (!localStorage.getItem('mascot_guide_seen')) {
-          setTimeout(() => {
-            openGuideModal();
-          }, 450);
+        // Always display Landing and Login screen with Mascot Intro on reload
+        switchView('landing');
+        const introScreen = document.getElementById('mascot-intro-screen');
+        if (introScreen && !introScreen.classList.contains('play-intro')) {
+          startMascotIntro();
         }
       } catch (e) {
         console.error("Init error:", e);
-        switchView('home');
+        switchView('landing');
       }
     }
 
@@ -3499,11 +4280,35 @@
       if (!sessionData) return;
 
       const hintsUsed = sessionData.hint_count || 0;
-      const hearts = Math.max(1, 3 - hintsUsed);
+      const hearts = (sessionData.profile && sessionData.profile.hearts !== undefined)
+        ? sessionData.profile.hearts
+        : Math.max(0, 3 - hintsUsed);
       const heartsEl = document.getElementById('stat-hearts');
       if (heartsEl) heartsEl.innerText = hearts;
       const homeHeartsEl = document.getElementById('home-hearts');
       if (homeHeartsEl) homeHeartsEl.innerText = hearts;
+      const profHeartsEl = document.getElementById('profile-right-hearts');
+      if (profHeartsEl) profHeartsEl.innerText = hearts;
+
+      if (sessionData.profile) {
+        const xpEl = document.getElementById('profile-xp');
+        if (xpEl && sessionData.profile.xp !== undefined) xpEl.innerText = sessionData.profile.xp;
+        const gemsEl = document.getElementById('profile-right-gems');
+        if (gemsEl && sessionData.profile.gems !== undefined) gemsEl.innerText = sessionData.profile.gems;
+        const streakEl = document.getElementById('profile-streak');
+        if (streakEl && sessionData.profile.streak !== undefined) streakEl.innerText = sessionData.profile.streak;
+        const rightStreakEl = document.getElementById('profile-right-streak');
+        if (rightStreakEl && sessionData.profile.streak !== undefined) rightStreakEl.innerText = sessionData.profile.streak;
+      }
+
+      const quoteEl = document.getElementById('home-misconception-quote');
+      if (quoteEl && sessionData && sessionData.initial_misconception) {
+        quoteEl.innerText = `"${sessionData.initial_misconception}"`;
+      }
+
+      if (hearts <= 0) {
+        setTimeout(() => openHeartsModal(), 350);
+      }
 
       // Update 2-Step Pedagogical Stepper
       const step1 = document.getElementById('step-indicator-1');
@@ -3648,7 +4453,9 @@
         updateUIFromState();
 
         if (sessionData.terminal_status === 'completed') {
-          playDuoSound('correct');
+          playDuoSound('victory');
+          setTimeout(() => openCelebrationModal(), 600);
+          loadLearnerProfileAndSessions();
         } else if (sessionData.misconception_repaired && data.reply.role === 'peer') {
           playDuoSound('correct');
         } else if (data.reply.role === 'ta') {
@@ -4044,6 +4851,151 @@
     function closeTranscriptModal() {
       const modal = document.getElementById('transcript-modal');
       if (modal) modal.classList.add('hidden');
+    }
+
+    function openHeartsModal() {
+      const modal = document.getElementById('hearts-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeHeartsModal() {
+      const modal = document.getElementById('hearts-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function refillHeartsAction(reason) {
+      try {
+        const res = await fetch('/api/profile/refill-hearts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert(err.detail || "Không thể nạp tim. Bạn cần ít nhất 20 Đá quý hoặc chọn ôn tập giáo trình!");
+          return;
+        }
+        const profile = await res.json();
+        if (sessionData) {
+          sessionData.profile = profile;
+        }
+        updateUIFromState();
+        closeHeartsModal();
+        playDuoSound('correct');
+        if (reason === 'practice') {
+          toggleSlideModal();
+        }
+      } catch (e) {
+        console.error("Lỗi hồi phục tim:", e);
+      }
+    }
+
+    function openCelebrationModal() {
+      const modal = document.getElementById('celebration-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeCelebrationModal() {
+      const modal = document.getElementById('celebration-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function loadLearnerProfileAndSessions() {
+      try {
+        // 1. Fetch profile
+        const profRes = await fetch('/api/profile');
+        if (profRes.ok) {
+          const profile = await profRes.json();
+          const pName = document.getElementById('profile-name');
+          if (pName && profile.display_name) pName.innerText = profile.display_name;
+          const pUser = document.getElementById('profile-user');
+          if (pUser && profile.username) pUser.innerText = profile.username;
+          const pStreak = document.getElementById('profile-streak');
+          if (pStreak && profile.streak !== undefined) pStreak.innerText = profile.streak;
+          const pXp = document.getElementById('profile-xp');
+          if (pXp && profile.xp !== undefined) pXp.innerText = profile.xp;
+          const pLeague = document.getElementById('profile-league');
+          if (pLeague && profile.league) pLeague.innerText = profile.league;
+          const pTop3 = document.getElementById('profile-top3');
+          if (pTop3 && profile.top3_finishes !== undefined) pTop3.innerText = profile.top3_finishes;
+
+          const rightStreak = document.getElementById('profile-right-streak');
+          if (rightStreak && profile.streak !== undefined) rightStreak.innerText = profile.streak;
+          const rightGems = document.getElementById('profile-right-gems');
+          if (rightGems && profile.gems !== undefined) rightGems.innerText = profile.gems;
+          const rightHearts = document.getElementById('profile-right-hearts');
+          if (rightHearts && profile.hearts !== undefined) rightHearts.innerText = profile.hearts;
+          const statHearts = document.getElementById('stat-hearts');
+          if (statHearts && profile.hearts !== undefined) statHearts.innerText = profile.hearts;
+          const homeHearts = document.getElementById('home-hearts');
+          if (homeHearts && profile.hearts !== undefined) homeHearts.innerText = profile.hearts;
+        }
+
+        // 2. Fetch all sessions
+        const sessRes = await fetch('/api/sessions');
+        if (sessRes.ok) {
+          const sessData = await sessRes.json();
+          const sessions = sessData.sessions || [];
+          const listContainer = document.getElementById('profile-sessions-list');
+          if (!listContainer) return;
+
+          if (sessions.length === 0) {
+            listContainer.innerHTML = `
+              <div class="p-6 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl text-center text-xs text-slate-400 font-bold">
+                Chưa có buổi học nào được lưu. Hãy bấm "Lớp học" để bắt đầu trải nghiệm ngay!
+              </div>
+            `;
+            return;
+          }
+
+          listContainer.innerHTML = sessions.map(s => {
+            const isCompleted = s.completed || s.terminal_status === 'completed';
+            const courseColor = s.course_id === 'CS102' ? '#ff9600' : (s.course_id === 'ICT1.002' ? '#1cb0f6' : '#58cc02');
+            const courseBadge = s.course_id || 'CS102';
+            const statusBadge = isCompleted 
+              ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-950/60 text-emerald-400 border border-emerald-800">✓ Đã Hoàn Thành Mastery</span>' 
+              : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-950/60 text-amber-400 border border-amber-800">Đang học dở</span>';
+
+            return `
+              <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] hover:border-[#37464f] rounded-2xl transition shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-black uppercase text-white" style="background-color: ${courseColor}40; border: 1px solid ${courseColor}80;">
+                      ${courseBadge}
+                    </span>
+                    <span class="font-extrabold text-white text-sm">${s.concept_id || 'Chủ đề môn học'}</span>
+                  </div>
+                  <div>${statusBadge}</div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-[#8598a0] font-bold">
+                  <div class="flex items-center space-x-3">
+                    <span>💬 ${s.total_turns || 0} lượt trao đổi</span>
+                    <span>•</span>
+                    <span>${s.created_at ? s.created_at.substring(0, 10) : 'Gần đây'}</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button onclick="openTranscriptModal('${s.session_id}')" class="px-3 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] text-[#1cb0f6] border border-[#37464f] text-xs font-bold transition">
+                      📜 Nhật Ký
+                    </button>
+                    ${isCompleted ? `
+                      <button onclick="openPrintableReport()" class="px-3 py-1.5 rounded-xl duo-btn-green text-xs font-black uppercase tracking-wider transition">
+                        🏆 Chứng Chỉ
+                      </button>
+                    ` : `
+                      <button onclick="switchView('exercise')" class="px-3 py-1.5 rounded-xl duo-btn-blue text-xs font-black uppercase tracking-wider transition">
+                        ▶ Học Tiếp
+                      </button>
+                    `}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        console.error("Lỗi tải thông tin học viên & phiên học:", err);
+      }
     }
 
     window.onload = init;
