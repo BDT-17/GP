@@ -688,6 +688,20 @@
           <span class="leading-none pt-0.5">PROFILE</span>
         </button>
 
+        <!-- INSTRUCTOR DASHBOARD (Audit & Socratic Tracking) -->
+        <button id="nav-instructor" onclick="switchView('instructor')" class="w-full flex items-center space-x-4 px-4 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
+          <div class="relative w-7 h-7 flex-shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <span class="leading-none pt-0.5">INSTRUCTOR</span>
+        </button>
+
         <!-- MORE (Purple circle with three dots) -->
         <button onclick="toggleSlideModal()" class="w-full flex items-center space-x-4 px-4 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition">
           <svg class="w-7 h-7 flex-shrink-0" viewBox="0 0 32 32" fill="none">
@@ -1113,103 +1127,291 @@
 
       </div>
     </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- VIEW: INSTRUCTOR & AUDIT DASHBOARD                  -->
+    <!-- ---------------------------------------------------- -->
+    <div id="view-instructor" class="flex-1 flex overflow-y-auto chat-scroll hidden">
+      <div class="flex-1 flex flex-col py-6 px-8 max-w-5xl mx-auto w-full space-y-6">
+        
+        <!-- Header Banner -->
+        <div class="w-full bg-[#18262d] border-2 border-[#2b3940] rounded-3xl p-6 shadow-md flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div class="w-14 h-14 rounded-2xl bg-[#042f2e] border-2 border-[#0d9488] flex items-center justify-center text-3xl shadow-sm">
+              🎓
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h2 class="text-2xl font-black text-white leading-tight">Instructor & Audit Dashboard</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#0d9488]/20 text-[#2dd4bf] border border-[#0d9488]/40">MASCOT MVP Audit</span>
+              </div>
+              <p class="text-xs text-[#8598a0] mt-1 font-bold">Giám sát tính toàn vẹn sư phạm, gợi ý Socratic, trích dẫn bài giảng và cảnh báo bảo mật thời gian thực.</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <button onclick="openPrintableReport()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-xs font-black text-white flex items-center space-x-2 transition shadow-sm">
+              <span>🖨️ In / Xuất PDF & Chứng Chỉ</span>
+            </button>
+            <button onclick="downloadAuditReportJSON()" class="px-4 py-2.5 rounded-xl bg-[#20313a] hover:bg-[#283d48] border-2 border-[#37464f] text-xs font-black text-white flex items-center space-x-2 transition shadow-sm">
+              <span>📥 Tải Báo Cáo JSON</span>
+            </button>
+            <button onclick="resetSession()" class="px-4 py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border-2 border-rose-800/60 text-xs font-black text-rose-300 flex items-center space-x-2 transition shadow-sm">
+              <span>🔄 Đặt Lại Phiên</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-4 gap-4">
+          <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
+            <span class="text-3xl">📚</span>
+            <div>
+              <div id="inst-metric-total-sessions" class="text-2xl font-black text-white leading-none">0</div>
+              <div class="text-[11px] font-bold text-[#8598a0] mt-1 uppercase tracking-wider">Tổng Phiên Học</div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
+            <span class="text-3xl text-emerald-400">🎯</span>
+            <div>
+              <div id="inst-metric-completion-rate" class="text-2xl font-black text-emerald-400 leading-none">0%</div>
+              <div class="text-[11px] font-bold text-[#8598a0] mt-1 uppercase tracking-wider">Tỷ Lệ Hoàn Thành</div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
+            <span class="text-3xl text-amber-400">💡</span>
+            <div>
+              <div id="inst-metric-socratic-hints" class="text-2xl font-black text-amber-400 leading-none">0 / 0</div>
+              <div class="text-[11px] font-bold text-[#8598a0] mt-1 uppercase tracking-wider">Gợi Ý TA / Leo Thang</div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl flex items-center space-x-3.5">
+            <span class="text-3xl text-rose-400">🛡️</span>
+            <div>
+              <div id="inst-metric-security-alerts" class="text-2xl font-black text-rose-400 leading-none">0</div>
+              <div class="text-[11px] font-bold text-[#8598a0] mt-1 uppercase tracking-wider">Cảnh Báo Bảo Mật</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Session Live Audit Card -->
+        <div class="bg-[#18262d] border-2 border-[#2b3940] rounded-3xl p-6 shadow-md space-y-4">
+          <div class="flex items-center justify-between border-b border-[#24353f] pb-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h3 class="text-lg font-black text-white">Phiên Học Đang Hoạt Động (Active Session Audit)</h3>
+            </div>
+            <div id="inst-active-session-id" class="text-xs font-mono text-[#8598a0]">ID: loading...</div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940]">
+              <div class="text-[10px] font-bold text-[#8598a0] uppercase">Môn học & Khái niệm</div>
+              <div id="inst-active-course-concept" class="text-sm font-black text-white mt-1">CS102 · Overloading vs Overriding</div>
+            </div>
+            <div class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940]">
+              <div class="text-[10px] font-bold text-[#8598a0] uppercase">Trạng Thái Sửa Hiểu Lầm</div>
+              <div id="inst-active-repair-badge" class="mt-1">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-900/40 text-amber-400 border border-amber-800">Chưa sửa</span>
+              </div>
+            </div>
+            <div class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940]">
+              <div class="text-[10px] font-bold text-[#8598a0] uppercase">Đánh Giá Explain-Back</div>
+              <div id="inst-active-explain-badge" class="mt-1">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">Chờ hoàn thành</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Permitted Citations List -->
+          <div>
+            <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+              <span>📖 Trích Dẫn Bài Giảng Được Cấp Phép (Grounding Citations):</span>
+            </div>
+            <div id="inst-active-citations-container" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] text-xs text-slate-300 font-mono space-y-1">
+              Chưa có trích dẫn nào được kích hoạt.
+            </div>
+          </div>
+
+          <!-- Security Alerts Log in Current Session -->
+          <div>
+            <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+              <span>🛡️ Nhật Ký Phòng Thủ Sư Phạm (Security & Adversarial Audit):</span>
+            </div>
+            <div id="inst-active-security-container" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] text-xs font-mono">
+              <span class="text-emerald-400 font-bold">✓ Không phát hiện nỗ lực Prompt Injection hoặc vi phạm quy tắc.</span>
+            </div>
+          </div>
+
+          <!-- Rubric Breakdown & Radar Chart Live Audit (P3, Task 3.2) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+                <span>📊 Chi Tiết Đánh Giá Rubric (Explain-Back Multi-Criteria Rubric):</span>
+              </div>
+              <div id="inst-active-rubric-container" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] text-xs font-mono space-y-1.5 min-h-[160px]">
+                <span class="text-slate-400">Đang chờ học viên sửa hiểu lầm và nộp bài giải thích lại...</span>
+              </div>
+            </div>
+            <div>
+              <div class="text-xs font-black uppercase tracking-wider text-[#a5b6bd] mb-2 flex items-center space-x-2">
+                <span>🕸️ Biểu Đồ Radar Năng Lực Rubric (Live SVG Radar):</span>
+              </div>
+              <div id="inst-active-radar-chart" class="p-3 bg-[#131f24] rounded-xl border border-[#2b3940] flex items-center justify-center min-h-[160px]">
+                <span class="text-xs text-slate-500 font-mono">Biểu đồ Radar sẽ xuất hiện khi học viên giải thích lại</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Sessions Database Table -->
+        <div class="bg-[#18262d] border-2 border-[#2b3940] rounded-3xl p-6 shadow-md space-y-4">
+          <div class="flex items-center justify-between border-b border-[#24353f] pb-3">
+            <h3 class="text-lg font-black text-white">Lịch Sử Các Phiên Học (SQLite Session Records)</h3>
+            <span class="text-xs font-bold text-[#8598a0]">Tự động đồng bộ từ database</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-[#131f24] uppercase text-[#8598a0] font-black tracking-wider border-b border-[#2b3940]">
+                <tr>
+                  <th class="py-3 px-4">Mã Phiên (ID)</th>
+                  <th class="py-3 px-4">Môn Học</th>
+                  <th class="py-3 px-4">Trạng Thái</th>
+                  <th class="py-3 px-4">Số Lượt</th>
+                  <th class="py-3 px-4">Thời Gian</th>
+                  <th class="py-3 px-4 text-right">Chi Tiết</th>
+                </tr>
+              </thead>
+              <tbody id="inst-sessions-table-body" class="divide-y divide-[#202f36]">
+                <tr>
+                  <td colspan="6" class="py-4 text-center text-slate-500 font-bold">Đang tải danh sách phiên học...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- VIEW B: EXERCISE / TUTORING SESSION SCREEN (DARK)    -->
     <!-- ---------------------------------------------------- -->
     <div id="view-exercise" class="flex-1 flex flex-col justify-between hidden h-full">
       
-      <!-- Top Bar (Duolingo Header) -->
-      <header class="w-full max-w-5xl mx-auto pt-6 px-6 flex items-center justify-between flex-shrink-0">
+      <!-- Top Bar: 2-Step Pedagogical Stepper & Header -->
+      <header class="w-full max-w-5xl mx-auto pt-4 px-6 flex items-center justify-between flex-shrink-0 border-b border-[#202f36] pb-3">
         <!-- Close Button (X) back to Home -->
-        <button onclick="switchView('home')" class="text-2xl font-black text-[#52656d] hover:text-white transition">
+        <button onclick="switchView('home')" class="text-2xl font-black text-[#52656d] hover:text-white transition mr-3" title="Quay lại trang chủ">
           ✕
         </button>
 
-        <!-- Progress Bar -->
-        <div class="flex-1 max-w-2xl mx-8">
-          <div class="w-full h-4 bg-[#37464f] rounded-full overflow-hidden p-0.5">
-            <div id="progress-bar-fill" class="h-full bg-[#58cc02] rounded-full transition-all duration-500 shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]" style="width: 25%;"></div>
+        <!-- 2-Step Pedagogical Stepper (AC6) -->
+        <div class="flex-1 max-w-2xl mx-auto flex items-center justify-center space-x-2 md:space-x-3 text-xs font-black uppercase tracking-wider">
+          <!-- Step 1: Sửa ngộ nhận -->
+          <div id="step-indicator-1" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ff9600] bg-[#2a1d12] text-[#ff9600] transition-all shadow-sm">
+            <span id="step-1-icon">🎯</span>
+            <span id="step-1-text">BƯỚC 1: SỬA NGỘ NHẬN</span>
+          </div>
+
+          <div class="text-[#52656d] font-bold">➔</div>
+
+          <!-- Step 2: Giải thích lại (Rubric) -->
+          <div id="step-indicator-2" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#2b3940] bg-[#141e24] text-[#8598a0] transition-all shadow-sm">
+            <span id="step-2-icon">🔒</span>
+            <span id="step-2-text">BƯỚC 2: EXPLAIN-BACK (RUBRIC)</span>
           </div>
         </div>
 
-        <!-- Hearts Counter -->
-        <div class="flex items-center space-x-2 text-[#ff4b4b] font-black text-lg">
-          <span class="text-2xl">❤️</span>
-          <span id="stat-hearts">3</span>
+        <!-- Right Quick Actions & Hearts -->
+        <div class="flex items-center space-x-3 ml-3">
+          <button onclick="toggleSlideModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Mở Sổ tay giáo trình VLearn">
+            <span>📖</span>
+            <span class="hidden sm:inline">Giáo Trình</span>
+          </button>
+          <div class="flex items-center space-x-1.5 text-[#ff4b4b] font-black text-sm">
+            <span>❤️</span>
+            <span id="stat-hearts">3</span>
+          </div>
         </div>
       </header>
 
-      <!-- Main Exercise Workspace -->
-      <main class="flex-1 flex flex-col items-center justify-center px-4 max-w-3xl mx-auto w-full py-4">
+      <!-- Main Exercise Workspace (Scrollable Chat & Playground) -->
+      <main class="flex-1 flex flex-col px-4 max-w-4xl mx-auto w-full py-4 overflow-y-auto chat-scroll space-y-4">
         
-        <!-- Exercise Tag & Instruction -->
-        <div class="w-full text-left mb-6">
-          <div id="exercise-badge" class="inline-flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#ce82ff] mb-2">
-            <span>✨</span>
-            <span id="badge-text">HIỂU LẦM CỦA BẠN HỌC</span>
-          </div>
-          <h1 id="exercise-title" class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-            Sửa lỗi sai cho bạn học Bảo
-          </h1>
-        </div>
-
-        <!-- Character & Speech Bubble Interaction -->
-        <div class="w-full flex items-start space-x-5 mb-8">
-          <!-- Character Avatar (Duolingo Flat Vector Style) -->
-          <div id="character-avatar" class="flex-shrink-0">
-            <!-- Bảo Avatar -->
-            <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-              <circle cx="50" cy="22" r="14" fill="#6d7a82"/>
-              <circle cx="50" cy="14" r="8" fill="#505d64"/>
-              <rect x="25" y="30" width="50" height="42" rx="21" fill="#fbd2a4"/>
-              <rect x="26" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-              <rect x="54" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-              <line x1="46" y1="51" x2="54" y2="51" stroke="#4a555c" stroke-width="3"/>
-              <circle cx="36" cy="51" r="3" fill="#2d373d"/>
-              <circle cx="64" cy="51" r="3" fill="#2d373d"/>
-              <path d="M44 63 Q50 67 56 63" stroke="#d2886a" stroke-width="2.5" stroke-linecap="round"/>
-              <path d="M18 90 C18 78 30 74 50 74 C70 74 82 78 82 90 L85 120 L15 120 Z" fill="#ff9600"/>
-              <path d="M42 74 L50 84 L58 74 Z" fill="#ffffff"/>
-            </svg>
-          </div>
-
-          <!-- Speech Bubble -->
-          <div class="flex-1 bg-[#1b262c] border-2 border-[#37464f] rounded-2xl p-4 speech-bubble shadow-lg">
-            <div class="flex items-center space-x-2 mb-1.5">
-              <button onclick="playSpeechAudio()" class="w-8 h-8 rounded-full bg-[#1cb0f6] hover:bg-[#35bbff] flex items-center justify-center text-white text-sm shadow-sm transition">
-                🔊
-              </button>
-              <span id="speaker-name" class="text-xs font-black uppercase tracking-wider text-[#8598a0]">Bảo (Bạn học)</span>
+        <!-- Header Topic Info -->
+        <div class="flex items-center justify-between border-b border-[#1f2d34] pb-2">
+          <div>
+            <div id="exercise-badge" class="inline-flex items-center space-x-1.5 text-[11px] font-black uppercase tracking-wider text-[#ce82ff]">
+              <span>✨</span>
+              <span id="badge-text">MÔ PHỎNG LỚP HỌC MASCOT</span>
             </div>
-            <p id="speech-text" class="text-base md:text-lg font-bold text-white leading-relaxed">
-              Tớ nghĩ là trong Java hay C++, <span class="text-[#ce82ff] underline decoration-dotted decoration-2 underline-offset-4 cursor-pointer" title="Khái niệm trọng tâm">Overloading</span> (nạp chồng) với <span class="text-[#ce82ff] underline decoration-dotted decoration-2 underline-offset-4 cursor-pointer" title="Khái niệm trọng tâm">Overriding</span> (ghi đè) chỉ là hai cách gọi khác nhau của cùng một việc: đó là viết lại một phương thức để dùng. Bản chất chúng hoàn toàn giống nhau, đúng không cậu?
-            </p>
+            <h1 id="exercise-title" class="text-xl md:text-2xl font-black text-white tracking-tight mt-0.5">
+              Phân biệt Nạp chồng (Overloading) và Ghi đè (Overriding)
+            </h1>
           </div>
+          <button onclick="toggleCodePlayground()" id="btn-toggle-code" class="px-3 py-1.5 rounded-xl bg-[#18262d] hover:bg-[#20313a] border border-[#2b3940] text-xs font-bold text-[#8598a0] hover:text-white flex items-center space-x-1.5 transition">
+            <span>💻</span>
+            <span id="toggle-code-text">Thu gọn Code</span>
+          </button>
         </div>
 
-        <!-- Interactive Code Misconception Block (Bảo's Buggy Code Snippet) -->
-        <div id="code-misconception-card" class="w-full mb-6 bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
-          <!-- Card Header Bar -->
-          <div class="bg-[#18262d] px-4 py-2.5 flex items-center justify-between border-b border-[#2b3940]">
+        <!-- Interactive Code Playground (Tab 1: Code của Bảo | Tab 2: Thử sửa code) -->
+        <div id="code-misconception-card" class="w-full bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
+          <!-- Card Header Bar with Tabs -->
+          <div class="bg-[#18262d] px-4 py-2 flex items-center justify-between border-b border-[#2b3940]">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
               <span id="code-snippet-filename" class="text-xs font-mono font-bold text-[#8598a0] ml-2">PolymorphismDemo.java</span>
               <span id="code-snippet-lang" class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#20313a] text-[#1cb0f6]">JAVA</span>
             </div>
-            <button id="run-code-btn" onclick="runCodeSimulation()" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] active:translate-y-0.5 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
-              <span>▶</span>
-              <span>Chạy thử code của Bảo</span>
-            </button>
+
+            <!-- Tab Switcher -->
+            <div class="flex items-center space-x-1.5 text-xs font-bold">
+              <button id="tab-code-view" onclick="switchCodeTab('view')" class="px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition">
+                📄 Code của Bảo
+              </button>
+              <button id="tab-code-edit" onclick="switchCodeTab('edit')" class="px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition">
+                ✏️ Sửa & Kiểm tra Fix
+              </button>
+            </div>
           </div>
 
-          <!-- Code View Area -->
-          <div class="p-4 bg-[#0d1519] overflow-x-auto text-sm font-mono text-[#e0e6ed] leading-relaxed max-h-56">
+          <!-- Code View Area (Read-only) -->
+          <div id="code-view-container" class="p-4 bg-[#0d1519] overflow-x-auto text-xs font-mono text-[#e0e6ed] leading-relaxed max-h-48 chat-scroll">
             <pre><code id="code-snippet-content">// Đang tải đoạn mã của bạn học Bảo...</code></pre>
           </div>
 
+          <!-- Code Edit Area (Interactive) -->
+          <div id="code-edit-container" class="hidden p-3 bg-[#0a1013] border-b border-[#202f36]">
+            <div class="text-[11px] font-bold text-[#8598a0] mb-1.5 flex items-center justify-between">
+              <span>✍️ Bạn hãy chỉnh sửa đoạn mã bên dưới để sửa lỗi ngộ nhận cho Bảo:</span>
+              <button onclick="resetEditorCode()" class="text-[#1cb0f6] hover:underline text-[11px]">Khôi phục code gốc</button>
+            </div>
+            <textarea id="code-snippet-editor" rows="6" class="w-full bg-[#0d1519] text-[#00e676] font-mono text-xs p-3 rounded-xl border border-[#2b3940] outline-none focus:border-[#1cb0f6] resize-y chat-scroll" spellcheck="false"></textarea>
+          </div>
+
+          <!-- Code Actions & Console Output Drawer -->
+          <div class="bg-[#141e24] px-4 py-2 flex items-center justify-between border-t border-[#202f36]">
+            <div class="flex items-center space-x-2">
+              <button id="btn-run-original" onclick="runCodeSimulation(false)" class="px-3 py-1.5 bg-[#283842] hover:bg-[#324552] text-[#8598a0] hover:text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 transition">
+                <span>▶ Chạy code gốc của Bảo</span>
+              </button>
+              <button id="btn-run-fix" onclick="runCodeSimulation(true)" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
+                <span>⚡ Chạy thử code đã sửa</span>
+              </button>
+            </div>
+            <button onclick="toggleConsoleDrawer()" class="text-xs text-[#8598a0] hover:text-white font-bold">
+              <span id="console-toggle-label">Xem kết quả Terminal ▾</span>
+            </button>
+          </div>
+
           <!-- Simulation Console Output Drawer -->
-          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#141e24] p-3.5 transition-all">
+          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#0c1418] p-3.5 transition-all">
             <div class="flex items-center justify-between text-xs font-bold text-[#8598a0] mb-1.5">
               <div class="flex items-center space-x-1.5 text-amber-400">
                 <span>💻</span>
@@ -1217,7 +1419,7 @@
               </div>
               <button onclick="toggleConsoleDrawer()" class="text-[#8598a0] hover:text-white text-xs font-bold">✕ Đóng</button>
             </div>
-            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#0a0f12] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
+            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#060a0c] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
             <div id="code-console-hint" class="mt-2 text-xs font-semibold text-[#8598a0] flex items-center space-x-1.5">
               <span>💡</span>
               <span id="code-console-hint-text">Hãy nhìn kết quả trên và nhắn cho bạn Bảo biết tại sao code lại chạy như vậy nhé!</span>
@@ -1225,78 +1427,88 @@
           </div>
         </div>
 
-        <!-- Active Answer Slot (Underlined) -->
-        <div class="w-full mb-6">
-          <div class="min-h-[64px] w-full border-b-2 border-[#37464f] flex flex-wrap items-center gap-2 p-2 focus-within:border-[#1cb0f6] transition">
-            <input 
-              id="user-input" 
-              type="text" 
-              placeholder="Gõ câu trả lời của bạn vào đây hoặc chọn từ khóa bên dưới..." 
-              class="w-full bg-transparent text-lg md:text-xl font-bold text-white placeholder-[#52656d] outline-none"
-              autocomplete="off"
-              onkeydown="if(event.key === 'Enter') handleCheck()"
-              oninput="updateButtonState()"
-            />
+        <!-- Explain-Back Rubric Multi-Criteria Checklist Card (P3) -->
+        <div id="rubric-checklist-card" class="w-full bg-[#162228] border-2 border-[#2b3940] rounded-2xl p-4 shadow-md hidden transition-all">
+          <div class="flex items-center justify-between mb-3 border-b border-[#24353f] pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-base">📋</span>
+              <span class="text-xs font-black uppercase tracking-wider text-amber-400">Tiêu Chuẩn Đánh Giá Explain-Back (Rubric)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span id="rubric-score-pct-label" class="text-xs font-black text-amber-300">0% Đạt</span>
+              <div class="w-20 h-2.5 bg-[#24353f] rounded-full overflow-hidden">
+                <div id="rubric-score-progress-bar" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
           </div>
-          <div class="h-0.5 w-full border-b-2 border-[#37464f] mt-1"></div>
+          <div id="rubric-criteria-list" class="space-y-2 text-xs font-semibold">
+            <!-- Populated dynamically via updateRubricUI() -->
+          </div>
         </div>
 
-        <!-- Word Bank / Quick Answer Tiles -->
-        <div class="w-full mb-4">
-          <div class="text-[11px] font-black uppercase tracking-wider text-[#52656d] mb-2.5">
-            Từ khóa gợi ý (Nhấn để chọn):
+        <!-- Classroom Discussion Feed (Scrollable Multi-Role Chat Feed) -->
+        <div class="w-full flex flex-col space-y-3.5 pt-2">
+          <div class="text-[11px] font-black uppercase tracking-wider text-[#8598a0] flex items-center space-x-2">
+            <span>💬 DIỄN BIẾN LỚP HỌC (CLASSROOM DISCUSSION FEED):</span>
+            <span class="h-px bg-[#202f36] flex-1"></span>
           </div>
-          <div id="word-bank-tiles" class="flex flex-wrap gap-2.5">
-            <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              Overloading trong cùng một lớp
-            </button>
-            <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              khác danh sách tham số
-            </button>
-            <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              Overriding trong kế thừa lớp cha con
-            </button>
-            <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              cùng tên và cùng tham số
-            </button>
-            <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-              💡 Cho tớ gợi ý
-            </button>
-            <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
-              🛑 Test chặn bài sau
-            </button>
+
+          <div id="classroom-chat-feed" class="w-full space-y-3.5">
+            <!-- Populated dynamically via renderChatFeed() -->
           </div>
         </div>
 
       </main>
 
-      <!-- Bottom Action Footer -->
-      <footer id="action-footer" class="w-full border-t-2 border-[#202f36] bg-[#131f24] py-6 px-6 transition-colors duration-300">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-          <div id="footer-feedback" class="flex items-center space-x-4 hidden">
-            <div id="feedback-icon" class="w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black flex-shrink-0 shadow-lg"></div>
-            <div>
-              <div id="feedback-title" class="font-extrabold text-xl leading-tight"></div>
-              <div id="feedback-desc" class="text-sm font-bold opacity-90 max-w-lg mt-0.5"></div>
+      <!-- Bottom Chat Input & Action Bar -->
+      <footer id="action-footer" class="w-full border-t-2 border-[#202f36] bg-[#131f24] pt-3 pb-5 px-6 transition-colors duration-300 flex-shrink-0">
+        <div class="max-w-4xl mx-auto space-y-2.5">
+          
+          <!-- Word Bank / Quick Answer Tiles -->
+          <div class="w-full flex items-center justify-between text-xs">
+            <span class="text-[11px] font-black uppercase tracking-wider text-[#52656d]">Từ khóa gợi ý (Nhấn để điền):</span>
+            <button onclick="clearInput()" class="text-[#8598a0] hover:text-white text-xs font-bold">Xóa ô gõ</button>
+          </div>
+          
+          <div id="word-bank-tiles" class="flex flex-wrap gap-2">
+            <!-- Dynamically populated according to active course -->
+          </div>
+
+          <!-- Input Row (Modern Chat Bar with Send button) -->
+          <div class="flex items-center space-x-2.5 pt-1">
+            <div class="flex-1 bg-[#18262d] border-2 border-[#2b3940] focus-within:border-[#1cb0f6] rounded-2xl px-4 py-2.5 flex items-center space-x-2 transition shadow-inner">
+              <input 
+                id="user-input" 
+                type="text" 
+                placeholder="Nhập câu giải thích hoặc phản hồi bạn Bảo... (Nhấn Enter hoặc bấm Mic để nói)" 
+                class="w-full bg-transparent text-sm md:text-base font-bold text-white placeholder-[#52656d] outline-none"
+                autocomplete="off"
+                onkeydown="if(event.key === 'Enter') handleCheck()"
+                oninput="updateButtonState()"
+              />
+              <!-- Voice Input (STT) Button -->
+              <button 
+                id="mic-btn" 
+                onclick="toggleSpeechRecognition()" 
+                type="button"
+                title="Bấm để nói bằng giọng nói (Voice Input)"
+                class="w-9 h-9 rounded-xl bg-[#20313a] hover:bg-[#2c404c] text-slate-300 hover:text-white flex items-center justify-center flex-shrink-0 transition border border-[#37464f]"
+              >
+                <span id="mic-icon" class="text-base">🎙️</span>
+              </button>
             </div>
-          </div>
 
-          <div id="footer-left-actions">
-            <button id="skip-btn" onclick="clearInput()" class="duo-btn-skip px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider">
-              XÓA
-            </button>
-          </div>
-
-          <div>
             <button 
               id="action-btn" 
               onclick="handleCheck()" 
               disabled
-              class="duo-btn-green px-12 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg"
+              class="duo-btn-green px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center space-x-1.5 flex-shrink-0"
             >
-              KIỂM TRA
+              <span>GỬI</span>
+              <span>➤</span>
             </button>
           </div>
+
         </div>
       </footer>
 
@@ -1331,6 +1543,29 @@
       <button onclick="toggleSlideModal()" class="w-full py-3 duo-btn-blue rounded-2xl font-black text-xs uppercase tracking-wider">
         ĐÃ HIỂU
       </button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. INSTRUCTOR SESSION TRANSCRIPT AUDIT MODAL              -->
+  <!-- ======================================================== -->
+  <div id="transcript-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center hidden">
+    <div class="bg-[#18262d] rounded-3xl p-6 max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border-2 border-[#37464f]">
+      <div class="flex items-center justify-between pb-4 border-b border-[#2b3940]">
+        <div>
+          <h3 class="font-black text-lg text-white">📜 Nhật Ký Hội Thoại Chi Tiết (Session Transcript)</h3>
+          <div id="transcript-modal-subtitle" class="text-xs text-[#8598a0] font-mono mt-0.5">Session: ...</div>
+        </div>
+        <button onclick="closeTranscriptModal()" class="text-xl text-[#8598a0] hover:text-white font-black">✕</button>
+      </div>
+      <div id="transcript-modal-body" class="flex-1 overflow-y-auto py-4 space-y-3 chat-scroll">
+        <div class="text-center text-xs text-slate-500 font-bold py-6">Đang tải nhật ký hội thoại...</div>
+      </div>
+      <div class="pt-4 border-t border-[#2b3940] flex justify-end">
+        <button onclick="closeTranscriptModal()" class="px-5 py-2.5 duo-btn-blue rounded-xl font-black text-xs uppercase tracking-wider">
+          ĐÓNG
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1387,8 +1622,10 @@
       const homeView = document.getElementById('view-home');
       const exerciseView = document.getElementById('view-exercise');
       const profileView = document.getElementById('view-profile');
+      const instructorView = document.getElementById('view-instructor');
       const navLearn = document.getElementById('nav-learn');
       const navProfile = document.getElementById('nav-profile');
+      const navInstructor = document.getElementById('nav-instructor');
 
       const activeClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl border-2 border-[#1cb0f6] bg-[#142936] text-[#1cb0f6] transition";
       const inactiveClass = "w-full flex items-center space-x-4 px-4 py-3 rounded-2xl text-[#a5b6bd] hover:bg-[#18262d] transition";
@@ -1424,8 +1661,10 @@
       homeView.classList.add('hidden');
       exerciseView.classList.add('hidden');
       if (profileView) profileView.classList.add('hidden');
+      if (instructorView) instructorView.classList.add('hidden');
       if (navLearn) navLearn.className = inactiveClass;
       if (navProfile) navProfile.className = inactiveClass;
+      if (navInstructor) navInstructor.className = inactiveClass;
 
       if (viewName === 'home') {
         homeView.classList.remove('hidden');
@@ -1433,6 +1672,10 @@
       } else if (viewName === 'profile') {
         if (profileView) profileView.classList.remove('hidden');
         if (navProfile) navProfile.className = activeClass;
+      } else if (viewName === 'instructor') {
+        if (instructorView) instructorView.classList.remove('hidden');
+        if (navInstructor) navInstructor.className = activeClass;
+        loadInstructorDashboard();
       } else if (viewName === 'exercise') {
         exerciseView.classList.remove('hidden');
         document.getElementById('user-input').focus();
@@ -2181,26 +2424,88 @@
       const langEl = document.getElementById('code-snippet-lang');
       if (langEl) langEl.innerText = (snippet.language || 'code').toUpperCase();
       const codeEl = document.getElementById('code-snippet-content');
-      if (codeEl) codeEl.innerText = snippet.code;
+      if (codeEl) codeEl.innerText = snippet.code || '';
+      const editorEl = document.getElementById('code-snippet-editor');
+      if (editorEl) editorEl.value = snippet.code || '';
 
       const drawer = document.getElementById('code-console-drawer');
       if (drawer) drawer.classList.add('hidden');
     }
 
-    async function runCodeSimulation() {
+    function switchCodeTab(tab) {
+      const tabView = document.getElementById('tab-code-view');
+      const tabEdit = document.getElementById('tab-code-edit');
+      const viewContainer = document.getElementById('code-view-container');
+      const editContainer = document.getElementById('code-edit-container');
+
+      if (tab === 'edit') {
+        tabEdit.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
+        tabView.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
+        viewContainer.classList.add('hidden');
+        editContainer.classList.remove('hidden');
+        const editor = document.getElementById('code-snippet-editor');
+        if (editor) editor.focus();
+      } else {
+        tabView.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
+        tabEdit.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
+        editContainer.classList.add('hidden');
+        viewContainer.classList.remove('hidden');
+      }
+    }
+
+    function resetEditorCode() {
+      const editorEl = document.getElementById('code-snippet-editor');
+      if (editorEl && sessionData && sessionData.code_snippet) {
+        editorEl.value = sessionData.code_snippet.code || '';
+      }
+    }
+
+    function toggleCodePlayground() {
+      const card = document.getElementById('code-misconception-card');
+      const toggleText = document.getElementById('toggle-code-text');
+      if (!card) return;
+      card.classList.toggle('hidden');
+      if (toggleText) {
+        toggleText.innerText = card.classList.contains('hidden') ? 'Mở lại Code' : 'Thu gọn Code';
+      }
+    }
+
+    async function runCodeSimulation(isCustom = false) {
       playDuoSound('hint');
       const drawer = document.getElementById('code-console-drawer');
       const outputEl = document.getElementById('code-console-output');
       const hintEl = document.getElementById('code-console-hint-text');
+      const editorEl = document.getElementById('code-snippet-editor');
 
       if (!drawer || !outputEl) return;
 
+      let payload = {};
+      if (isCustom && editorEl) {
+        payload.code = editorEl.value;
+      }
+
+      const endpoint = isCustom ? '/api/code/verify' : '/api/code/run';
+
       try {
-        const res = await fetch('/api/code/run', { method: 'POST' });
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         const data = await res.json();
         outputEl.innerText = data.output || "Đoạn mã đã chạy xong không có output.";
         if (hintEl && data.explanation) {
           hintEl.innerText = data.explanation;
+        }
+        if (data.is_fixed) {
+          playDuoSound('correct');
+          if (data.session_state) {
+            sessionData = data.session_state;
+            updateUIFromState();
+          }
+          if (data.peer_message) {
+            appendChatMessage('peer', data.peer_message);
+          }
         }
       } catch (err) {
         if (sessionData && sessionData.code_snippet) {
@@ -2212,11 +2517,6 @@
       }
 
       drawer.classList.remove('hidden');
-      const input = document.getElementById('user-input');
-      if (input) {
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        input.focus();
-      }
     }
 
     function toggleConsoleDrawer() {
@@ -2230,78 +2530,292 @@
 
       if (code === 'ICT1.002') {
         container.innerHTML = `
-          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tham trị sao chép giá trị (Pass-by-value)
           </button>
-          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             không làm thay đổi biến ngoài
           </button>
-          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)
           </button>
-          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             thay đổi trực tiếp biến gốc
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       } else if (code === 'CS105') {
         container.innerHTML = `
-          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             List là kiểu dữ liệu Mutable (thay đổi được)
           </button>
-          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             dùng ngoặc vuông [] và có append
           </button>
-          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tuple là kiểu dữ liệu Immutable (bất biến)
           </button>
-          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             dùng ngoặc tròn () không thể sửa phần tử
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       } else {
         container.innerHTML = `
-          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Overloading trong cùng một lớp
           </button>
-          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             khác danh sách tham số
           </button>
-          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Overriding trong kế thừa lớp cha con
           </button>
-          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             cùng tên và cùng tham số
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       }
     }
 
-    function playSpeechAudio() {
+    function playSpeechAudio(customText, role = 'peer') {
       playDuoSound('hint');
-      const text = document.getElementById('speech-text').innerText;
-      if ('speechSynthesis' in window) {
-        const utter = new SpeechSynthesisUtterance(text);
+      const text = customText || (sessionData ? sessionData.initial_misconception : '');
+      if ('speechSynthesis' in window && text) {
+        window.speechSynthesis.cancel();
+        // Remove speaker prefix brackets like [TS. Minh]: or [Thầy Hùng]: for natural speech
+        const cleanText = text.replace(/^\[.*?\]:\s*/, '');
+        const utter = new SpeechSynthesisUtterance(cleanText);
         utter.lang = 'vi-VN';
+
+        // Distinct character acoustics:
+        if (role === 'peer') {
+          utter.pitch = 1.22; // Youthful student
+          utter.rate = 1.05;
+        } else if (role === 'ta') {
+          utter.pitch = 0.96; // Warm, supportive pedagogical tone
+          utter.rate = 0.95;
+        } else if (role === 'lecturer') {
+          utter.pitch = 0.82; // Deep, authoritative university lecturer
+          utter.rate = 0.88;
+        } else {
+          utter.pitch = 1.0;
+          utter.rate = 1.0;
+        }
+
         window.speechSynthesis.speak(utter);
       }
+    }
+
+    let speechRecognizer = null;
+    let isRecordingSpeech = false;
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+      const rec = new SpeechRecognition();
+      rec.lang = 'vi-VN';
+      rec.continuous = false;
+      rec.interimResults = false;
+
+      rec.onstart = () => {
+        isRecordingSpeech = true;
+        const btn = document.getElementById('mic-btn');
+        const icon = document.getElementById('mic-icon');
+        if (btn) btn.classList.add('bg-rose-600', 'animate-pulse', 'border-rose-400');
+        if (icon) icon.innerText = '🔴';
+      };
+
+      rec.onresult = (event) => {
+        if (event.results && event.results.length > 0) {
+          const transcript = event.results[0][0].transcript;
+          const input = document.getElementById('user-input');
+          if (input && transcript) {
+            input.value = (input.value ? input.value + ' ' : '') + transcript;
+            updateButtonState();
+          }
+        }
+      };
+
+      rec.onerror = (e) => {
+        console.warn("Speech recognition error:", e);
+        stopSpeechRecording();
+      };
+
+      rec.onend = () => {
+        stopSpeechRecording();
+      };
+
+      return rec;
+    }
+
+    function toggleSpeechRecognition() {
+      if (!speechRecognizer) {
+        speechRecognizer = initSpeechRecognition();
+      }
+      if (!speechRecognizer) {
+        alert("Trình duyệt hiện tại chưa hỗ trợ nhận diện giọng nói Web Speech API (Khuyên dùng Google Chrome hoặc Microsoft Edge).");
+        return;
+      }
+
+      if (isRecordingSpeech) {
+        try { speechRecognizer.stop(); } catch(e){}
+        stopSpeechRecording();
+      } else {
+        try {
+          speechRecognizer.start();
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function stopSpeechRecording() {
+      isRecordingSpeech = false;
+      const btn = document.getElementById('mic-btn');
+      const icon = document.getElementById('mic-icon');
+      if (btn) btn.classList.remove('bg-rose-600', 'animate-pulse', 'border-rose-400');
+      if (icon) icon.innerText = '🎙️';
+    }
+
+    function renderChatFeed(history) {
+      const feed = document.getElementById('classroom-chat-feed');
+      if (!feed) return;
+
+      if (!history || history.length === 0) {
+        const initialText = sessionData ? sessionData.initial_misconception : "Đang kết nối vào lớp học...";
+        feed.innerHTML = createChatMessageHtml('peer', initialText);
+        return;
+      }
+
+      feed.innerHTML = history.map(item => createChatMessageHtml(item.role, item.content)).join('');
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function createChatMessageHtml(role, content) {
+      const safeContent = (content || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const speechContent = safeContent.replace(/'/g, "\\'");
+
+      if (role === 'learner' || role === 'user') {
+        return `
+          <div class="flex items-start justify-end space-x-3 pl-8">
+            <div class="bg-[#142936] border-2 border-[#1cb0f6] rounded-2xl p-4 shadow-sm max-w-xl text-left">
+              <div class="flex items-center justify-between mb-1.5 space-x-3">
+                <span class="text-xs font-black uppercase tracking-wider text-[#1cb0f6]">Bạn (Học viên)</span>
+                <span class="text-[10px] font-bold text-[#8598a0]">Lời giải thích</span>
+              </div>
+              <div class="text-sm font-bold text-white leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#142936] border border-[#1cb0f6] flex items-center justify-center text-lg flex-shrink-0">
+              👤
+            </div>
+          </div>
+        `;
+      } else if (role === 'ta') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#172e21] border-2 border-[#58cc02] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🦉
+            </div>
+            <div class="flex-1 bg-[#13221a] border-2 border-[#58cc02]/60 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#58cc02]">Thầy Hùng (Trợ giảng Socratic)</span>
+                  <span class="text-[9px] font-bold bg-[#1d3d2a] text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-700">Gợi ý bậc thang</span>
+                </div>
+                <button onclick="playSpeechAudio('${speechContent}', 'ta')" class="text-xs text-[#8598a0] hover:text-emerald-400 p-1" title="Nghe Thầy Hùng nói">
+                  🔊
+                </button>
+              </div>
+              <div class="text-sm font-semibold text-emerald-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else if (role === 'lecturer') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#271a36] border-2 border-[#ab47bc] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              👨‍🏫
+            </div>
+            <div class="flex-1 bg-[#1c1228] border-2 border-[#ab47bc]/70 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#ce93d8]">TS. Minh (Giảng viên)</span>
+                  <span class="text-[9px] font-bold bg-[#331c47] text-purple-200 px-2 py-0.5 rounded-full border border-purple-700">Leo thang & Trích dẫn VLearn</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button onclick="playSpeechAudio('${speechContent}', 'lecturer')" class="text-xs text-[#8598a0] hover:text-purple-300 p-1" title="Nghe TS. Minh nói">
+                    🔊
+                  </button>
+                  <button onclick="toggleSlideModal()" class="text-[10px] font-bold text-[#ce93d8] hover:underline flex items-center space-x-1">
+                    <span>📄 Xem Slide</span>
+                  </button>
+                </div>
+              </div>
+              <div class="text-sm font-semibold text-purple-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else if (role === 'orchestrator') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#2e171c] border-2 border-[#e53935] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🛡️
+            </div>
+            <div class="flex-1 bg-[#221014] border-2 border-[#e53935]/70 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-black uppercase tracking-wider text-[#ef5350]">Hệ thống MASCOT (An toàn Sư phạm)</span>
+                <span class="text-[9px] font-bold bg-[#3d1217] text-rose-300 px-2 py-0.5 rounded-full border border-rose-800">Chuyển hướng</span>
+              </div>
+              <div class="text-sm font-semibold text-rose-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Default: Peer student Bảo
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#2d1f14] border-2 border-[#ff9600] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🎓
+            </div>
+            <div class="flex-1 bg-[#1c1813] border-2 border-[#ff9600]/60 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#ff9600]">Bảo (Bạn học)</span>
+                  <span class="text-[9px] font-bold bg-[#36210f] text-amber-300 px-2 py-0.5 rounded-full border border-amber-700">Ngộ nhận / Phản biện</span>
+                </div>
+                <button onclick="playSpeechAudio('${speechContent}', 'peer')" class="text-xs text-[#8598a0] hover:text-amber-400 p-1" title="Nghe Bảo nói">
+                  🔊
+                </button>
+              </div>
+              <div class="text-sm font-bold text-white leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function appendChatMessage(role, content) {
+      const feed = document.getElementById('classroom-chat-feed');
+      if (!feed) return;
+      feed.insertAdjacentHTML('beforeend', createChatMessageHtml(role, content));
+      feed.scrollTop = feed.scrollHeight;
     }
 
     async function init() {
@@ -2312,12 +2826,12 @@
         if (sessionData && sessionData.concept_title) {
           const topicTitle = document.getElementById('unit-topic-title');
           if (topicTitle) topicTitle.innerText = sessionData.concept_title;
-        }
-        if (sessionData && sessionData.initial_misconception) {
-          updateDialogue('peer', sessionData.initial_misconception);
+          const exTitle = document.getElementById('exercise-title');
+          if (exTitle) exTitle.innerText = sessionData.concept_title;
         }
         updateWordBank(sessionData.course_id);
         renderCodeSnippet(sessionData.code_snippet);
+        renderChatFeed(sessionData.conversation_history);
         switchView('landing');
       } catch (e) {
         console.error("Init error:", e);
@@ -2327,26 +2841,29 @@
     function updateButtonState() {
       const input = document.getElementById('user-input');
       const btn = document.getElementById('action-btn');
-      if (!isWaitingNext) {
+      if (input && btn) {
         btn.disabled = input.value.trim().length === 0;
       }
     }
 
     function appendWord(word) {
       const input = document.getElementById('user-input');
-      if (input.value.trim()) {
-        input.value += `, ${word}`;
-      } else {
-        input.value = word;
+      if (input) {
+        if (input.value.trim()) {
+          input.value += `, ${word}`;
+        } else {
+          input.value = word;
+        }
+        updateButtonState();
+        input.focus();
       }
-      updateButtonState();
-      input.focus();
     }
 
     function fillPreset(type) {
       const input = document.getElementById('user-input');
+      if (!input) return;
       if (type === 'hint') {
-        input.value = "Tớ chưa hiểu lắm, cho tớ gợi ý với!";
+        input.value = "Tớ chưa hiểu lắm, nhờ Thầy trợ giảng cho gợi ý với!";
       } else if (type === 'future') {
         if (selectedSubjectCode === 'ICT1.002') {
           input.value = "Cấp phát bộ nhớ động malloc và heap hoạt động thế nào?";
@@ -2361,30 +2878,75 @@
     }
 
     function clearInput() {
-      document.getElementById('user-input').value = '';
-      updateButtonState();
+      const input = document.getElementById('user-input');
+      if (input) {
+        input.value = '';
+        updateButtonState();
+        input.focus();
+      }
     }
 
     function updateUIFromState() {
-      let pct = 25;
-      if (sessionData.terminal_status === 'completed') {
-        pct = 100;
-        document.getElementById('quest-repair-bar').style.width = '100%';
-        document.getElementById('quest-repair-text').innerText = '1/1';
-      } else if (sessionData.misconception_repaired) {
-        pct = 75;
-        document.getElementById('quest-repair-bar').style.width = '100%';
-        document.getElementById('quest-repair-text').innerText = '1/1';
-      }
-      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+      if (!sessionData) return;
 
       const hintsUsed = sessionData.hint_count || 0;
       const hearts = Math.max(1, 3 - hintsUsed);
-      document.getElementById('stat-hearts').innerText = hearts;
-      document.getElementById('home-hearts').innerText = hearts;
+      const heartsEl = document.getElementById('stat-hearts');
+      if (heartsEl) heartsEl.innerText = hearts;
+      const homeHeartsEl = document.getElementById('home-hearts');
+      if (homeHeartsEl) homeHeartsEl.innerText = hearts;
 
-      const title = document.getElementById('exercise-title');
+      // Update 2-Step Pedagogical Stepper
+      const step1 = document.getElementById('step-indicator-1');
+      const step1Icon = document.getElementById('step-1-icon');
+      const step1Text = document.getElementById('step-1-text');
+
+      const step2 = document.getElementById('step-indicator-2');
+      const step2Icon = document.getElementById('step-2-icon');
+      const step2Text = document.getElementById('step-2-text');
+
       const badge = document.getElementById('badge-text');
+
+      if (sessionData.terminal_status === 'completed') {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "✓";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: ĐÃ SỬA LỖI";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "🎉";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: ĐÃ ĐẠT RUBRIC";
+
+        if (badge) {
+          badge.innerText = "BUỔI HỌC HOÀN THÀNH XUẤT SẮC";
+          badge.className = "text-[#58cc02] font-black";
+        }
+      } else if (sessionData.misconception_repaired) {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "✓";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: ĐÃ SỬA LỖI";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ffc800] bg-[#2d2410] text-[#ffc800] animate-pulse transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "📝";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: EXPLAIN-BACK (ĐANG THỰC HIỆN)";
+
+        if (badge) {
+          badge.innerText = "CHẶNG 2: GIẢI THÍCH LẠI BẰNG LỜI CỦA BẠN";
+          badge.className = "text-[#ffc800] font-black";
+        }
+      } else {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ff9600] bg-[#2a1d12] text-[#ff9600] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "🎯";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: SỬA NGỘ NHẬN CHO BẢO";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#2b3940] bg-[#141e24] text-[#8598a0] transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "🔒";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: EXPLAIN-BACK (CHỜ)";
+
+        if (badge) {
+          badge.innerText = "CHẶNG 1: CHỈ RA SAI SÓT CỦA BẠN HỌC";
+          badge.className = "text-[#ce82ff] font-black";
+        }
+      }
 
       // Update learner profile stats from SQLite persistence
       if (sessionData && sessionData.profile) {
@@ -2408,33 +2970,21 @@
         if (pUser) pUser.innerText = p.username;
       }
 
-      if (sessionData.terminal_status === 'completed') {
-        badge.innerText = "HOÀN THÀNH XUẤT SẮC";
-        badge.className = "text-[#58cc02]";
-        title.innerText = "Chúc mừng bạn đã chinh phục bài học! (+50 XP • +15 Gems)";
-      } else if (sessionData.misconception_repaired) {
-        badge.innerText = "BƯỚC 2: GIẢI THÍCH LẠI (EXPLAIN-BACK)";
-        badge.className = "text-[#ffc800]";
-        title.innerText = "Hãy tự tổng kết lại bản chất bằng lời của bạn:";
-      } else {
-        badge.innerText = "HIỂU LẦM CỦA BẠN HỌC";
-        badge.className = "text-[#ce82ff]";
-        title.innerText = "Sửa lỗi sai cho bạn học Bảo:";
-      }
+      updateRubricUI();
     }
 
     async function handleCheck() {
-      if (isWaitingNext) {
-        resetFooterState();
-        return;
-      }
-
       const input = document.getElementById('user-input');
       const text = input.value.trim();
       if (!text) return;
 
       const btn = document.getElementById('action-btn');
       btn.disabled = true;
+
+      // Optimistically append user message to feed
+      appendChatMessage('learner', text);
+      input.value = '';
+      updateButtonState();
 
       try {
         const res = await fetch('/api/chat', {
@@ -2445,132 +2995,36 @@
         const data = await res.json();
         sessionData = data.session_state;
 
-        updateDialogue(data.reply.role, data.reply.message);
+        // Append assistant response to feed
+        appendChatMessage(data.reply.role, data.reply.message);
+        playSpeechAudio(data.reply.message, data.reply.role);
         updateUIFromState();
-        showFeedback(data.reply.role, data.session_state, data.reply.message);
+
+        if (sessionData.terminal_status === 'completed') {
+          playDuoSound('correct');
+        } else if (sessionData.misconception_repaired && data.reply.role === 'peer') {
+          playDuoSound('correct');
+        } else if (data.reply.role === 'ta') {
+          playDuoSound('hint');
+        } else if (data.reply.role === 'orchestrator') {
+          playDuoSound('error');
+        }
 
       } catch (e) {
-        console.error("Error:", e);
+        console.error("Error sending chat turn:", e);
+      } finally {
+        btn.disabled = false;
+        input.focus();
       }
-    }
-
-    function updateDialogue(role, message) {
-      const speech = document.getElementById('speech-text');
-      const speaker = document.getElementById('speaker-name');
-      const avatarCont = document.getElementById('character-avatar');
-
-      speech.innerText = message;
-
-      if (role === 'ta') {
-        speaker.innerText = "Thầy Hùng (Trợ giảng Cú Xanh)";
-        avatarCont.innerHTML = `
-          <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-            <ellipse cx="50" cy="65" rx="36" ry="42" fill="#58cc02"/>
-            <ellipse cx="50" cy="72" rx="26" ry="30" fill="#ffffff" fill-opacity="0.3"/>
-            <circle cx="36" cy="50" r="14" fill="#ffffff"/>
-            <circle cx="64" cy="50" r="14" fill="#ffffff"/>
-            <circle cx="38" cy="50" r="7" fill="#1b2a30"/>
-            <circle cx="62" cy="50" r="7" fill="#1b2a30"/>
-            <path d="M44 60 L50 72 L56 60 Z" fill="#ff9600"/>
-            <polygon points="50,15 85,28 50,40 15,28" fill="#1cb0f6"/>
-            <rect x="42" y="36" width="16" height="8" rx="2" fill="#1899d6"/>
-          </svg>
-        `;
-      } else if (role === 'lecturer') {
-        speaker.innerText = "TS. Minh (Giảng viên)";
-        avatarCont.innerHTML = `
-          <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-            <circle cx="50" cy="24" r="16" fill="#84969e"/>
-            <rect x="25" y="32" width="50" height="42" rx="21" fill="#fbd2a4"/>
-            <rect x="26" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-            <rect x="54" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-            <path d="M42 66 Q50 72 58 66" stroke="#4a555c" stroke-width="4" stroke-linecap="round"/>
-            <path d="M18 90 C18 78 30 74 50 74 C70 74 82 78 82 90 L85 120 L15 120 Z" fill="#7b1fa2"/>
-          </svg>
-        `;
-      } else {
-        speaker.innerText = "Bảo (Bạn học)";
-      }
-    }
-
-    function showFeedback(role, state, message) {
-      const footer = document.getElementById('action-footer');
-      const feedback = document.getElementById('footer-feedback');
-      const icon = document.getElementById('feedback-icon');
-      const title = document.getElementById('feedback-title');
-      const desc = document.getElementById('feedback-desc');
-      const btn = document.getElementById('action-btn');
-      const skipBtn = document.getElementById('skip-btn');
-
-      feedback.classList.remove('hidden');
-      skipBtn.classList.add('hidden');
-      isWaitingNext = true;
-      btn.innerText = "TIẾP TỤC";
-      btn.disabled = false;
-
-      if (state.terminal_status === 'completed') {
-        playDuoSound('correct');
-        footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
-        icon.innerText = "✓";
-        title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Chính xác tuyệt đối! (+50 XP • +15 Gems)";
-        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric! Điểm thưởng đã được cộng vào tài khoản.";
-      } else if (state.misconception_repaired && role === 'peer') {
-        playDuoSound('correct');
-        footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
-        icon.innerText = "✓";
-        title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Tuyệt vời! Bạn đã sửa đúng lỗi!";
-        desc.innerText = "Bảo đã hiểu ra sai sót. Giờ hãy tự mình tổng kết lại nhé!";
-      } else if (role === 'ta') {
-        playDuoSound('hint');
-        footer.className = "w-full border-t-2 border-[#ff9600] bg-[#2b2518] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#ff9600] text-white shadow-lg";
-        icon.innerText = "💡";
-        title.className = "font-black text-xl text-[#ff9600]";
-        title.innerText = "Gợi ý từ Trợ Giảng Cú:";
-        desc.innerText = "Đừng nản lòng! Đọc kỹ gợi ý phía trên và thử lại nhé.";
-      } else if (role === 'orchestrator') {
-        playDuoSound('error');
-        footer.className = "w-full border-t-2 border-[#ea2b2b] bg-[#321d22] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#ff4b4b] text-white shadow-lg";
-        icon.innerText = "🛑";
-        title.className = "font-black text-xl text-[#ff4b4b]";
-        title.innerText = "Ngoài phạm vi bài học!";
-        desc.innerText = "Hệ thống đã chặn câu hỏi về bài sau để tránh rò rỉ kiến thức.";
-      } else {
-        playDuoSound('hint');
-        footer.className = "w-full border-t-2 border-[#37464f] bg-[#1a272e] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#37464f] text-white shadow-lg";
-        icon.innerText = "💬";
-        title.className = "font-black text-xl text-white";
-        title.innerText = "Phản hồi từ lớp học";
-        desc.innerText = "Hãy tiếp tục thảo luận để làm sáng tỏ khái niệm.";
-      }
-    }
-
-    function resetFooterState() {
-      const footer = document.getElementById('action-footer');
-      const feedback = document.getElementById('footer-feedback');
-      const skipBtn = document.getElementById('skip-btn');
-      const btn = document.getElementById('action-btn');
-      const input = document.getElementById('user-input');
-
-      footer.className = "w-full border-t-2 border-[#202f36] bg-[#131f24] py-6 px-6 transition-colors duration-300";
-      feedback.classList.add('hidden');
-      skipBtn.classList.remove('hidden');
-      btn.innerText = "KIỂM TRA";
-      isWaitingNext = false;
-      input.value = '';
-      updateButtonState();
-      input.focus();
     }
 
     function toggleSlideModal() {
       const modal = document.getElementById('slide-modal');
       modal.classList.toggle('hidden');
+    }
+
+    function resetFooterState() {
+      clearInput();
     }
 
     async function resetSession() {
@@ -2580,15 +3034,369 @@
       switchView('home');
     }
 
-    async function downloadSummary() {
-      const res = await fetch('/api/summary');
+    function openPrintableReport() {
+      window.open('/api/instructor/report/export?format=html', '_blank');
+    }
+
+    async function downloadAuditReportJSON() {
+      const res = await fetch('/api/instructor/report/export?format=json');
       const data = await res.json();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `mascot_duolingo_report.json`;
+      const sId = (data.session_id || 'session').substring(0, 8);
+      a.download = `mascot_audit_report_${sId}.json`;
       a.click();
+    }
+
+    async function downloadSummary() {
+      return downloadAuditReportJSON();
+    }
+
+    function updateRubricUI() {
+      const card = document.getElementById('rubric-checklist-card');
+      const list = document.getElementById('rubric-criteria-list');
+      const pctLabel = document.getElementById('rubric-score-pct-label');
+      const bar = document.getElementById('rubric-score-progress-bar');
+      if (!card || !list) return;
+
+      if (!sessionData.misconception_repaired) {
+        card.classList.add('hidden');
+        return;
+      }
+
+      card.classList.remove('hidden');
+
+      const rub = sessionData.rubric_assessment;
+      const pct = (rub && rub.score_percentage) ? rub.score_percentage : (sessionData.terminal_status === 'completed' ? 100 : 0);
+      if (pctLabel) pctLabel.innerText = `${pct}% Đạt`;
+      if (bar) bar.style.width = `${pct}%`;
+
+      let defaultDimensions = [
+        { key: "scope_and_inheritance", title: "Phân biệt phạm vi", desc: "Overloading trong cùng 1 lớp; Overriding trong quan hệ kế thừa" },
+        { key: "method_signature", title: "Phân biệt chữ ký hàm", desc: "Overloading khác tham số; Overriding cùng tên và cùng tham số" },
+        { key: "polymorphism_type", title: "Đa hình biên dịch vs Động", desc: "Compile-time (Overloading) vs Runtime (Overriding)" },
+      ];
+
+      if (sessionData.course_id === 'ICT1.002') {
+        defaultDimensions = [
+          { key: "copy_vs_address", title: "Cơ chế truyền dữ liệu", desc: "Sao chép giá trị (tham trị) vs Truyền địa chỉ ô nhớ (tham chiếu/con trỏ)" },
+          { key: "side_effect_on_original", title: "Tác động biến gốc", desc: "Tham trị không đổi biến ngoài vs Tham chiếu/con trỏ đổi trực tiếp biến ngoài" },
+          { key: "syntax_distinction", title: "Ký hiệu cú pháp C", desc: "Sử dụng ký hiệu & (tham chiếu) hoặc * (con trỏ)" },
+        ];
+      } else if (sessionData.course_id === 'CS105') {
+        defaultDimensions = [
+          { key: "mutability_contrast", title: "Tính biến đổi", desc: "List là Mutable (thay đổi được) vs Tuple là Immutable (bất biến)" },
+          { key: "syntax_and_methods", title: "Cú pháp & Phương thức", desc: "Dấu ngoặc [] vs () và phương thức append, pop" },
+          { key: "use_case_and_hashability", title: "Ứng dụng & Bộ nhớ", desc: "Tối ưu bộ nhớ, tính hashable và dùng làm key Dictionary" },
+        ];
+      }
+
+      list.innerHTML = defaultDimensions.map(d => {
+        let isPass = false;
+        let note = d.desc;
+        if (rub && rub.scores) {
+          isPass = !!rub.scores[d.key];
+          if (rub.dimension_feedback && rub.dimension_feedback[d.key]) {
+            note = rub.dimension_feedback[d.key];
+          }
+        } else if (sessionData.terminal_status === 'completed') {
+          isPass = true;
+        }
+
+        const icon = isPass ? '<span class="text-emerald-400 font-black text-sm">✓</span>' : '<span class="text-slate-500 font-bold text-sm">⏳</span>';
+        const borderClass = isPass ? 'border-emerald-800/60 bg-emerald-950/20 text-emerald-200' : 'border-[#2b3940] bg-[#142026] text-slate-300';
+
+        return `
+          <div class="p-2.5 rounded-xl border ${borderClass} flex items-start space-x-2.5 transition">
+            <div class="mt-0.5">${icon}</div>
+            <div class="flex-1">
+              <div class="font-bold text-xs">${d.title}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5 leading-snug">${note}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderRadarChartSVG(scores) {
+      const el = document.getElementById('inst-active-radar-chart');
+      if (!el) return;
+      if (!scores || Object.keys(scores).length === 0) {
+        el.innerHTML = '<span class="text-xs text-slate-500 font-mono">Biểu đồ Radar sẽ xuất hiện khi học viên giải thích lại</span>';
+        return;
+      }
+
+      const items = Object.entries(scores);
+      if (items.length === 2) {
+        items.push(['pedagogical_grounding', true]);
+      }
+      const n = items.length;
+      const width = 280, height = 180;
+      const cx = width / 2, cy = height / 2;
+      const r = 62;
+
+      let gridSvg = '';
+      [0.33, 0.66, 1.0].forEach(level => {
+        const pts = [];
+        for (let i = 0; i < n; i++) {
+          const angle = (2 * Math.PI * i / n) - (Math.PI / 2);
+          const px = cx + r * level * Math.cos(angle);
+          const py = cy + r * level * Math.sin(angle);
+          pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+        }
+        gridSvg += `<polygon points="${pts.join(' ')}" fill="none" stroke="#2b3940" stroke-width="1.2" stroke-dasharray="2,2"/>`;
+      });
+
+      let axesSvg = '', labelsSvg = '', dataPts = [];
+      items.forEach(([dim, val], i) => {
+        const angle = (2 * Math.PI * i / n) - (Math.PI / 2);
+        const ex = cx + r * Math.cos(angle);
+        const ey = cy + r * Math.sin(angle);
+        axesSvg += `<line x1="${cx}" y1="${cy}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#37464f" stroke-width="1"/>`;
+
+        const scoreVal = val ? 1.0 : 0.35;
+        const vx = cx + r * scoreVal * Math.cos(angle);
+        const vy = cy + r * scoreVal * Math.sin(angle);
+        dataPts.push(`${vx.toFixed(1)},${vy.toFixed(1)}`);
+
+        const lx = cx + (r + 18) * Math.cos(angle);
+        const ly = cy + (r + 12) * Math.sin(angle);
+        const anchor = lx < cx - 10 ? 'end' : (lx > cx + 10 ? 'start' : 'middle');
+        const color = val ? '#34d399' : '#f87171';
+        const shortName = dim.replace('_', ' ').substring(0, 15);
+        labelsSvg += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="9" font-weight="bold" fill="${color}" text-anchor="${anchor}">${shortName}</text>`;
+      });
+
+      const polySvg = `<polygon points="${dataPts.join(' ')}" fill="rgba(45, 212, 191, 0.25)" stroke="#2dd4bf" stroke-width="2"/>`;
+      const dotsSvg = dataPts.map(pt => {
+        const [x, y] = pt.split(',');
+        return `<circle cx="${x}" cy="${y}" r="3.5" fill="#14b8a6"/>`;
+      }).join('');
+
+      el.innerHTML = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" class="overflow-visible">
+          ${gridSvg}
+          ${axesSvg}
+          ${polySvg}
+          ${dotsSvg}
+          ${labelsSvg}
+        </svg>
+      `;
+    }
+
+    async function loadInstructorDashboard() {
+      try {
+        const res = await fetch('/api/instructor/audit');
+        const data = await res.json();
+        const curr = data.current_summary || {};
+
+        // 1. Metric cards
+        const elTotal = document.getElementById('inst-metric-total-sessions');
+        if (elTotal) elTotal.innerText = data.total_sessions || 0;
+
+        const elCompRate = document.getElementById('inst-metric-completion-rate');
+        if (elCompRate) elCompRate.innerText = `${data.completion_rate || 0}%`;
+
+        const elHints = document.getElementById('inst-metric-socratic-hints');
+        if (elHints) {
+          const escText = curr.escalated_to_lecturer ? '1 (Leo thang)' : '0';
+          const pushbackText = curr.peer_pushback_count ? ` · Peer: ${curr.peer_pushback_count}` : '';
+          elHints.innerText = `${curr.hint_count || 0} / ${escText}${pushbackText}`;
+        }
+
+        const elSec = document.getElementById('inst-metric-security-alerts');
+        const alerts = data.security_alerts || [];
+        if (elSec) elSec.innerText = alerts.length;
+
+        // 2. Active Session Card
+        const elId = document.getElementById('inst-active-session-id');
+        if (elId) elId.innerText = `ID: ${curr.session_id || 'N/A'}`;
+
+        const elConcept = document.getElementById('inst-active-course-concept');
+        if (elConcept) elConcept.innerText = `${curr.course_id || 'CS102'} · ${curr.concept_id || 'OOP'}`;
+
+        const elRepair = document.getElementById('inst-active-repair-badge');
+        if (elRepair) {
+          if (curr.misconception_repaired) {
+            elRepair.innerHTML = '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-800">✓ Đã nhận diện & sửa</span>';
+          } else {
+            elRepair.innerHTML = '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-950/60 text-amber-400 border border-amber-800">⏳ Chưa sửa</span>';
+          }
+        }
+
+        const elExplain = document.getElementById('inst-active-explain-badge');
+        if (elExplain) {
+          if (curr.explain_back_passed) {
+            elExplain.innerHTML = '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-800">✓ Đạt chuẩn Rubric</span>';
+          } else {
+            elExplain.innerHTML = '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">⏳ Chờ hoàn thành</span>';
+          }
+        }
+
+        // Citations
+        const elCit = document.getElementById('inst-active-citations-container');
+        if (elCit) {
+          if (curr.citations_used && curr.citations_used.length > 0) {
+            elCit.innerHTML = curr.citations_used.map(c => `
+              <div class="p-2 bg-[#18262d] rounded-lg border border-[#2b3940] flex items-center space-x-2">
+                <span class="text-emerald-400 font-bold">📄</span>
+                <span>${c}</span>
+              </div>
+            `).join('');
+          } else {
+            elCit.innerHTML = '<div class="text-[#8598a0]">Chưa có trích dẫn nào được sử dụng trong phiên hiện tại.</div>';
+          }
+        }
+
+        // Security Alerts in current session
+        const elSecBox = document.getElementById('inst-active-security-container');
+        if (elSecBox) {
+          if (alerts.length > 0) {
+            elSecBox.innerHTML = alerts.map(a => `
+              <div class="p-2.5 bg-rose-950/40 rounded-lg border border-rose-900/60 text-rose-300 space-y-1 mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-rose-900 text-rose-200">Lượt ${a.turn}</span>
+                  <span class="font-bold text-xs">${a.threat_type}</span>
+                </div>
+                <div class="text-[11px] text-slate-300">${a.reason}</div>
+                <div class="text-[10px] text-slate-400 italic font-mono truncate">Input: "${a.input_snippet}"</div>
+              </div>
+            `).join('');
+          } else {
+            elSecBox.innerHTML = '<span class="text-emerald-400 font-bold">✓ Không phát hiện nỗ lực Prompt Injection hoặc vi phạm quy tắc.</span>';
+          }
+        }
+
+        // Rubric Assessment in current session (P3)
+        const elRubricBox = document.getElementById('inst-active-rubric-container');
+        if (elRubricBox) {
+          const rub = curr.rubric_assessment;
+          if (rub && rub.scores) {
+            const pct = rub.score_percentage || 0;
+            const rows = Object.entries(rub.scores).map(([dim, passed]) => {
+              const icon = passed ? '<span class="text-emerald-400 font-bold">✓ ĐẠT</span>' : '<span class="text-amber-400 font-bold">⏳ CẦN BỔ SUNG</span>';
+              const note = (rub.dimension_feedback && rub.dimension_feedback[dim]) || '';
+              return `
+                <div class="p-2 bg-[#18262d] rounded-lg border border-[#2b3940] space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-200">${dim}</span>
+                    <span>${icon}</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400">${note}</div>
+                </div>
+              `;
+            }).join('');
+
+            elRubricBox.innerHTML = `
+              <div class="flex items-center justify-between mb-2 pb-1 border-b border-[#24353f]">
+                <span class="font-bold text-amber-300">Điểm đánh giá Rubric: ${pct}%</span>
+                <span class="text-xs ${rub.passed ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}">${rub.passed ? '✓ Đạt chuẩn hoàn thành' : 'Chưa đạt 100%'}</span>
+              </div>
+              <div class="space-y-1.5">${rows}</div>
+            `;
+            renderRadarChartSVG(rub.scores);
+          } else {
+            elRubricBox.innerHTML = '<span class="text-slate-400">Đang chờ học viên sửa hiểu lầm và nộp bài giải thích lại...</span>';
+            renderRadarChartSVG(null);
+          }
+        }
+
+        // 3. Historical Table
+        const elTable = document.getElementById('inst-sessions-table-body');
+        if (elTable) {
+          const sessions = data.recent_sessions || [];
+          if (sessions.length === 0) {
+            elTable.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-slate-500 font-bold">Chưa có phiên học nào được lưu.</td></tr>';
+          } else {
+            elTable.innerHTML = sessions.map(s => {
+              const statusBadge = s.completed 
+                ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-950/60 text-emerald-400 border border-emerald-800">Hoàn thành</span>' 
+                : '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-950/60 text-amber-400 border border-amber-800">Đang học / Dừng</span>';
+              const shortId = (s.session_id || '').substring(0, 8);
+              return `
+                <tr class="hover:bg-[#1a2930] transition">
+                  <td class="py-3 px-4 font-mono text-white font-bold">${shortId}...</td>
+                  <td class="py-3 px-4 font-bold text-slate-300">${s.course_id || 'CS102'}</td>
+                  <td class="py-3 px-4">${statusBadge}</td>
+                  <td class="py-3 px-4 text-slate-400">${s.total_turns || 0}</td>
+                  <td class="py-3 px-4 text-slate-400">${s.created_at || 'Vừa xong'}</td>
+                  <td class="py-3 px-4 text-right">
+                    <button onclick="openTranscriptModal('${s.session_id}')" class="px-2.5 py-1 rounded-lg bg-[#24353f] hover:bg-[#2e424e] text-xs font-bold text-[#1cb0f6] border border-[#37464f] transition">
+                      Xem Transcript
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi tải Instructor Dashboard:", err);
+      }
+    }
+
+    async function openTranscriptModal(sessionId) {
+      const modal = document.getElementById('transcript-modal');
+      const subtitle = document.getElementById('transcript-modal-subtitle');
+      const body = document.getElementById('transcript-modal-body');
+      if (!modal || !body) return;
+
+      modal.classList.remove('hidden');
+      if (subtitle) subtitle.innerText = `Session ID: ${sessionId}`;
+      body.innerHTML = '<div class="text-center text-xs text-slate-500 font-bold py-6">Đang tải nhật ký hội thoại...</div>';
+
+      try {
+        const res = await fetch(`/api/session/${sessionId}/history`);
+        const data = await res.json();
+        const history = data.history || [];
+
+        if (history.length === 0) {
+          body.innerHTML = '<div class="text-center text-xs text-slate-500 font-bold py-6">Không có tin nhắn nào trong phiên này.</div>';
+          return;
+        }
+
+        body.innerHTML = history.map(item => {
+          let roleBadge = '';
+          let bgClass = 'bg-[#18262d] border-[#2b3940]';
+          const r = (item.role || '').toLowerCase();
+
+          if (r === 'learner') {
+            roleBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#1cb0f6]/20 text-[#1cb0f6] border border-[#1cb0f6]/40">Học viên (Learner)</span>';
+            bgClass = 'bg-[#142936] border-[#1cb0f6]/40';
+          } else if (r === 'peer') {
+            roleBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/40">Bạn học (Peer)</span>';
+            bgClass = 'bg-[#262015] border-amber-900/60';
+          } else if (r === 'ta') {
+            roleBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#58cc02]/20 text-[#58cc02] border border-[#58cc02]/40">Trợ giảng Socratic</span>';
+            bgClass = 'bg-[#182a1c] border-[#58cc02]/40';
+          } else if (r === 'lecturer') {
+            roleBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-purple-500/20 text-purple-400 border border-purple-500/40">Giảng viên (Lecturer)</span>';
+            bgClass = 'bg-[#241a30] border-purple-900/60';
+          } else {
+            roleBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-slate-700 text-slate-300">Hệ thống</span>';
+            bgClass = 'bg-[#18262d] border-[#2b3940]';
+          }
+
+          return `
+            <div class="p-3.5 rounded-2xl border ${bgClass} space-y-1.5 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div>${roleBadge}</div>
+                <div class="text-[10px] text-[#8598a0] font-mono">${item.timestamp || ''}</div>
+              </div>
+              <div class="text-xs text-slate-200 leading-relaxed font-sans whitespace-pre-wrap">${item.message || ''}</div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        body.innerHTML = '<div class="text-center text-xs text-rose-400 font-bold py-6">Không thể tải nhật ký hội thoại.</div>';
+      }
+    }
+
+    function closeTranscriptModal() {
+      const modal = document.getElementById('transcript-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     window.onload = init;

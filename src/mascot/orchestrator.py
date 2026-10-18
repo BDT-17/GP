@@ -10,14 +10,17 @@ import uuid
 from mascot.agents import LecturerAgent, PeerAgent, TeachingAssistantAgent
 from mascot.course_manager import CourseManager
 from mascot.evaluator import Evaluator
+from mascot.llm_client import LLMClient
 from mascot.models import (
     Citation,
+    EvaluationOutcome,
     InstructorSummary,
     Role,
     SessionEvent,
     TerminalStatus,
 )
 from mascot.retriever import CurriculumRetriever
+from mascot.security import AdversarialGuard
 
 
 class MascotOrchestrator:
@@ -28,6 +31,7 @@ class MascotOrchestrator:
         course_id: Optional[str] = None,
         scenario_path: Optional[Path] = None,
         corpus_path: Optional[Path] = None,
+        llm_client: Optional[LLMClient] = None,
     ):
         if scenario_path is None or corpus_path is None:
             resolved_scenario, resolved_corpus = CourseManager.resolve_paths(course_id)
@@ -41,13 +45,16 @@ class MascotOrchestrator:
 
         self.retriever = CurriculumRetriever(corpus_path=corpus_path)
         self.evaluator = Evaluator(self.scenario)
+        self.security_guard = AdversarialGuard()
+        self.llm_client = llm_client
 
         self.peer = PeerAgent(
             name=self.scenario["peer_student"]["name"],
             initial_misconception=self.scenario["peer_student"]["initial_misconception"],
+            llm_client=self.llm_client,
         )
-        self.ta = TeachingAssistantAgent()
-        self.lecturer = LecturerAgent()
+        self.ta = TeachingAssistantAgent(llm_client=self.llm_client)
+        self.lecturer = LecturerAgent(llm_client=self.llm_client)
 
         # Session state
         self.session_id = str(uuid.uuid4())
@@ -60,12 +67,15 @@ class MascotOrchestrator:
         self.active_role: Role = Role.PEER
         self.learner_attempts: int = 0
         self.hint_count: int = 0
+        self.peer_pushback_count: int = 0
         self.escalation_count: int = 0
         self.misconception_repaired: bool = False
         self.explain_back_passed: bool = False
         self.terminal_status: TerminalStatus = TerminalStatus.ACTIVE
         self.terminal_reason: str = ""
         self.citations_used: List[Citation] = []
+        self.security_alerts: List[Dict[str, Any]] = []
+        self.last_rubric_evaluation: Optional[EvaluationOutcome] = None
 
         self.event_log: List[SessionEvent] = []
         self.conversation_history: List[Dict[str, str]] = []
@@ -119,17 +129,31 @@ class MascotOrchestrator:
         self.active_role = Role.PEER
         self.learner_attempts = 0
         self.hint_count = 0
+        self.peer_pushback_count = 0
         self.escalation_count = 0
         self.misconception_repaired = False
         self.explain_back_passed = False
         self.terminal_status = TerminalStatus.ACTIVE
         self.terminal_reason = ""
         self.citations_used = []
+        self.security_alerts = []
+        self.last_rubric_evaluation = None
 
         self.event_log = []
         self.conversation_history = []
 
         return self.start_session()
+
+    def _is_challenging_peer(self, text: str) -> bool:
+        """Determines if the learner is directly challenging or debating the peer student."""
+        t = text.lower()
+        challenge_markers = [
+            "sai rồi", "nhầm rồi", "không phải đâu", "không đúng", "khác nhau",
+            "bảo ơi", "cậu nhầm", "bạn nhầm", "chưa đúng", "không giống nhau",
+            "không giống", "sai bét", "sai hoàn toàn", "hai cái khác",
+            "overloading khác", "overriding khác", "tham trị khác", "list khác"
+        ]
+        return any(marker in t for marker in challenge_markers)
 
     def process_turn(self, learner_text: str) -> Dict[str, Any]:
         """Processes one learner turn.
@@ -151,6 +175,43 @@ class MascotOrchestrator:
             content=learner_text,
             metadata={"attempt_number": self.learner_attempts},
         )
+
+        # Check emotional frustration (Empathy Scaffolding)
+        if self.ta.detect_frustration(learner_text):
+            self._log_event(
+                event_type="learner_sentiment",
+                role=Role.LEARNER.value,
+                content="frustrated",
+                metadata={"turn": self.learner_attempts, "snippet": learner_text[:100]},
+            )
+
+        # 0. Adversarial & Security Inspection (AC6, P1)
+        scan = self.security_guard.inspect(learner_text)
+        if scan.is_suspicious:
+            alert = {
+                "turn": self.learner_attempts,
+                "threat_type": scan.threat_type,
+                "reason": scan.reason,
+                "input_snippet": learner_text[:100],
+            }
+            self.security_alerts.append(alert)
+            self._log_event(
+                event_type="security_alert",
+                role=Role.ORCHESTRATOR.value,
+                content=scan.reason,
+                metadata=alert,
+            )
+
+        if scan.is_blocked:
+            response_text = scan.safe_response or "[Hệ thống]: Yêu cầu bị từ chối do vi phạm quy tắc an toàn sư phạm."
+            self.active_role = Role.ORCHESTRATOR
+            self._log_event(event_type="response_generated", role=Role.ORCHESTRATOR.value, content=response_text)
+            self.conversation_history.append({"role": Role.ORCHESTRATOR.value, "content": response_text})
+            return {
+                "role": Role.ORCHESTRATOR.value,
+                "message": response_text,
+                "terminal": False,
+            }
 
         # 1. Apply Curriculum Gate check (AC1, AC2)
         retrieval_decision = self.retriever.retrieve(
@@ -200,6 +261,14 @@ class MascotOrchestrator:
                 response_text = self.peer.acknowledge_repair(
                     self.scenario.get("concept_title"), learner_input=learner_text
                 )
+            elif not needs_help and self.peer_pushback_count < 1 and self._is_challenging_peer(learner_text):
+                # AC5: Peer deliberates / pushes back before conceding or before TA steps in
+                self.peer_pushback_count += 1
+                self.active_role = Role.PEER
+                response_text = self.peer.pushback(
+                    learner_input=learner_text,
+                    concept_title=self.scenario.get("concept_title"),
+                )
             else:
                 # Needs support or failed attempt
                 self.hint_count += 1
@@ -224,14 +293,17 @@ class MascotOrchestrator:
                     )
 
         else:
-            # Stage B: Evaluating Explain-Back (AC6)
+            # Stage B: Evaluating Explain-Back (AC6, P3)
             eval_outcome = self.evaluator.evaluate_explain_back(learner_text)
+            self.last_rubric_evaluation = eval_outcome
             self._log_event(
                 event_type="assessment",
                 metadata={
                     "stage": "explain_back",
                     "passed": eval_outcome.explain_back_passed,
                     "scores": eval_outcome.rubric_scores,
+                    "missing_dimensions": eval_outcome.missing_dimensions,
+                    "score_percentage": eval_outcome.score_percentage,
                 },
             )
 
@@ -248,7 +320,13 @@ class MascotOrchestrator:
                 )
             else:
                 self.active_role = Role.TA
-                response_text = self.ta.prompt_explain_back_retry(learner_input=learner_text)
+                response_text = self.ta.prompt_explain_back_retry(
+                    learner_input=learner_text,
+                    rubric_feedback=eval_outcome.feedback,
+                    missing_dimensions=eval_outcome.missing_dimensions,
+                    dimension_feedback=eval_outcome.dimension_feedback,
+                    concept_title=self.scenario.get("concept_title"),
+                )
 
         # Log and record single speaking turn (AC5)
         self._log_event(event_type="response_generated", role=self.active_role.value, content=response_text)
@@ -262,6 +340,17 @@ class MascotOrchestrator:
 
     def generate_instructor_summary(self) -> InstructorSummary:
         """Generates concise instructor-facing summary (AC7)."""
+        rubric_assessment = None
+        if self.last_rubric_evaluation:
+            rubric_assessment = {
+                "passed": self.last_rubric_evaluation.explain_back_passed,
+                "scores": self.last_rubric_evaluation.rubric_scores,
+                "dimension_feedback": self.last_rubric_evaluation.dimension_feedback,
+                "missing_dimensions": self.last_rubric_evaluation.missing_dimensions,
+                "score_percentage": self.last_rubric_evaluation.score_percentage,
+                "feedback": self.last_rubric_evaluation.feedback,
+            }
+
         return InstructorSummary(
             session_id=self.session_id,
             course_id=self.course_id,
@@ -270,12 +359,15 @@ class MascotOrchestrator:
             scenario_id=self.scenario_id,
             learner_attempts=self.learner_attempts,
             hint_count=self.hint_count,
+            peer_pushback_count=self.peer_pushback_count,
             escalated_to_lecturer=self.escalation_count > 0,
             misconception_repaired=self.misconception_repaired,
             explain_back_passed=self.explain_back_passed,
             terminal_status=self.terminal_status,
             terminal_reason=self.terminal_reason or "Session in progress or ended.",
             citations_used=[c.source_location for c in self.citations_used],
+            security_alerts=self.security_alerts,
+            rubric_assessment=rubric_assessment,
             created_at=self.event_log[0].timestamp if self.event_log else "",
         )
 

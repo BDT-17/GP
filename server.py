@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 from typing import Optional
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
@@ -17,6 +17,7 @@ from mascot.course_manager import CourseManager
 from mascot.database import DatabaseManager
 from mascot.models import Role
 from mascot.orchestrator import MascotOrchestrator
+from mascot.report_generator import build_audit_payload, render_html_report
 
 app = FastAPI(title="MASCOT Demo API", version="0.2.0")
 
@@ -118,20 +119,159 @@ async def get_session():
         "conversation_history": orchestrator.conversation_history,
         "profile": profile,
         "code_snippet": orchestrator.scenario.get("code_snippet"),
+        "security_alerts": orchestrator.security_alerts,
+        "rubric_assessment": {
+            "scores": orchestrator.last_rubric_evaluation.rubric_scores,
+            "dimension_feedback": orchestrator.last_rubric_evaluation.dimension_feedback,
+            "missing_dimensions": orchestrator.last_rubric_evaluation.missing_dimensions,
+            "score_percentage": orchestrator.last_rubric_evaluation.score_percentage,
+            "feedback": orchestrator.last_rubric_evaluation.feedback,
+            "passed": orchestrator.last_rubric_evaluation.explain_back_passed,
+        } if orchestrator.last_rubric_evaluation else None,
     }
 
 
+class CodeRunRequest(BaseModel):
+    code: Optional[str] = None
+
+
 @app.post("/api/code/run")
-async def run_code_simulation():
-    """Simulates running the peer student's misconception code snippet."""
+async def run_code_simulation(req: Optional[CodeRunRequest] = None):
+    """Simulates running the peer student's misconception or learner's fixed code."""
     snippet = orchestrator.scenario.get("code_snippet", {})
+    submitted_code = req.code.strip() if (req and req.code) else None
+
+    if not submitted_code:
+        return {
+            "status": "success",
+            "is_fixed": False,
+            "filename": snippet.get("filename", "demo.txt"),
+            "language": snippet.get("language", "text"),
+            "code": snippet.get("code", ""),
+            "output": snippet.get("simulation_output", ""),
+            "explanation": snippet.get("run_explanation", ""),
+        }
+
+    course_id = orchestrator.course_id
+    is_fixed = False
+    output_text = ""
+    explanation_text = ""
+
+    if course_id == "CS102":
+        has_override_signature = "void speak()" in submitted_code or "void speak ()" in submitted_code
+        has_annotation = "@override" in submitted_code.lower()
+        if has_override_signature or (has_annotation and "speak" in submitted_code and "int times" not in submitted_code):
+            is_fixed = True
+            output_text = (
+                "Tiếng động vật: Gâu gâu\n"
+                "[Biên dịch & Chạy thành công]: pet.speak() đã gọi chính xác hàm của Dog!\n"
+                "✓ Bạn đã sửa hàm thành GHI ĐÈ (Overriding) chuẩn xác do cùng tên và cùng tham số!"
+            )
+            explanation_text = (
+                "Tuyệt vời! Hàm speak() ở Dog có cùng chữ ký hàm (không tham số) với Animal "
+                "nên cơ chế đa hình động (Runtime Polymorphism) đã gọi phương thức của Dog."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = (
+                "Hàm ở lớp Dog vẫn khác chữ ký hàm (chưa xóa tham số int times hoặc chưa đổi về void speak()), "
+                "chương trình vẫn coi là Overloading chứ chưa Ghi đè được!"
+            )
+
+    elif course_id == "ICT1.002":
+        has_pointer = ("*x" in submitted_code or "int *x" in submitted_code or "int* x" in submitted_code) and "&a" in submitted_code
+        if has_pointer:
+            is_fixed = True
+            output_text = (
+                "Trước khi gọi: a = 10\nSau khi gọi: a = 20\n"
+                "[Chạy thành công]: Giá trị biến 'a' trong main() đã bị thay đổi thành 20!\n"
+                "✓ Sử dụng con trỏ/địa chỉ đã tác động trực tiếp lên ô nhớ của biến gốc!"
+            )
+            explanation_text = (
+                "Chính xác! Khi truyền địa chỉ (&a) và nhận bằng con trỏ (*x), hàm modify() "
+                "thay đổi trực tiếp giá trị tại ô nhớ của biến a trong hàm main."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = "Hàm vẫn chỉ nhận tham số dạng tham trị (bản sao), biến a trong main() vẫn không đổi!"
+
+    elif course_id == "CS105":
+        has_list = "[" in submitted_code and "]" in submitted_code
+        if has_list or ".append" in submitted_code:
+            is_fixed = True
+            output_text = (
+                "[8.5, 9.0, 7.5, 10.0]\n"
+                "[Chạy thành công]: Thêm phần tử mới thành công mà không gặp lỗi TypeError!\n"
+                "✓ Kiểu dữ liệu List là Mutable nên có thể thay đổi dữ liệu tại chỗ!"
+            )
+            explanation_text = (
+                "Rất tốt! Bạn đã chuyển sang dùng ngoặc vuông [] để khai báo List (thay đổi được) "
+                "thay vì ngoặc tròn () của Tuple (bất biến)."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = "Tuple là đối tượng bất biến (Immutable), không thể gán lại hay thêm phần tử tại chỗ!"
+    else:
+        output_text = "Code đã thực thi.\n" + snippet.get("simulation_output", "")
+        explanation_text = snippet.get("run_explanation", "")
+
     return {
         "status": "success",
+        "is_fixed": is_fixed,
         "filename": snippet.get("filename", "demo.txt"),
         "language": snippet.get("language", "text"),
-        "code": snippet.get("code", ""),
-        "output": snippet.get("simulation_output", ""),
-        "explanation": snippet.get("run_explanation", ""),
+        "code": submitted_code,
+        "output": output_text,
+        "explanation": explanation_text,
+    }
+
+
+@app.post("/api/code/verify")
+async def verify_code_fix(req: CodeRunRequest):
+    """Verifies if the submitted code resolves the peer's misconception and triggers peer acknowledgement."""
+    run_result = await run_code_simulation(req)
+    if not run_result["is_fixed"]:
+        return {
+            "status": "unresolved",
+            "is_fixed": False,
+            "output": run_result["output"],
+            "explanation": run_result["explanation"],
+            "peer_message": None,
+            "session_state": await get_session(),
+        }
+
+    # Code is fixed: trigger Peer acknowledgement in classroom chat
+    peer_name = orchestrator.scenario.get("peer_student", {}).get("name", "Bảo (Bạn học)")
+    concept_title = orchestrator.scenario.get("concept_title", "bài học")
+    peer_message = (
+        f"[{peer_name}]: Ồ, cậu sửa code chạy đúng rồi kìa! "
+        f"Chương trình đã thực thi chuẩn xác theo đúng lý thuyết của {concept_title}. "
+        "Tớ đã thấy rõ kết quả rồi! Nhưng để chắc chắn không bị nhầm lẫn nữa, "
+        "cậu giải thích lại bằng lời (Explain-back) giúp tớ hiểu bản chất vì sao sửa như vậy là đúng nhé!"
+    )
+
+    # Update orchestrator state
+    orchestrator.misconception_repaired = True
+    orchestrator.active_role = Role.PEER
+    orchestrator.conversation_history.append({"role": Role.PEER.value, "content": peer_message})
+    orchestrator._log_event(
+        event_type="empirical_code_verified",
+        role=Role.PEER.value,
+        content=peer_message,
+        metadata={"course_id": orchestrator.course_id, "is_fixed": True},
+    )
+
+    # Persist message to DB
+    db.add_chat_message(orchestrator.session_id, Role.PEER.value, peer_message)
+    _sync_session_to_db()
+
+    return {
+        "status": "success",
+        "is_fixed": True,
+        "output": run_result["output"],
+        "explanation": run_result["explanation"],
+        "peer_message": peer_message,
+        "session_state": await get_session(),
     }
 
 
@@ -205,6 +345,41 @@ async def get_llm_status():
         "provider": client.get_provider(),
         "is_live_llm": client.get_provider() != "fallback",
     }
+
+
+@app.get("/api/instructor/audit")
+async def get_instructor_audit():
+    """Returns comprehensive instructor audit data: summary, all sessions, security logs, citations."""
+    summary = orchestrator.generate_instructor_summary()
+    sessions = db.get_all_sessions()
+    total_sessions = len(sessions)
+    completed_sessions = sum(1 for s in sessions if s.get("completed"))
+    completion_rate = round((completed_sessions / total_sessions * 100), 1) if total_sessions > 0 else 0.0
+
+    return {
+        "current_summary": summary.model_dump(),
+        "total_sessions": total_sessions,
+        "completed_sessions": completed_sessions,
+        "completion_rate": completion_rate,
+        "security_alerts": orchestrator.security_alerts,
+        "recent_sessions": sessions[:15],
+    }
+
+
+@app.get("/api/instructor/report/export")
+async def export_instructor_report(format: str = "json"):
+    """Exports pedagogical audit report and completion certificate in JSON or printable HTML/PDF."""
+    payload = build_audit_payload(orchestrator)
+    if format.lower() == "html":
+        html_content = render_html_report(payload)
+        return HTMLResponse(content=html_content, status_code=200)
+    else:
+        return JSONResponse(
+            content=payload,
+            headers={
+                "Content-Disposition": f"attachment; filename=mascot_audit_report_{orchestrator.session_id[:8]}.json"
+            },
+        )
 
 
 @app.get("/api/summary")

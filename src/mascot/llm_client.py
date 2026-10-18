@@ -18,6 +18,9 @@ class LLMClient:
 
     def _detect_provider(self) -> str:
         """Auto-detects the configured provider based on available environment variables."""
+        forced = os.getenv("MASCOT_LLM_PROVIDER")
+        if forced:
+            return forced.lower()
         if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
             return "gemini"
         elif os.getenv("GROQ_API_KEY"):

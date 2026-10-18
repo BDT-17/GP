@@ -57,6 +57,9 @@ class EvaluationOutcome(BaseModel):
     confidence: float
     feedback: str
     rubric_scores: Dict[str, bool] = Field(default_factory=dict)
+    dimension_feedback: Dict[str, str] = Field(default_factory=dict)
+    missing_dimensions: List[str] = Field(default_factory=list)
+    score_percentage: float = 0.0
 
 
 class SessionEvent(BaseModel):
@@ -75,11 +78,16 @@ class InstructorSummary(BaseModel):
     scenario_id: str
     learner_attempts: int
     hint_count: int
+    peer_pushback_count: int = 0
     escalated_to_lecturer: bool
     misconception_repaired: bool
     explain_back_passed: bool
     terminal_status: TerminalStatus
     terminal_reason: str
     citations_used: List[str]
+    security_alerts: List[Dict[str, Any]] = Field(default_factory=list)
+    rubric_assessment: Optional[Dict[str, Any]] = None
     created_at: str
+
+
 
