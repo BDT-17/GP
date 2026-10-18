@@ -105,6 +105,19 @@ def test_run_code_simulation(client):
     assert "explanation" in data
 
 
+def test_run_code_simulation_with_custom_fix(client):
+    """Test running code simulation with learner's fixed code."""
+    # Java fix: speak() without parameters
+    fixed_code = "class Dog extends Animal { void speak() { System.out.println(\"Gâu gâu\"); } }"
+    response = client.post("/api/code/run", json={"code": fixed_code})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["is_fixed"] is True
+    assert "GHI ĐÈ" in data["output"]
+    assert "Polymorphism" in data["explanation"]
+
+
 def test_get_instructor_audit(client):
     """Test getting comprehensive instructor audit data."""
     response = client.get("/api/instructor/audit")

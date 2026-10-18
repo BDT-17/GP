@@ -69,6 +69,7 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 
 ## Change log
 
+- 2026-10-18: Enhanced Learning View with Classroom Discussion Feed, 2-Step Pedagogical Stepper, Interactive 2-Way Code Playground with Fix & Verify (`/api/code/run`), and seamless chat turns (52 tests, 92% coverage).
 - 2026-10-18: Implemented Peer Pushback & Deliberation (`PeerAgent.pushback`), LLM Socratic Prompting with Rubric Missing Dimensions (`TeachingAssistantAgent.prompt_explain_back_retry`), and audit tracking (51 tests, 92% coverage).
 - 2026-10-18: Implemented Multi-Criteria Rubric Scoring (`Evaluator`), diagnostic TA Socratic feedback, and Semantic Vector RAG (`CurriculumRetriever`) with TF-IDF cosine similarity and curriculum gating (45 tests, 92% coverage).
 - 2026-10-18: Implemented AdversarialGuard (Prompt Injection & Role Hijacking defense) and Instructor Audit Dashboard with real-time session observability and chat transcripts (39 tests, 92% coverage).

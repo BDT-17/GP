@@ -112,3 +112,4 @@ def test_summary_tracks_peer_pushbacks():
     orchestrator.process_turn("Bảo ơi cậu sai rồi")
     summary = orchestrator.generate_instructor_summary()
     assert summary.peer_pushback_count == 1
+

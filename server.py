@@ -130,17 +130,98 @@ async def get_session():
     }
 
 
+class CodeRunRequest(BaseModel):
+    code: Optional[str] = None
+
+
 @app.post("/api/code/run")
-async def run_code_simulation():
-    """Simulates running the peer student's misconception code snippet."""
+async def run_code_simulation(req: Optional[CodeRunRequest] = None):
+    """Simulates running the peer student's misconception or learner's fixed code."""
     snippet = orchestrator.scenario.get("code_snippet", {})
+    submitted_code = req.code.strip() if (req and req.code) else None
+
+    if not submitted_code:
+        return {
+            "status": "success",
+            "is_fixed": False,
+            "filename": snippet.get("filename", "demo.txt"),
+            "language": snippet.get("language", "text"),
+            "code": snippet.get("code", ""),
+            "output": snippet.get("simulation_output", ""),
+            "explanation": snippet.get("run_explanation", ""),
+        }
+
+    course_id = orchestrator.course_id
+    is_fixed = False
+    output_text = ""
+    explanation_text = ""
+
+    if course_id == "CS102":
+        has_override_signature = "void speak()" in submitted_code or "void speak ()" in submitted_code
+        has_annotation = "@override" in submitted_code.lower()
+        if has_override_signature or (has_annotation and "speak" in submitted_code and "int times" not in submitted_code):
+            is_fixed = True
+            output_text = (
+                "Tiếng động vật: Gâu gâu\n"
+                "[Biên dịch & Chạy thành công]: pet.speak() đã gọi chính xác hàm của Dog!\n"
+                "✓ Bạn đã sửa hàm thành GHI ĐÈ (Overriding) chuẩn xác do cùng tên và cùng tham số!"
+            )
+            explanation_text = (
+                "Tuyệt vời! Hàm speak() ở Dog có cùng chữ ký hàm (không tham số) với Animal "
+                "nên cơ chế đa hình động (Runtime Polymorphism) đã gọi phương thức của Dog."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = (
+                "Hàm ở lớp Dog vẫn khác chữ ký hàm (chưa xóa tham số int times hoặc chưa đổi về void speak()), "
+                "chương trình vẫn coi là Overloading chứ chưa Ghi đè được!"
+            )
+
+    elif course_id == "ICT1.002":
+        has_pointer = ("*x" in submitted_code or "int *x" in submitted_code or "int* x" in submitted_code) and "&a" in submitted_code
+        if has_pointer:
+            is_fixed = True
+            output_text = (
+                "Trước khi gọi: a = 10\nSau khi gọi: a = 20\n"
+                "[Chạy thành công]: Giá trị biến 'a' trong main() đã bị thay đổi thành 20!\n"
+                "✓ Sử dụng con trỏ/địa chỉ đã tác động trực tiếp lên ô nhớ của biến gốc!"
+            )
+            explanation_text = (
+                "Chính xác! Khi truyền địa chỉ (&a) và nhận bằng con trỏ (*x), hàm modify() "
+                "thay đổi trực tiếp giá trị tại ô nhớ của biến a trong hàm main."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = "Hàm vẫn chỉ nhận tham số dạng tham trị (bản sao), biến a trong main() vẫn không đổi!"
+
+    elif course_id == "CS105":
+        has_list = "[" in submitted_code and "]" in submitted_code
+        if has_list or ".append" in submitted_code:
+            is_fixed = True
+            output_text = (
+                "[8.5, 9.0, 7.5, 10.0]\n"
+                "[Chạy thành công]: Thêm phần tử mới thành công mà không gặp lỗi TypeError!\n"
+                "✓ Kiểu dữ liệu List là Mutable nên có thể thay đổi dữ liệu tại chỗ!"
+            )
+            explanation_text = (
+                "Rất tốt! Bạn đã chuyển sang dùng ngoặc vuông [] để khai báo List (thay đổi được) "
+                "thay vì ngoặc tròn () của Tuple (bất biến)."
+            )
+        else:
+            output_text = snippet.get("simulation_output", "")
+            explanation_text = "Tuple là đối tượng bất biến (Immutable), không thể gán lại hay thêm phần tử tại chỗ!"
+    else:
+        output_text = "Code đã thực thi.\n" + snippet.get("simulation_output", "")
+        explanation_text = snippet.get("run_explanation", "")
+
     return {
         "status": "success",
+        "is_fixed": is_fixed,
         "filename": snippet.get("filename", "demo.txt"),
         "language": snippet.get("language", "text"),
-        "code": snippet.get("code", ""),
-        "output": snippet.get("simulation_output", ""),
-        "explanation": snippet.get("run_explanation", ""),
+        "code": submitted_code,
+        "output": output_text,
+        "explanation": explanation_text,
     }
 
 

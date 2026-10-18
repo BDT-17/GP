@@ -1288,99 +1288,117 @@
     <!-- ---------------------------------------------------- -->
     <div id="view-exercise" class="flex-1 flex flex-col justify-between hidden h-full">
       
-      <!-- Top Bar (Duolingo Header) -->
-      <header class="w-full max-w-5xl mx-auto pt-6 px-6 flex items-center justify-between flex-shrink-0">
+      <!-- Top Bar: 2-Step Pedagogical Stepper & Header -->
+      <header class="w-full max-w-5xl mx-auto pt-4 px-6 flex items-center justify-between flex-shrink-0 border-b border-[#202f36] pb-3">
         <!-- Close Button (X) back to Home -->
-        <button onclick="switchView('home')" class="text-2xl font-black text-[#52656d] hover:text-white transition">
+        <button onclick="switchView('home')" class="text-2xl font-black text-[#52656d] hover:text-white transition mr-3" title="Quay lại trang chủ">
           ✕
         </button>
 
-        <!-- Progress Bar -->
-        <div class="flex-1 max-w-2xl mx-8">
-          <div class="w-full h-4 bg-[#37464f] rounded-full overflow-hidden p-0.5">
-            <div id="progress-bar-fill" class="h-full bg-[#58cc02] rounded-full transition-all duration-500 shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]" style="width: 25%;"></div>
+        <!-- 2-Step Pedagogical Stepper (AC6) -->
+        <div class="flex-1 max-w-2xl mx-auto flex items-center justify-center space-x-2 md:space-x-3 text-xs font-black uppercase tracking-wider">
+          <!-- Step 1: Sửa ngộ nhận -->
+          <div id="step-indicator-1" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ff9600] bg-[#2a1d12] text-[#ff9600] transition-all shadow-sm">
+            <span id="step-1-icon">🎯</span>
+            <span id="step-1-text">BƯỚC 1: SỬA NGỘ NHẬN</span>
+          </div>
+
+          <div class="text-[#52656d] font-bold">➔</div>
+
+          <!-- Step 2: Giải thích lại (Rubric) -->
+          <div id="step-indicator-2" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#2b3940] bg-[#141e24] text-[#8598a0] transition-all shadow-sm">
+            <span id="step-2-icon">🔒</span>
+            <span id="step-2-text">BƯỚC 2: EXPLAIN-BACK (RUBRIC)</span>
           </div>
         </div>
 
-        <!-- Hearts Counter -->
-        <div class="flex items-center space-x-2 text-[#ff4b4b] font-black text-lg">
-          <span class="text-2xl">❤️</span>
-          <span id="stat-hearts">3</span>
+        <!-- Right Quick Actions & Hearts -->
+        <div class="flex items-center space-x-3 ml-3">
+          <button onclick="toggleSlideModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-[#1cb0f6] transition shadow-sm" title="Mở Sổ tay giáo trình VLearn">
+            <span>📖</span>
+            <span class="hidden sm:inline">Giáo Trình</span>
+          </button>
+          <div class="flex items-center space-x-1.5 text-[#ff4b4b] font-black text-sm">
+            <span>❤️</span>
+            <span id="stat-hearts">3</span>
+          </div>
         </div>
       </header>
 
-      <!-- Main Exercise Workspace -->
-      <main class="flex-1 flex flex-col items-center justify-center px-4 max-w-3xl mx-auto w-full py-4">
+      <!-- Main Exercise Workspace (Scrollable Chat & Playground) -->
+      <main class="flex-1 flex flex-col px-4 max-w-4xl mx-auto w-full py-4 overflow-y-auto chat-scroll space-y-4">
         
-        <!-- Exercise Tag & Instruction -->
-        <div class="w-full text-left mb-6">
-          <div id="exercise-badge" class="inline-flex items-center space-x-1.5 text-xs font-black uppercase tracking-wider text-[#ce82ff] mb-2">
-            <span>✨</span>
-            <span id="badge-text">HIỂU LẦM CỦA BẠN HỌC</span>
-          </div>
-          <h1 id="exercise-title" class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-            Sửa lỗi sai cho bạn học Bảo
-          </h1>
-        </div>
-
-        <!-- Character & Speech Bubble Interaction -->
-        <div class="w-full flex items-start space-x-5 mb-8">
-          <!-- Character Avatar (Duolingo Flat Vector Style) -->
-          <div id="character-avatar" class="flex-shrink-0">
-            <!-- Bảo Avatar -->
-            <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-              <circle cx="50" cy="22" r="14" fill="#6d7a82"/>
-              <circle cx="50" cy="14" r="8" fill="#505d64"/>
-              <rect x="25" y="30" width="50" height="42" rx="21" fill="#fbd2a4"/>
-              <rect x="26" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-              <rect x="54" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-              <line x1="46" y1="51" x2="54" y2="51" stroke="#4a555c" stroke-width="3"/>
-              <circle cx="36" cy="51" r="3" fill="#2d373d"/>
-              <circle cx="64" cy="51" r="3" fill="#2d373d"/>
-              <path d="M44 63 Q50 67 56 63" stroke="#d2886a" stroke-width="2.5" stroke-linecap="round"/>
-              <path d="M18 90 C18 78 30 74 50 74 C70 74 82 78 82 90 L85 120 L15 120 Z" fill="#ff9600"/>
-              <path d="M42 74 L50 84 L58 74 Z" fill="#ffffff"/>
-            </svg>
-          </div>
-
-          <!-- Speech Bubble -->
-          <div class="flex-1 bg-[#1b262c] border-2 border-[#37464f] rounded-2xl p-4 speech-bubble shadow-lg">
-            <div class="flex items-center space-x-2 mb-1.5">
-              <button onclick="playSpeechAudio()" class="w-8 h-8 rounded-full bg-[#1cb0f6] hover:bg-[#35bbff] flex items-center justify-center text-white text-sm shadow-sm transition">
-                🔊
-              </button>
-              <span id="speaker-name" class="text-xs font-black uppercase tracking-wider text-[#8598a0]">Bảo (Bạn học)</span>
+        <!-- Header Topic Info -->
+        <div class="flex items-center justify-between border-b border-[#1f2d34] pb-2">
+          <div>
+            <div id="exercise-badge" class="inline-flex items-center space-x-1.5 text-[11px] font-black uppercase tracking-wider text-[#ce82ff]">
+              <span>✨</span>
+              <span id="badge-text">MÔ PHỎNG LỚP HỌC MASCOT</span>
             </div>
-            <p id="speech-text" class="text-base md:text-lg font-bold text-white leading-relaxed">
-              Tớ nghĩ là trong Java hay C++, <span class="text-[#ce82ff] underline decoration-dotted decoration-2 underline-offset-4 cursor-pointer" title="Khái niệm trọng tâm">Overloading</span> (nạp chồng) với <span class="text-[#ce82ff] underline decoration-dotted decoration-2 underline-offset-4 cursor-pointer" title="Khái niệm trọng tâm">Overriding</span> (ghi đè) chỉ là hai cách gọi khác nhau của cùng một việc: đó là viết lại một phương thức để dùng. Bản chất chúng hoàn toàn giống nhau, đúng không cậu?
-            </p>
+            <h1 id="exercise-title" class="text-xl md:text-2xl font-black text-white tracking-tight mt-0.5">
+              Phân biệt Nạp chồng (Overloading) và Ghi đè (Overriding)
+            </h1>
           </div>
+          <button onclick="toggleCodePlayground()" id="btn-toggle-code" class="px-3 py-1.5 rounded-xl bg-[#18262d] hover:bg-[#20313a] border border-[#2b3940] text-xs font-bold text-[#8598a0] hover:text-white flex items-center space-x-1.5 transition">
+            <span>💻</span>
+            <span id="toggle-code-text">Thu gọn Code</span>
+          </button>
         </div>
 
-        <!-- Interactive Code Misconception Block (Bảo's Buggy Code Snippet) -->
-        <div id="code-misconception-card" class="w-full mb-6 bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
-          <!-- Card Header Bar -->
-          <div class="bg-[#18262d] px-4 py-2.5 flex items-center justify-between border-b border-[#2b3940]">
+        <!-- Interactive Code Playground (Tab 1: Code của Bảo | Tab 2: Thử sửa code) -->
+        <div id="code-misconception-card" class="w-full bg-[#11191f] border-2 border-[#2b3940] rounded-2xl overflow-hidden shadow-lg transition duration-200 hover:border-[#384b55]">
+          <!-- Card Header Bar with Tabs -->
+          <div class="bg-[#18262d] px-4 py-2 flex items-center justify-between border-b border-[#2b3940]">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
               <span id="code-snippet-filename" class="text-xs font-mono font-bold text-[#8598a0] ml-2">PolymorphismDemo.java</span>
               <span id="code-snippet-lang" class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#20313a] text-[#1cb0f6]">JAVA</span>
             </div>
-            <button id="run-code-btn" onclick="runCodeSimulation()" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] active:translate-y-0.5 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
-              <span>▶</span>
-              <span>Chạy thử code của Bảo</span>
-            </button>
+
+            <!-- Tab Switcher -->
+            <div class="flex items-center space-x-1.5 text-xs font-bold">
+              <button id="tab-code-view" onclick="switchCodeTab('view')" class="px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition">
+                📄 Code của Bảo
+              </button>
+              <button id="tab-code-edit" onclick="switchCodeTab('edit')" class="px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition">
+                ✏️ Sửa & Kiểm tra Fix
+              </button>
+            </div>
           </div>
 
-          <!-- Code View Area -->
-          <div class="p-4 bg-[#0d1519] overflow-x-auto text-sm font-mono text-[#e0e6ed] leading-relaxed max-h-56">
+          <!-- Code View Area (Read-only) -->
+          <div id="code-view-container" class="p-4 bg-[#0d1519] overflow-x-auto text-xs font-mono text-[#e0e6ed] leading-relaxed max-h-48 chat-scroll">
             <pre><code id="code-snippet-content">// Đang tải đoạn mã của bạn học Bảo...</code></pre>
           </div>
 
+          <!-- Code Edit Area (Interactive) -->
+          <div id="code-edit-container" class="hidden p-3 bg-[#0a1013] border-b border-[#202f36]">
+            <div class="text-[11px] font-bold text-[#8598a0] mb-1.5 flex items-center justify-between">
+              <span>✍️ Bạn hãy chỉnh sửa đoạn mã bên dưới để sửa lỗi ngộ nhận cho Bảo:</span>
+              <button onclick="resetEditorCode()" class="text-[#1cb0f6] hover:underline text-[11px]">Khôi phục code gốc</button>
+            </div>
+            <textarea id="code-snippet-editor" rows="6" class="w-full bg-[#0d1519] text-[#00e676] font-mono text-xs p-3 rounded-xl border border-[#2b3940] outline-none focus:border-[#1cb0f6] resize-y chat-scroll" spellcheck="false"></textarea>
+          </div>
+
+          <!-- Code Actions & Console Output Drawer -->
+          <div class="bg-[#141e24] px-4 py-2 flex items-center justify-between border-t border-[#202f36]">
+            <div class="flex items-center space-x-2">
+              <button id="btn-run-original" onclick="runCodeSimulation(false)" class="px-3 py-1.5 bg-[#283842] hover:bg-[#324552] text-[#8598a0] hover:text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 transition">
+                <span>▶ Chạy code gốc của Bảo</span>
+              </button>
+              <button id="btn-run-fix" onclick="runCodeSimulation(true)" class="px-3.5 py-1.5 bg-[#58cc02] hover:bg-[#61e002] text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 transition shadow-[0_2px_0_#46a302]">
+                <span>⚡ Chạy thử code đã sửa</span>
+              </button>
+            </div>
+            <button onclick="toggleConsoleDrawer()" class="text-xs text-[#8598a0] hover:text-white font-bold">
+              <span id="console-toggle-label">Xem kết quả Terminal ▾</span>
+            </button>
+          </div>
+
           <!-- Simulation Console Output Drawer -->
-          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#141e24] p-3.5 transition-all">
+          <div id="code-console-drawer" class="hidden border-t-2 border-[#2b3940] bg-[#0c1418] p-3.5 transition-all">
             <div class="flex items-center justify-between text-xs font-bold text-[#8598a0] mb-1.5">
               <div class="flex items-center space-x-1.5 text-amber-400">
                 <span>💻</span>
@@ -1388,7 +1406,7 @@
               </div>
               <button onclick="toggleConsoleDrawer()" class="text-[#8598a0] hover:text-white text-xs font-bold">✕ Đóng</button>
             </div>
-            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#0a0f12] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
+            <pre id="code-console-output" class="text-xs font-mono text-[#00e676] bg-[#060a0c] p-3 rounded-xl overflow-x-auto border border-[#1f2d34] whitespace-pre-wrap"></pre>
             <div id="code-console-hint" class="mt-2 text-xs font-semibold text-[#8598a0] flex items-center space-x-1.5">
               <span>💡</span>
               <span id="code-console-hint-text">Hãy nhìn kết quả trên và nhắn cho bạn Bảo biết tại sao code lại chạy như vậy nhé!</span>
@@ -1397,7 +1415,7 @@
         </div>
 
         <!-- Explain-Back Rubric Multi-Criteria Checklist Card (P3) -->
-        <div id="rubric-checklist-card" class="w-full mb-6 bg-[#162228] border-2 border-[#2b3940] rounded-2xl p-4 shadow-md hidden">
+        <div id="rubric-checklist-card" class="w-full bg-[#162228] border-2 border-[#2b3940] rounded-2xl p-4 shadow-md hidden transition-all">
           <div class="flex items-center justify-between mb-3 border-b border-[#24353f] pb-2">
             <div class="flex items-center space-x-2">
               <span class="text-base">📋</span>
@@ -1405,7 +1423,7 @@
             </div>
             <div class="flex items-center space-x-2">
               <span id="rubric-score-pct-label" class="text-xs font-black text-amber-300">0% Đạt</span>
-              <div class="w-16 h-2 bg-[#24353f] rounded-full overflow-hidden">
+              <div class="w-20 h-2.5 bg-[#24353f] rounded-full overflow-hidden">
                 <div id="rubric-score-progress-bar" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 0%;"></div>
               </div>
             </div>
@@ -1415,78 +1433,59 @@
           </div>
         </div>
 
-        <!-- Active Answer Slot (Underlined) -->
-        <div class="w-full mb-6">
-          <div class="min-h-[64px] w-full border-b-2 border-[#37464f] flex flex-wrap items-center gap-2 p-2 focus-within:border-[#1cb0f6] transition">
-            <input 
-              id="user-input" 
-              type="text" 
-              placeholder="Gõ câu trả lời của bạn vào đây hoặc chọn từ khóa bên dưới..." 
-              class="w-full bg-transparent text-lg md:text-xl font-bold text-white placeholder-[#52656d] outline-none"
-              autocomplete="off"
-              onkeydown="if(event.key === 'Enter') handleCheck()"
-              oninput="updateButtonState()"
-            />
+        <!-- Classroom Discussion Feed (Scrollable Multi-Role Chat Feed) -->
+        <div class="w-full flex flex-col space-y-3.5 pt-2">
+          <div class="text-[11px] font-black uppercase tracking-wider text-[#8598a0] flex items-center space-x-2">
+            <span>💬 DIỄN BIẾN LỚP HỌC (CLASSROOM DISCUSSION FEED):</span>
+            <span class="h-px bg-[#202f36] flex-1"></span>
           </div>
-          <div class="h-0.5 w-full border-b-2 border-[#37464f] mt-1"></div>
-        </div>
 
-        <!-- Word Bank / Quick Answer Tiles -->
-        <div class="w-full mb-4">
-          <div class="text-[11px] font-black uppercase tracking-wider text-[#52656d] mb-2.5">
-            Từ khóa gợi ý (Nhấn để chọn):
-          </div>
-          <div id="word-bank-tiles" class="flex flex-wrap gap-2.5">
-            <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              Overloading trong cùng một lớp
-            </button>
-            <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              khác danh sách tham số
-            </button>
-            <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              Overriding trong kế thừa lớp cha con
-            </button>
-            <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
-              cùng tên và cùng tham số
-            </button>
-            <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-              💡 Cho tớ gợi ý
-            </button>
-            <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
-              🛑 Test chặn bài sau
-            </button>
+          <div id="classroom-chat-feed" class="w-full space-y-3.5">
+            <!-- Populated dynamically via renderChatFeed() -->
           </div>
         </div>
 
       </main>
 
-      <!-- Bottom Action Footer -->
-      <footer id="action-footer" class="w-full border-t-2 border-[#202f36] bg-[#131f24] py-6 px-6 transition-colors duration-300">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-          <div id="footer-feedback" class="flex items-center space-x-4 hidden">
-            <div id="feedback-icon" class="w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black flex-shrink-0 shadow-lg"></div>
-            <div>
-              <div id="feedback-title" class="font-extrabold text-xl leading-tight"></div>
-              <div id="feedback-desc" class="text-sm font-bold opacity-90 max-w-lg mt-0.5"></div>
+      <!-- Bottom Chat Input & Action Bar -->
+      <footer id="action-footer" class="w-full border-t-2 border-[#202f36] bg-[#131f24] pt-3 pb-5 px-6 transition-colors duration-300 flex-shrink-0">
+        <div class="max-w-4xl mx-auto space-y-2.5">
+          
+          <!-- Word Bank / Quick Answer Tiles -->
+          <div class="w-full flex items-center justify-between text-xs">
+            <span class="text-[11px] font-black uppercase tracking-wider text-[#52656d]">Từ khóa gợi ý (Nhấn để điền):</span>
+            <button onclick="clearInput()" class="text-[#8598a0] hover:text-white text-xs font-bold">Xóa ô gõ</button>
+          </div>
+          
+          <div id="word-bank-tiles" class="flex flex-wrap gap-2">
+            <!-- Dynamically populated according to active course -->
+          </div>
+
+          <!-- Input Row (Modern Chat Bar with Send button) -->
+          <div class="flex items-center space-x-2.5 pt-1">
+            <div class="flex-1 bg-[#18262d] border-2 border-[#2b3940] focus-within:border-[#1cb0f6] rounded-2xl px-4 py-2.5 flex items-center space-x-2 transition shadow-inner">
+              <input 
+                id="user-input" 
+                type="text" 
+                placeholder="Nhập câu giải thích hoặc phản hồi bạn Bảo... (Nhấn Enter để gửi)" 
+                class="w-full bg-transparent text-sm md:text-base font-bold text-white placeholder-[#52656d] outline-none"
+                autocomplete="off"
+                onkeydown="if(event.key === 'Enter') handleCheck()"
+                oninput="updateButtonState()"
+              />
             </div>
-          </div>
 
-          <div id="footer-left-actions">
-            <button id="skip-btn" onclick="clearInput()" class="duo-btn-skip px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider">
-              XÓA
-            </button>
-          </div>
-
-          <div>
             <button 
               id="action-btn" 
               onclick="handleCheck()" 
               disabled
-              class="duo-btn-green px-12 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg"
+              class="duo-btn-green px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center space-x-1.5 flex-shrink-0"
             >
-              KIỂM TRA
+              <span>GỬI</span>
+              <span>➤</span>
             </button>
           </div>
+
         </div>
       </footer>
 
@@ -2402,26 +2401,79 @@
       const langEl = document.getElementById('code-snippet-lang');
       if (langEl) langEl.innerText = (snippet.language || 'code').toUpperCase();
       const codeEl = document.getElementById('code-snippet-content');
-      if (codeEl) codeEl.innerText = snippet.code;
+      if (codeEl) codeEl.innerText = snippet.code || '';
+      const editorEl = document.getElementById('code-snippet-editor');
+      if (editorEl) editorEl.value = snippet.code || '';
 
       const drawer = document.getElementById('code-console-drawer');
       if (drawer) drawer.classList.add('hidden');
     }
 
-    async function runCodeSimulation() {
+    function switchCodeTab(tab) {
+      const tabView = document.getElementById('tab-code-view');
+      const tabEdit = document.getElementById('tab-code-edit');
+      const viewContainer = document.getElementById('code-view-container');
+      const editContainer = document.getElementById('code-edit-container');
+
+      if (tab === 'edit') {
+        tabEdit.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
+        tabView.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
+        viewContainer.classList.add('hidden');
+        editContainer.classList.remove('hidden');
+        const editor = document.getElementById('code-snippet-editor');
+        if (editor) editor.focus();
+      } else {
+        tabView.className = "px-2.5 py-1 rounded-lg bg-[#24353f] text-white border border-[#37464f] transition";
+        tabEdit.className = "px-2.5 py-1 rounded-lg text-[#8598a0] hover:text-white hover:bg-[#1a272e] transition";
+        editContainer.classList.add('hidden');
+        viewContainer.classList.remove('hidden');
+      }
+    }
+
+    function resetEditorCode() {
+      const editorEl = document.getElementById('code-snippet-editor');
+      if (editorEl && sessionData && sessionData.code_snippet) {
+        editorEl.value = sessionData.code_snippet.code || '';
+      }
+    }
+
+    function toggleCodePlayground() {
+      const card = document.getElementById('code-misconception-card');
+      const toggleText = document.getElementById('toggle-code-text');
+      if (!card) return;
+      card.classList.toggle('hidden');
+      if (toggleText) {
+        toggleText.innerText = card.classList.contains('hidden') ? 'Mở lại Code' : 'Thu gọn Code';
+      }
+    }
+
+    async function runCodeSimulation(isCustom = false) {
       playDuoSound('hint');
       const drawer = document.getElementById('code-console-drawer');
       const outputEl = document.getElementById('code-console-output');
       const hintEl = document.getElementById('code-console-hint-text');
+      const editorEl = document.getElementById('code-snippet-editor');
 
       if (!drawer || !outputEl) return;
 
+      let payload = {};
+      if (isCustom && editorEl) {
+        payload.code = editorEl.value;
+      }
+
       try {
-        const res = await fetch('/api/code/run', { method: 'POST' });
+        const res = await fetch('/api/code/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         const data = await res.json();
         outputEl.innerText = data.output || "Đoạn mã đã chạy xong không có output.";
         if (hintEl && data.explanation) {
           hintEl.innerText = data.explanation;
+        }
+        if (data.is_fixed) {
+          playDuoSound('correct');
         }
       } catch (err) {
         if (sessionData && sessionData.code_snippet) {
@@ -2433,11 +2485,6 @@
       }
 
       drawer.classList.remove('hidden');
-      const input = document.getElementById('user-input');
-      if (input) {
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        input.focus();
-      }
     }
 
     function toggleConsoleDrawer() {
@@ -2451,78 +2498,193 @@
 
       if (code === 'ICT1.002') {
         container.innerHTML = `
-          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tham trị sao chép giá trị (Pass-by-value)
           </button>
-          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             không làm thay đổi biến ngoài
           </button>
-          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)
           </button>
-          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             thay đổi trực tiếp biến gốc
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       } else if (code === 'CS105') {
         container.innerHTML = `
-          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             List là kiểu dữ liệu Mutable (thay đổi được)
           </button>
-          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             dùng ngoặc vuông [] và có append
           </button>
-          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Tuple là kiểu dữ liệu Immutable (bất biến)
           </button>
-          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             dùng ngoặc tròn () không thể sửa phần tử
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       } else {
         container.innerHTML = `
-          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Overloading trong cùng một lớp
           </button>
-          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             khác danh sách tham số
           </button>
-          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             Overriding trong kế thừa lớp cha con
           </button>
-          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
             cùng tên và cùng tham số
           </button>
-          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
-            💡 Cho tớ gợi ý
+          <button onclick="fillPreset('hint')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Gợi ý Socratic
           </button>
-          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+          <button onclick="fillPreset('future')" class="duo-tile px-3 py-2 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
             🛑 Test chặn bài sau
           </button>
         `;
       }
     }
 
-    function playSpeechAudio() {
+    function playSpeechAudio(customText) {
       playDuoSound('hint');
-      const text = document.getElementById('speech-text').innerText;
-      if ('speechSynthesis' in window) {
+      const text = customText || (sessionData ? sessionData.initial_misconception : '');
+      if ('speechSynthesis' in window && text) {
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'vi-VN';
         window.speechSynthesis.speak(utter);
       }
+    }
+
+    function renderChatFeed(history) {
+      const feed = document.getElementById('classroom-chat-feed');
+      if (!feed) return;
+
+      if (!history || history.length === 0) {
+        const initialText = sessionData ? sessionData.initial_misconception : "Đang kết nối vào lớp học...";
+        feed.innerHTML = createChatMessageHtml('peer', initialText);
+        return;
+      }
+
+      feed.innerHTML = history.map(item => createChatMessageHtml(item.role, item.content)).join('');
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function createChatMessageHtml(role, content) {
+      const safeContent = (content || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      if (role === 'learner' || role === 'user') {
+        return `
+          <div class="flex items-start justify-end space-x-3 pl-8">
+            <div class="bg-[#142936] border-2 border-[#1cb0f6] rounded-2xl p-4 shadow-sm max-w-xl text-left">
+              <div class="flex items-center justify-between mb-1.5 space-x-3">
+                <span class="text-xs font-black uppercase tracking-wider text-[#1cb0f6]">Bạn (Học viên)</span>
+                <span class="text-[10px] font-bold text-[#8598a0]">Lời giải thích</span>
+              </div>
+              <div class="text-sm font-bold text-white leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#142936] border border-[#1cb0f6] flex items-center justify-center text-lg flex-shrink-0">
+              👤
+            </div>
+          </div>
+        `;
+      } else if (role === 'ta') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#172e21] border-2 border-[#58cc02] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🦉
+            </div>
+            <div class="flex-1 bg-[#13221a] border-2 border-[#58cc02]/60 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#58cc02]">Thầy Hùng (Trợ giảng Socratic)</span>
+                  <span class="text-[9px] font-bold bg-[#1d3d2a] text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-700">Gợi ý bậc thang</span>
+                </div>
+              </div>
+              <div class="text-sm font-semibold text-emerald-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else if (role === 'lecturer') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#271a36] border-2 border-[#ab47bc] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              👨‍🏫
+            </div>
+            <div class="flex-1 bg-[#1c1228] border-2 border-[#ab47bc]/70 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#ce93d8]">TS. Minh (Giảng viên)</span>
+                  <span class="text-[9px] font-bold bg-[#331c47] text-purple-200 px-2 py-0.5 rounded-full border border-purple-700">Leo thang & Trích dẫn VLearn</span>
+                </div>
+                <button onclick="toggleSlideModal()" class="text-[10px] font-bold text-[#ce93d8] hover:underline flex items-center space-x-1">
+                  <span>📄 Xem Slide</span>
+                </button>
+              </div>
+              <div class="text-sm font-semibold text-purple-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else if (role === 'orchestrator') {
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#2e171c] border-2 border-[#e53935] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🛡️
+            </div>
+            <div class="flex-1 bg-[#221014] border-2 border-[#e53935]/70 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-black uppercase tracking-wider text-[#ef5350]">Hệ thống MASCOT (An toàn Sư phạm)</span>
+                <span class="text-[9px] font-bold bg-[#3d1217] text-rose-300 px-2 py-0.5 rounded-full border border-rose-800">Chuyển hướng</span>
+              </div>
+              <div class="text-sm font-semibold text-rose-100 leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Default: Peer student Bảo
+        return `
+          <div class="flex items-start space-x-3.5 pr-8">
+            <div class="w-10 h-10 rounded-xl bg-[#2d1f14] border-2 border-[#ff9600] flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+              🎓
+            </div>
+            <div class="flex-1 bg-[#1c1813] border-2 border-[#ff9600]/60 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black uppercase tracking-wider text-[#ff9600]">Bảo (Bạn học)</span>
+                  <span class="text-[9px] font-bold bg-[#36210f] text-amber-300 px-2 py-0.5 rounded-full border border-amber-700">Ngộ nhận / Phản biện</span>
+                </div>
+                <button onclick="playSpeechAudio('${safeContent.replace(/'/g, "\\'")}')" class="text-xs text-[#8598a0] hover:text-white" title="Nghe đọc">
+                  🔊
+                </button>
+              </div>
+              <div class="text-sm font-bold text-white leading-relaxed whitespace-pre-wrap">${safeContent}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function appendChatMessage(role, content) {
+      const feed = document.getElementById('classroom-chat-feed');
+      if (!feed) return;
+      feed.insertAdjacentHTML('beforeend', createChatMessageHtml(role, content));
+      feed.scrollTop = feed.scrollHeight;
     }
 
     async function init() {
@@ -2533,12 +2695,12 @@
         if (sessionData && sessionData.concept_title) {
           const topicTitle = document.getElementById('unit-topic-title');
           if (topicTitle) topicTitle.innerText = sessionData.concept_title;
-        }
-        if (sessionData && sessionData.initial_misconception) {
-          updateDialogue('peer', sessionData.initial_misconception);
+          const exTitle = document.getElementById('exercise-title');
+          if (exTitle) exTitle.innerText = sessionData.concept_title;
         }
         updateWordBank(sessionData.course_id);
         renderCodeSnippet(sessionData.code_snippet);
+        renderChatFeed(sessionData.conversation_history);
         switchView('landing');
       } catch (e) {
         console.error("Init error:", e);
@@ -2548,26 +2710,29 @@
     function updateButtonState() {
       const input = document.getElementById('user-input');
       const btn = document.getElementById('action-btn');
-      if (!isWaitingNext) {
+      if (input && btn) {
         btn.disabled = input.value.trim().length === 0;
       }
     }
 
     function appendWord(word) {
       const input = document.getElementById('user-input');
-      if (input.value.trim()) {
-        input.value += `, ${word}`;
-      } else {
-        input.value = word;
+      if (input) {
+        if (input.value.trim()) {
+          input.value += `, ${word}`;
+        } else {
+          input.value = word;
+        }
+        updateButtonState();
+        input.focus();
       }
-      updateButtonState();
-      input.focus();
     }
 
     function fillPreset(type) {
       const input = document.getElementById('user-input');
+      if (!input) return;
       if (type === 'hint') {
-        input.value = "Tớ chưa hiểu lắm, cho tớ gợi ý với!";
+        input.value = "Tớ chưa hiểu lắm, nhờ Thầy trợ giảng cho gợi ý với!";
       } else if (type === 'future') {
         if (selectedSubjectCode === 'ICT1.002') {
           input.value = "Cấp phát bộ nhớ động malloc và heap hoạt động thế nào?";
@@ -2582,30 +2747,75 @@
     }
 
     function clearInput() {
-      document.getElementById('user-input').value = '';
-      updateButtonState();
+      const input = document.getElementById('user-input');
+      if (input) {
+        input.value = '';
+        updateButtonState();
+        input.focus();
+      }
     }
 
     function updateUIFromState() {
-      let pct = 25;
-      if (sessionData.terminal_status === 'completed') {
-        pct = 100;
-        document.getElementById('quest-repair-bar').style.width = '100%';
-        document.getElementById('quest-repair-text').innerText = '1/1';
-      } else if (sessionData.misconception_repaired) {
-        pct = 75;
-        document.getElementById('quest-repair-bar').style.width = '100%';
-        document.getElementById('quest-repair-text').innerText = '1/1';
-      }
-      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+      if (!sessionData) return;
 
       const hintsUsed = sessionData.hint_count || 0;
       const hearts = Math.max(1, 3 - hintsUsed);
-      document.getElementById('stat-hearts').innerText = hearts;
-      document.getElementById('home-hearts').innerText = hearts;
+      const heartsEl = document.getElementById('stat-hearts');
+      if (heartsEl) heartsEl.innerText = hearts;
+      const homeHeartsEl = document.getElementById('home-hearts');
+      if (homeHeartsEl) homeHeartsEl.innerText = hearts;
 
-      const title = document.getElementById('exercise-title');
+      // Update 2-Step Pedagogical Stepper
+      const step1 = document.getElementById('step-indicator-1');
+      const step1Icon = document.getElementById('step-1-icon');
+      const step1Text = document.getElementById('step-1-text');
+
+      const step2 = document.getElementById('step-indicator-2');
+      const step2Icon = document.getElementById('step-2-icon');
+      const step2Text = document.getElementById('step-2-text');
+
       const badge = document.getElementById('badge-text');
+
+      if (sessionData.terminal_status === 'completed') {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "✓";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: ĐÃ SỬA LỖI";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "🎉";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: ĐÃ ĐẠT RUBRIC";
+
+        if (badge) {
+          badge.innerText = "BUỔI HỌC HOÀN THÀNH XUẤT SẮC";
+          badge.className = "text-[#58cc02] font-black";
+        }
+      } else if (sessionData.misconception_repaired) {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#58cc02] bg-[#142e1d] text-[#58cc02] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "✓";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: ĐÃ SỬA LỖI";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ffc800] bg-[#2d2410] text-[#ffc800] animate-pulse transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "📝";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: EXPLAIN-BACK (ĐANG THỰC HIỆN)";
+
+        if (badge) {
+          badge.innerText = "CHẶNG 2: GIẢI THÍCH LẠI BẰNG LỜI CỦA BẠN";
+          badge.className = "text-[#ffc800] font-black";
+        }
+      } else {
+        if (step1) step1.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#ff9600] bg-[#2a1d12] text-[#ff9600] transition-all shadow-sm";
+        if (step1Icon) step1Icon.innerText = "🎯";
+        if (step1Text) step1Text.innerText = "BƯỚC 1: SỬA NGỘ NHẬN CHO BẢO";
+
+        if (step2) step2.className = "flex items-center space-x-2 px-3 py-1.5 rounded-xl border-2 border-[#2b3940] bg-[#141e24] text-[#8598a0] transition-all shadow-sm";
+        if (step2Icon) step2Icon.innerText = "🔒";
+        if (step2Text) step2Text.innerText = "BƯỚC 2: EXPLAIN-BACK (CHỜ)";
+
+        if (badge) {
+          badge.innerText = "CHẶNG 1: CHỈ RA SAI SÓT CỦA BẠN HỌC";
+          badge.className = "text-[#ce82ff] font-black";
+        }
+      }
 
       // Update learner profile stats from SQLite persistence
       if (sessionData && sessionData.profile) {
@@ -2629,35 +2839,21 @@
         if (pUser) pUser.innerText = p.username;
       }
 
-      if (sessionData.terminal_status === 'completed') {
-        badge.innerText = "HOÀN THÀNH XUẤT SẮC";
-        badge.className = "text-[#58cc02]";
-        title.innerText = "Chúc mừng bạn đã chinh phục bài học! (+50 XP • +15 Gems)";
-      } else if (sessionData.misconception_repaired) {
-        badge.innerText = "BƯỚC 2: GIẢI THÍCH LẠI (EXPLAIN-BACK)";
-        badge.className = "text-[#ffc800]";
-        title.innerText = "Hãy tự tổng kết lại bản chất bằng lời của bạn:";
-      } else {
-        badge.innerText = "HIỂU LẦM CỦA BẠN HỌC";
-        badge.className = "text-[#ce82ff]";
-        title.innerText = "Sửa lỗi sai cho bạn học Bảo:";
-      }
-
       updateRubricUI();
     }
 
     async function handleCheck() {
-      if (isWaitingNext) {
-        resetFooterState();
-        return;
-      }
-
       const input = document.getElementById('user-input');
       const text = input.value.trim();
       if (!text) return;
 
       const btn = document.getElementById('action-btn');
       btn.disabled = true;
+
+      // Optimistically append user message to feed
+      appendChatMessage('learner', text);
+      input.value = '';
+      updateButtonState();
 
       try {
         const res = await fetch('/api/chat', {
@@ -2668,132 +2864,35 @@
         const data = await res.json();
         sessionData = data.session_state;
 
-        updateDialogue(data.reply.role, data.reply.message);
+        // Append assistant response to feed
+        appendChatMessage(data.reply.role, data.reply.message);
         updateUIFromState();
-        showFeedback(data.reply.role, data.session_state, data.reply.message);
+
+        if (sessionData.terminal_status === 'completed') {
+          playDuoSound('correct');
+        } else if (sessionData.misconception_repaired && data.reply.role === 'peer') {
+          playDuoSound('correct');
+        } else if (data.reply.role === 'ta') {
+          playDuoSound('hint');
+        } else if (data.reply.role === 'orchestrator') {
+          playDuoSound('error');
+        }
 
       } catch (e) {
-        console.error("Error:", e);
+        console.error("Error sending chat turn:", e);
+      } finally {
+        btn.disabled = false;
+        input.focus();
       }
-    }
-
-    function updateDialogue(role, message) {
-      const speech = document.getElementById('speech-text');
-      const speaker = document.getElementById('speaker-name');
-      const avatarCont = document.getElementById('character-avatar');
-
-      speech.innerText = message;
-
-      if (role === 'ta') {
-        speaker.innerText = "Thầy Hùng (Trợ giảng Cú Xanh)";
-        avatarCont.innerHTML = `
-          <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-            <ellipse cx="50" cy="65" rx="36" ry="42" fill="#58cc02"/>
-            <ellipse cx="50" cy="72" rx="26" ry="30" fill="#ffffff" fill-opacity="0.3"/>
-            <circle cx="36" cy="50" r="14" fill="#ffffff"/>
-            <circle cx="64" cy="50" r="14" fill="#ffffff"/>
-            <circle cx="38" cy="50" r="7" fill="#1b2a30"/>
-            <circle cx="62" cy="50" r="7" fill="#1b2a30"/>
-            <path d="M44 60 L50 72 L56 60 Z" fill="#ff9600"/>
-            <polygon points="50,15 85,28 50,40 15,28" fill="#1cb0f6"/>
-            <rect x="42" y="36" width="16" height="8" rx="2" fill="#1899d6"/>
-          </svg>
-        `;
-      } else if (role === 'lecturer') {
-        speaker.innerText = "TS. Minh (Giảng viên)";
-        avatarCont.innerHTML = `
-          <svg class="w-24 h-28 drop-shadow-lg" viewBox="0 0 100 120" fill="none">
-            <circle cx="50" cy="24" r="16" fill="#84969e"/>
-            <rect x="25" y="32" width="50" height="42" rx="21" fill="#fbd2a4"/>
-            <rect x="26" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-            <rect x="54" y="44" width="20" height="14" rx="4" stroke="#4a555c" stroke-width="3" fill="#ffffff" fill-opacity="0.2"/>
-            <path d="M42 66 Q50 72 58 66" stroke="#4a555c" stroke-width="4" stroke-linecap="round"/>
-            <path d="M18 90 C18 78 30 74 50 74 C70 74 82 78 82 90 L85 120 L15 120 Z" fill="#7b1fa2"/>
-          </svg>
-        `;
-      } else {
-        speaker.innerText = "Bảo (Bạn học)";
-      }
-    }
-
-    function showFeedback(role, state, message) {
-      const footer = document.getElementById('action-footer');
-      const feedback = document.getElementById('footer-feedback');
-      const icon = document.getElementById('feedback-icon');
-      const title = document.getElementById('feedback-title');
-      const desc = document.getElementById('feedback-desc');
-      const btn = document.getElementById('action-btn');
-      const skipBtn = document.getElementById('skip-btn');
-
-      feedback.classList.remove('hidden');
-      skipBtn.classList.add('hidden');
-      isWaitingNext = true;
-      btn.innerText = "TIẾP TỤC";
-      btn.disabled = false;
-
-      if (state.terminal_status === 'completed') {
-        playDuoSound('correct');
-        footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
-        icon.innerText = "✓";
-        title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Chính xác tuyệt đối! (+50 XP • +15 Gems)";
-        desc.innerText = "Bạn đã hoàn thành buổi học và giải thích chuẩn xác theo rubric! Điểm thưởng đã được cộng vào tài khoản.";
-      } else if (state.misconception_repaired && role === 'peer') {
-        playDuoSound('correct');
-        footer.className = "w-full border-t-2 border-[#58a700] bg-[#18392b] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#58cc02] text-white shadow-lg";
-        icon.innerText = "✓";
-        title.className = "font-black text-xl text-[#58cc02]";
-        title.innerText = "Tuyệt vời! Bạn đã sửa đúng lỗi!";
-        desc.innerText = "Bảo đã hiểu ra sai sót. Giờ hãy tự mình tổng kết lại nhé!";
-      } else if (role === 'ta') {
-        playDuoSound('hint');
-        footer.className = "w-full border-t-2 border-[#ff9600] bg-[#2b2518] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#ff9600] text-white shadow-lg";
-        icon.innerText = "💡";
-        title.className = "font-black text-xl text-[#ff9600]";
-        title.innerText = "Gợi ý từ Trợ Giảng Cú:";
-        desc.innerText = "Đừng nản lòng! Đọc kỹ gợi ý phía trên và thử lại nhé.";
-      } else if (role === 'orchestrator') {
-        playDuoSound('error');
-        footer.className = "w-full border-t-2 border-[#ea2b2b] bg-[#321d22] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#ff4b4b] text-white shadow-lg";
-        icon.innerText = "🛑";
-        title.className = "font-black text-xl text-[#ff4b4b]";
-        title.innerText = "Ngoài phạm vi bài học!";
-        desc.innerText = "Hệ thống đã chặn câu hỏi về bài sau để tránh rò rỉ kiến thức.";
-      } else {
-        playDuoSound('hint');
-        footer.className = "w-full border-t-2 border-[#37464f] bg-[#1a272e] py-6 px-6 transition-colors";
-        icon.className = "w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black bg-[#37464f] text-white shadow-lg";
-        icon.innerText = "💬";
-        title.className = "font-black text-xl text-white";
-        title.innerText = "Phản hồi từ lớp học";
-        desc.innerText = "Hãy tiếp tục thảo luận để làm sáng tỏ khái niệm.";
-      }
-    }
-
-    function resetFooterState() {
-      const footer = document.getElementById('action-footer');
-      const feedback = document.getElementById('footer-feedback');
-      const skipBtn = document.getElementById('skip-btn');
-      const btn = document.getElementById('action-btn');
-      const input = document.getElementById('user-input');
-
-      footer.className = "w-full border-t-2 border-[#202f36] bg-[#131f24] py-6 px-6 transition-colors duration-300";
-      feedback.classList.add('hidden');
-      skipBtn.classList.remove('hidden');
-      btn.innerText = "KIỂM TRA";
-      isWaitingNext = false;
-      input.value = '';
-      updateButtonState();
-      input.focus();
     }
 
     function toggleSlideModal() {
       const modal = document.getElementById('slide-modal');
       modal.classList.toggle('hidden');
+    }
+
+    function resetFooterState() {
+      clearInput();
     }
 
     async function resetSession() {
