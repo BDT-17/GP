@@ -66,9 +66,16 @@ Automated CI pipeline (`.github/workflows/ci.yml`) executes linting and mandator
 - `tests/test_adversarial.py`: Prompt injection defense, role hijacking resistance, and completion integrity (MVP Scenarios 6 & 7).
 - `tests/test_rubric_and_semantic_rag.py`: Multi-criteria rubric evaluation, diagnostic TA feedback, and Semantic Vector RAG with cosine similarity.
 - `tests/test_peer_and_rubric_llm.py`: Peer deliberation/pushback, turn arbitration, and LLM rubric-diagnostic Socratic prompting.
+- `tests/test_ingest_vlearn.py`: VLearn curriculum slide/lecture ingestion, chunk extraction, and corpus merging.
+- `tests/test_pedagogical_benchmark.py`: Automated pedagogical benchmark suite across 4 learner personas (AC1-AC7 invariants).
+- `tests/test_report_export.py`: Inspectable instructor audit report (PDF/HTML/JSON) with SHA-256 evidence seal and Certificate of Mastery.
 
 ## Change log
 
+- 2026-10-18: Implemented Pedagogical Audit Report Export & Certificate of Mastery (`/api/instructor/report/export`, `src/mascot/report_generator.py`) in JSON & printable PDF/HTML with SHA-256 evidence seal and UI print button (63 tests, 93% coverage).
+- 2026-10-18: Built Automated Pedagogical Benchmark Suite (`benchmarks/run_pedagogical_eval.py`) simulating 4 learner personas (Lazy, Adversarial, Partial, Star), measuring 0.0% Direct Answer Leakage, 0.0% Future Leakage, 0.0% False Completion, and 100.0% Rubric Diagnostic Accuracy.
+- 2026-10-18: Created VLearn Curriculum Ingestion Tool (`tools/ingest_vlearn.py`) parsing markdown slides into standardized pedagogical chunks with slide metadata and corpus JSON merging.
+- 2026-10-18: Implemented 2-Way Code Playground with Kinesthetic Learning & Verification (`/api/code/verify`) seamlessly advancing to Step 2 Explain-Back on code repair.
 - 2026-10-18: Enhanced Learning View with Classroom Discussion Feed, 2-Step Pedagogical Stepper, Interactive 2-Way Code Playground with Fix & Verify (`/api/code/run`), and seamless chat turns (52 tests, 92% coverage).
 - 2026-10-18: Implemented Peer Pushback & Deliberation (`PeerAgent.pushback`), LLM Socratic Prompting with Rubric Missing Dimensions (`TeachingAssistantAgent.prompt_explain_back_retry`), and audit tracking (51 tests, 92% coverage).
 - 2026-10-18: Implemented Multi-Criteria Rubric Scoring (`Evaluator`), diagnostic TA Socratic feedback, and Semantic Vector RAG (`CurriculumRetriever`) with TF-IDF cosine similarity and curriculum gating (45 tests, 92% coverage).

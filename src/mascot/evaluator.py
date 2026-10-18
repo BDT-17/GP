@@ -103,7 +103,7 @@ class Evaluator:
             has_address = any(p in text for p in ["địa chỉ", "ô nhớ", "tham chiếu", "con trỏ", "&", "*"])
             dim1 = has_copy and has_address
 
-            has_no_side_effect = any(p in text for p in ["không đổi", "không thay đổi", "không ảnh hưởng"])
+            has_no_side_effect = any(p in text for p in ["không đổi", "không thay đổi", "không làm thay đổi", "không ảnh hưởng", "không tác động", "giữ nguyên"])
             has_side_effect = any(p in text for p in ["thay đổi", "biến gốc", "bên ngoài"])
             dim2 = has_no_side_effect and has_side_effect
 

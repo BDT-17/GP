@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 from typing import Optional
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
@@ -17,6 +17,7 @@ from mascot.course_manager import CourseManager
 from mascot.database import DatabaseManager
 from mascot.models import Role
 from mascot.orchestrator import MascotOrchestrator
+from mascot.report_generator import build_audit_payload, render_html_report
 
 app = FastAPI(title="MASCOT Demo API", version="0.2.0")
 
@@ -225,6 +226,55 @@ async def run_code_simulation(req: Optional[CodeRunRequest] = None):
     }
 
 
+@app.post("/api/code/verify")
+async def verify_code_fix(req: CodeRunRequest):
+    """Verifies if the submitted code resolves the peer's misconception and triggers peer acknowledgement."""
+    run_result = await run_code_simulation(req)
+    if not run_result["is_fixed"]:
+        return {
+            "status": "unresolved",
+            "is_fixed": False,
+            "output": run_result["output"],
+            "explanation": run_result["explanation"],
+            "peer_message": None,
+            "session_state": await get_session(),
+        }
+
+    # Code is fixed: trigger Peer acknowledgement in classroom chat
+    peer_name = orchestrator.scenario.get("peer_student", {}).get("name", "Bảo (Bạn học)")
+    concept_title = orchestrator.scenario.get("concept_title", "bài học")
+    peer_message = (
+        f"[{peer_name}]: Ồ, cậu sửa code chạy đúng rồi kìa! "
+        f"Chương trình đã thực thi chuẩn xác theo đúng lý thuyết của {concept_title}. "
+        "Tớ đã thấy rõ kết quả rồi! Nhưng để chắc chắn không bị nhầm lẫn nữa, "
+        "cậu giải thích lại bằng lời (Explain-back) giúp tớ hiểu bản chất vì sao sửa như vậy là đúng nhé!"
+    )
+
+    # Update orchestrator state
+    orchestrator.misconception_repaired = True
+    orchestrator.active_role = Role.PEER
+    orchestrator.conversation_history.append({"role": Role.PEER.value, "content": peer_message})
+    orchestrator._log_event(
+        event_type="empirical_code_verified",
+        role=Role.PEER.value,
+        content=peer_message,
+        metadata={"course_id": orchestrator.course_id, "is_fixed": True},
+    )
+
+    # Persist message to DB
+    db.add_chat_message(orchestrator.session_id, Role.PEER.value, peer_message)
+    _sync_session_to_db()
+
+    return {
+        "status": "success",
+        "is_fixed": True,
+        "output": run_result["output"],
+        "explanation": run_result["explanation"],
+        "peer_message": peer_message,
+        "session_state": await get_session(),
+    }
+
+
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
     user_msg = req.message.strip()
@@ -314,6 +364,22 @@ async def get_instructor_audit():
         "security_alerts": orchestrator.security_alerts,
         "recent_sessions": sessions[:15],
     }
+
+
+@app.get("/api/instructor/report/export")
+async def export_instructor_report(format: str = "json"):
+    """Exports pedagogical audit report and completion certificate in JSON or printable HTML/PDF."""
+    payload = build_audit_payload(orchestrator)
+    if format.lower() == "html":
+        html_content = render_html_report(payload)
+        return HTMLResponse(content=html_content, status_code=200)
+    else:
+        return JSONResponse(
+            content=payload,
+            headers={
+                "Content-Disposition": f"attachment; filename=mascot_audit_report_{orchestrator.session_id[:8]}.json"
+            },
+        )
 
 
 @app.get("/api/summary")

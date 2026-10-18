@@ -10,6 +10,7 @@ import uuid
 from mascot.agents import LecturerAgent, PeerAgent, TeachingAssistantAgent
 from mascot.course_manager import CourseManager
 from mascot.evaluator import Evaluator
+from mascot.llm_client import LLMClient
 from mascot.models import (
     Citation,
     EvaluationOutcome,
@@ -30,6 +31,7 @@ class MascotOrchestrator:
         course_id: Optional[str] = None,
         scenario_path: Optional[Path] = None,
         corpus_path: Optional[Path] = None,
+        llm_client: Optional[LLMClient] = None,
     ):
         if scenario_path is None or corpus_path is None:
             resolved_scenario, resolved_corpus = CourseManager.resolve_paths(course_id)
@@ -44,13 +46,15 @@ class MascotOrchestrator:
         self.retriever = CurriculumRetriever(corpus_path=corpus_path)
         self.evaluator = Evaluator(self.scenario)
         self.security_guard = AdversarialGuard()
+        self.llm_client = llm_client
 
         self.peer = PeerAgent(
             name=self.scenario["peer_student"]["name"],
             initial_misconception=self.scenario["peer_student"]["initial_misconception"],
+            llm_client=self.llm_client,
         )
-        self.ta = TeachingAssistantAgent()
-        self.lecturer = LecturerAgent()
+        self.ta = TeachingAssistantAgent(llm_client=self.llm_client)
+        self.lecturer = LecturerAgent(llm_client=self.llm_client)
 
         # Session state
         self.session_id = str(uuid.uuid4())

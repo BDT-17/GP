@@ -118,6 +118,21 @@ def test_run_code_simulation_with_custom_fix(client):
     assert "Polymorphism" in data["explanation"]
 
 
+def test_verify_code_fix_endpoint(client):
+    """Test /api/code/verify endpoint repairs misconception and returns peer acknowledgement."""
+    # Reset first
+    client.post("/api/reset")
+    fixed_code = "class Dog extends Animal { void speak() { System.out.println(\"Gâu gâu\"); } }"
+    response = client.post("/api/code/verify", json={"code": fixed_code})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["is_fixed"] is True
+    assert data["peer_message"] is not None
+    assert "Bảo" in data["peer_message"]
+    assert data["session_state"]["misconception_repaired"] is True
+
+
 def test_get_instructor_audit(client):
     """Test getting comprehensive instructor audit data."""
     response = client.get("/api/instructor/audit")

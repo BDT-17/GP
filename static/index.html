@@ -1149,7 +1149,10 @@
             </div>
           </div>
           <div class="flex items-center space-x-3">
-            <button onclick="downloadSummary()" class="px-4 py-2.5 rounded-xl bg-[#20313a] hover:bg-[#283d48] border-2 border-[#37464f] text-xs font-black text-white flex items-center space-x-2 transition shadow-sm">
+            <button onclick="openPrintableReport()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-xs font-black text-white flex items-center space-x-2 transition shadow-sm">
+              <span>🖨️ In / Xuất PDF & Chứng Chỉ</span>
+            </button>
+            <button onclick="downloadAuditReportJSON()" class="px-4 py-2.5 rounded-xl bg-[#20313a] hover:bg-[#283d48] border-2 border-[#37464f] text-xs font-black text-white flex items-center space-x-2 transition shadow-sm">
               <span>📥 Tải Báo Cáo JSON</span>
             </button>
             <button onclick="resetSession()" class="px-4 py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border-2 border-rose-800/60 text-xs font-black text-rose-300 flex items-center space-x-2 transition shadow-sm">
@@ -2461,8 +2464,10 @@
         payload.code = editorEl.value;
       }
 
+      const endpoint = isCustom ? '/api/code/verify' : '/api/code/run';
+
       try {
-        const res = await fetch('/api/code/run', {
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -2474,6 +2479,13 @@
         }
         if (data.is_fixed) {
           playDuoSound('correct');
+          if (data.session_state) {
+            sessionData = data.session_state;
+            updateUIFromState();
+          }
+          if (data.peer_message) {
+            appendChatMessage('peer', data.peer_message);
+          }
         }
       } catch (err) {
         if (sessionData && sessionData.code_snippet) {
@@ -2902,15 +2914,24 @@
       switchView('home');
     }
 
-    async function downloadSummary() {
-      const res = await fetch('/api/summary');
+    function openPrintableReport() {
+      window.open('/api/instructor/report/export?format=html', '_blank');
+    }
+
+    async function downloadAuditReportJSON() {
+      const res = await fetch('/api/instructor/report/export?format=json');
       const data = await res.json();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `mascot_duolingo_report.json`;
+      const sId = (data.session_id || 'session').substring(0, 8);
+      a.download = `mascot_audit_report_${sId}.json`;
       a.click();
+    }
+
+    async function downloadSummary() {
+      return downloadAuditReportJSON();
     }
 
     function updateRubricUI() {
