@@ -712,6 +712,20 @@
           </div>
           <span class="leading-none pt-0.5">HỒ SƠ</span>
         </button>
+
+        <!-- 7. GUIDE (Hướng dẫn tương tác) -->
+        <button id="nav-guide" onclick="openGuideModal()" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-[#a5b6bd] hover:text-[#58cc02] hover:bg-[#18262d] transition group cursor-pointer" title="Xem hướng dẫn sử dụng tương tác">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xl group-hover:scale-110 transition transform">
+              ❓
+            </div>
+            <span class="leading-none pt-0.5">HƯỚNG DẪN</span>
+          </div>
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#58cc02] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#58cc02]"></span>
+          </span>
+        </button>
       </nav>
     </div>
 
@@ -749,20 +763,9 @@
         <!-- Course Selector Bar & Quick Guide Trigger -->
         <div id="tour-course-selector" class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
           <div class="flex items-center space-x-3">
-            <!-- Ô bên trái kèm chấm thông báo / mở hướng dẫn động -->
-            <button 
-              id="tour-guide-trigger" 
-              onclick="openGuideModal('home')" 
-              class="relative w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 hover:border-[#58cc02] hover:bg-[#58cc02]/25 flex items-center justify-center text-xl flex-shrink-0 cursor-pointer transition transform hover:scale-105 group shadow-sm outline-none" 
-              title="Bấm vào đây để xem hướng dẫn sử dụng"
-            >
-              <span>📚</span>
-              <!-- Chấm tròn động (Pulsing Dot) báo hiệu mở hướng dẫn -->
-              <span class="absolute -top-1 -right-1 flex h-3 w-3" title="Bấm để xem hướng dẫn">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#58cc02] opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-[#58cc02] border-2 border-[#18262d]"></span>
-              </span>
-            </button>
+            <div class="w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-xl flex-shrink-0">
+              📚
+            </div>
             <div>
               <div class="text-[10px] font-black uppercase tracking-wider text-[#8598a0]">Môn học hiện tại:</div>
               <div class="text-sm font-black text-white flex items-center space-x-2">
@@ -1716,8 +1719,8 @@
         target: '#tour-course-selector',
         view: 'home',
         icon: '🎓',
-        title: 'Môn học & Chấm hướng dẫn',
-        desc: 'Hiển thị môn đang học và nút Đổi môn. Bấm vào chấm xanh ở ô bên trái để mở hướng dẫn bất kỳ lúc nào!',
+        title: 'Môn học hiện tại',
+        desc: 'Hiển thị môn bạn đang học (CS102, ICT1.002, CS105...) và nút Đổi môn nhanh chóng.',
         placement: 'bottom'
       },
       {
@@ -1742,6 +1745,14 @@
         icon: '📊',
         title: 'Bảng Giảng viên & Radar',
         desc: 'Xem biểu đồ Radar Rubric năng lực, lịch sử đối thoại và xuất báo cáo kiểm định.',
+        placement: 'right'
+      },
+      {
+        target: '#nav-guide',
+        view: 'home',
+        icon: '❓',
+        title: 'Mục Hướng dẫn',
+        desc: 'Nằm ngay dưới mục Hồ sơ ở góc trái, bấm vào bất cứ lúc nào để mở hướng dẫn tương tác!',
         placement: 'right'
       },
       {
