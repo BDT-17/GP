@@ -117,3 +117,4 @@ def test_api_database_endpoints():
         assert res_hist.status_code == 200
         assert "history" in res_hist.json()
         assert len(res_hist.json()["history"]) >= 1
+

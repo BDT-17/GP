@@ -197,7 +197,9 @@ class MascotOrchestrator:
             if repaired:
                 self.misconception_repaired = True
                 self.active_role = Role.PEER
-                response_text = self.peer.acknowledge_repair(self.scenario.get("concept_title"))
+                response_text = self.peer.acknowledge_repair(
+                    self.scenario.get("concept_title"), learner_input=learner_text
+                )
             else:
                 # Needs support or failed attempt
                 self.hint_count += 1
@@ -207,11 +209,19 @@ class MascotOrchestrator:
                     # AC4: Escalation to Lecturer
                     self.active_role = Role.LECTURER
                     self.escalation_count += 1
-                    response_text = self.lecturer.provide_clarification(retrieval_decision.citations)
+                    response_text = self.lecturer.provide_clarification(
+                        retrieval_decision.citations,
+                        concept_title=self.scenario.get("concept_title"),
+                        learner_input=learner_text,
+                    )
                 else:
                     # AC3: TA Socratic hint
                     self.active_role = Role.TA
-                    response_text = self.ta.get_hint(self.hint_count)
+                    response_text = self.ta.get_hint(
+                        self.hint_count,
+                        learner_input=learner_text,
+                        concept_title=self.scenario.get("concept_title"),
+                    )
 
         else:
             # Stage B: Evaluating Explain-Back (AC6)
@@ -233,12 +243,12 @@ class MascotOrchestrator:
                 response_text = (
                     "🎉 **Chúc mừng bạn đã hoàn thành xuất sắc buổi học!**\n\n"
                     "Bạn đã giúp bạn học nhận ra sai sót và tự mình giải thích rất chuẩn xác về "
-                    "sự khác nhau giữa Nạp chồng (Overloading) và Ghi đè (Overriding).\n\n"
+                    f"bản chất của {self.scenario.get('concept_title', 'bài học')}.\n\n"
                     "Buổi học chính thức kết thúc."
                 )
             else:
                 self.active_role = Role.TA
-                response_text = self.ta.prompt_explain_back_retry()
+                response_text = self.ta.prompt_explain_back_retry(learner_input=learner_text)
 
         # Log and record single speaking turn (AC5)
         self._log_event(event_type="response_generated", role=self.active_role.value, content=response_text)

@@ -181,6 +181,17 @@ async def get_session_history(session_id: str):
     return {"history": db.get_chat_history(session_id)}
 
 
+@app.get("/api/llm/status")
+async def get_llm_status():
+    """Returns active LLM provider and status."""
+    from mascot.llm_client import LLMClient
+    client = LLMClient()
+    return {
+        "provider": client.get_provider(),
+        "is_live_llm": client.get_provider() != "fallback",
+    }
+
+
 @app.get("/api/summary")
 async def get_summary():
     summary = orchestrator.generate_instructor_summary()
