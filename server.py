@@ -11,6 +11,7 @@ import uvicorn
 # Add src to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
+from mascot.course_manager import CourseManager
 from mascot.orchestrator import MascotOrchestrator
 
 app = FastAPI(title="MASCOT Demo API", version="0.1.0")
@@ -28,12 +29,36 @@ class ChatRequest(BaseModel):
     message: str
 
 
+class SelectCourseRequest(BaseModel):
+    course_id: str
+
+
 @app.get("/")
 async def serve_index():
     index_file = STATIC_DIR / "index.html"
     if not index_file.exists():
         raise HTTPException(status_code=404, detail="Frontend index.html not found.")
     return FileResponse(index_file)
+
+
+@app.get("/api/courses")
+async def get_courses():
+    """Returns list of available courses that have learning scenarios."""
+    return {"courses": CourseManager.get_available_courses()}
+
+
+@app.post("/api/session/select")
+async def select_course(req: SelectCourseRequest):
+    """Switches current session to the requested course scenario."""
+    course_id = req.course_id.strip()
+    initial_statement = orchestrator.switch_course(course_id)
+    session_state = await get_session()
+    return {
+        "status": "switched",
+        "course_id": orchestrator.course_id,
+        "initial_statement": initial_statement,
+        "session_state": session_state,
+    }
 
 
 @app.get("/api/session")
@@ -45,6 +70,8 @@ async def get_session():
         "lesson_order": orchestrator.lesson_order,
         "concept_id": orchestrator.concept_id,
         "concept_title": orchestrator.scenario.get("concept_title", ""),
+        "peer_name": orchestrator.scenario.get("peer_student", {}).get("name", "Bảo (Bạn học)"),
+        "initial_misconception": orchestrator.scenario.get("peer_student", {}).get("initial_misconception", ""),
         "active_role": orchestrator.active_role.value,
         "learner_attempts": orchestrator.learner_attempts,
         "hint_count": orchestrator.hint_count,

@@ -1,0 +1,80 @@
+{
+  "course_id": "CS102",
+  "course_name": "Lập trình hướng đối tượng (Object-Oriented Programming)",
+  "lessons": [
+    {
+      "lesson_id": "lesson_1",
+      "lesson_order": 1,
+      "lesson_title": "Lớp và Đối tượng (Classes and Objects)",
+      "is_prerequisite": true,
+      "chunks": [
+        {
+          "chunk_id": "CS102_L1_C1",
+          "concept_id": "oop_class_basics",
+          "source_id": "slide_l1_03",
+          "source_location": "Slide 3, Mục 1.2: Định nghĩa Lớp",
+          "text": "Lớp (Class) là khuôn mẫu (blueprint) định nghĩa các thuộc tính (attributes) và phương thức (methods) chung cho một tập hợp các đối tượng. Một phương thức trong lớp thể hiện hành vi của đối tượng."
+        },
+        {
+          "chunk_id": "CS102_L1_C2",
+          "concept_id": "oop_class_scope",
+          "source_id": "slide_l1_07",
+          "source_location": "Slide 7, Mục 1.4: Phạm vi phương thức",
+          "text": "Trong cùng một lớp, ta có thể định nghĩa nhiều phương thức thực hiện các nhiệm vụ khác nhau, mỗi phương thức có tên, danh sách tham số và kiểu dữ liệu trả về."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_2",
+      "lesson_order": 2,
+      "lesson_title": "Tính Đa hình: Nạp chồng và Ghi đè (Polymorphism: Overloading & Overriding)",
+      "is_current": true,
+      "chunks": [
+        {
+          "chunk_id": "CS102_L2_C1",
+          "concept_id": "oop_polymorphism",
+          "source_id": "slide_l2_02",
+          "source_location": "Slide 2, Mục 2.1: Giới thiệu tính Đa hình",
+          "text": "Tính đa hình (Polymorphism) cho phép cùng một thông điệp (tên hàm) được thực thi theo nhiều cách khác nhau tùy thuộc vào ngữ cảnh. Hai cơ chế quan trọng thể hiện tính đa hình là Nạp chồng phương thức (Method Overloading) và Ghi đè phương thức (Method Overriding)."
+        },
+        {
+          "chunk_id": "CS102_L2_C2",
+          "concept_id": "oop_overloading",
+          "source_id": "slide_l2_04",
+          "source_location": "Slide 4, Mục 2.2: Method Overloading",
+          "text": "Method Overloading (Nạp chồng phương thức): Xảy ra TRONG CÙNG MỘT LỚP. Cho phép nhiều phương thức có CÙNG TÊN nhưng BẮT BUỘC KHÁC NHAU VỀ DANH SÁCH THAM SỐ (số lượng tham số, kiểu dữ liệu của tham số hoặc thứ tự các kiểu dữ liệu). Kiểu trả về có thể giống hoặc khác, nhưng không thể chỉ khác kiểu trả về. Đây là đa hình lúc biên dịch (Compile-time / Static Polymorphism)."
+        },
+        {
+          "chunk_id": "CS102_L2_C3",
+          "concept_id": "oop_overriding",
+          "source_id": "slide_l2_06",
+          "source_location": "Slide 6, Mục 2.3: Method Overriding",
+          "text": "Method Overriding (Ghi đè phương thức): Xảy ra giữa HAI LỚP CÓ QUAN HỆ KẾ THỪA (Lớp con kế thừa từ Lớp cha). Lớp con định nghĩa lại một phương thức đã có ở lớp cha để cung cấp cài đặt riêng biệt. Phương thức ở lớp con BẮT BUỘC PHẢI GIỐNG HỆT phương thức ở lớp cha về: Tên phương thức, Danh sách tham số, và Kiểu trả về (hoặc kiểu con). Đây là đa hình lúc thực thi (Runtime / Dynamic Polymorphism)."
+        },
+        {
+          "chunk_id": "CS102_L2_C4",
+          "concept_id": "oop_polymorphism_comparison",
+          "source_id": "slide_l2_08",
+          "source_location": "Slide 8, Mục 2.4: Bảng so sánh Overloading vs Overriding",
+          "text": "Bảng so sánh cốt lõi: 1) Phạm vi: Overloading diễn ra trong cùng một lớp; Overriding diễn ra giữa lớp cha và lớp con (có kế thừa). 2) Chữ ký hàm: Overloading bắt buộc khác tham số; Overriding bắt buộc cùng tham số và cùng tên. 3) Cơ chế: Overloading là đa hình tĩnh (compile-time); Overriding là đa hình động (runtime binding)."
+        }
+      ]
+    },
+    {
+      "lesson_id": "lesson_3",
+      "lesson_order": 3,
+      "lesson_title": "Lớp Trừu tượng và Giao diện (Abstract Classes & Interfaces)",
+      "is_future": true,
+      "chunks": [
+        {
+          "chunk_id": "CS102_L3_C1",
+          "concept_id": "oop_abstract_interface",
+          "source_id": "slide_l3_03",
+          "source_location": "Slide 3, Mục 3.1: Abstract Class & Interface",
+          "text": "Lớp trừu tượng (Abstract Class) chứa các phương thức trừu tượng chưa có thân hàm. Giao diện (Interface) định nghĩa một tập hợp các phương thức mà một lớp phải tuân thủ để thực thi (implements). Đây là kiến thức nâng cao thuộc Bài 3."
+        }
+      ]
+    }
+  ]
+}
+

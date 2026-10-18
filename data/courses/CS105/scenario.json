@@ -1,0 +1,39 @@
+{
+  "scenario_id": "scenario_python_list_vs_tuple",
+  "course_id": "CS105",
+  "lesson_id": "lesson_2",
+  "lesson_order": 2,
+  "concept_id": "python_list_vs_tuple",
+  "concept_title": "Phân biệt List (có thể thay đổi) và Tuple (bất biến) trong Python",
+  "peer_student": {
+    "name": "Bảo (Bạn học)",
+    "initial_misconception": "Trong Python thì list [ ] với tuple ( ) có khác gì nhau đâu cậu, chỉ khác mỗi dấu ngoặc vuông với ngoặc tròn thôi mà! Cả hai đều là mảng danh sách lưu các phần tử, thích thêm sửa xóa lúc nào cũng được hết!",
+    "persona_notes": "Bạn học coi list và tuple chỉ khác nhau về cú pháp hình thức mà không hiểu khái niệm quan trọng nhất của Python: Mutable vs Immutable."
+  },
+  "misconception_criteria": {
+    "flaw_summary": "Người học coi list và tuple hoàn toàn giống nhau về mặt bản chất và cho rằng tuple có thể thay đổi được.",
+    "repair_conditions": [
+      "Chỉ ra được List là kiểu dữ liệu Mutable (có thể thêm, sửa, xóa phần tử sau khi khởi tạo).",
+      "Chỉ ra được Tuple là kiểu dữ liệu Immutable (bất biến, không thể thay đổi sau khi khởi tạo)."
+    ]
+  },
+  "explain_back_rubric": [
+    {
+      "dimension": "mutability_contrast",
+      "required_understanding": "Phân biệt cốt lõi: List là mutable, có thể thay đổi tại chỗ; Tuple là immutable, không thể thay đổi sau khi tạo."
+    },
+    {
+      "dimension": "syntax_and_methods",
+      "required_understanding": "Phân biệt cú pháp & hàm: List dùng ngoặc vuông [] và có append/remove/pop; Tuple dùng ngoặc tròn () và không có các hàm thay đổi phần tử."
+    },
+    {
+      "dimension": "use_case_and_hashability",
+      "required_understanding": "Phân biệt ứng dụng: Tuple tối ưu bộ nhớ, bảo vệ dữ liệu không bị sửa vô ý và có thể làm dictionary key; List linh hoạt cho tập dữ liệu động."
+    }
+  ],
+  "escalation_policy": {
+    "max_hints_before_escalation": 2,
+    "escalation_role": "Lecturer",
+    "escalation_trigger_reason": "Người học vẫn chưa sửa được hiểu lầm về tính bất biến (immutability) của Tuple sau 2 lần Trợ giảng đưa gợi ý Socratic."
+  }
+}

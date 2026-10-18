@@ -736,7 +736,7 @@
               <span>←</span>
               <span id="unit-header-label">HỌC PHẦN 1, BÀI 2</span>
             </div>
-            <h2 class="text-xl font-extrabold mt-0.5">Tính Đa Hình: Nạp Chồng & Ghi Đè</h2>
+            <h2 id="unit-topic-title" class="text-xl font-extrabold mt-0.5">Tính Đa Hình: Nạp Chồng & Ghi Đè</h2>
           </div>
           <button onclick="toggleSlideModal()" class="px-4 py-2.5 bg-[#00b58a] hover:bg-[#00a37c] text-white rounded-xl font-black text-xs uppercase tracking-wider border-2 border-white/30 flex items-center space-x-1.5 transition">
             <span>📖</span>
@@ -1207,7 +1207,7 @@
           <div class="text-[11px] font-black uppercase tracking-wider text-[#52656d] mb-2.5">
             Từ khóa gợi ý (Nhấn để chọn):
           </div>
-          <div class="flex flex-wrap gap-2.5">
+          <div id="word-bank-tiles" class="flex flex-wrap gap-2.5">
             <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
               Overloading trong cùng một lớp
             </button>
@@ -1727,7 +1727,7 @@
         },
         {
           name: 'Object-oriented programming',
-          code: '',
+          code: 'CS102',
           icon: '☕',
           active: true,
           hoverBorder: 'hover:border-[#1cb0f6]',
@@ -1770,7 +1770,7 @@
       'B2-Kì 2': [
         {
           name: 'Advanced programming with Python',
-          code: '',
+          code: 'CS105',
           icon: '🐍',
           hoverBorder: 'hover:border-[#1cb0f6]',
           hoverText: 'group-hover:text-[#1cb0f6]',
@@ -2087,10 +2087,11 @@
     let selectedSubjectName = 'Basic Programming';
     let selectedSubjectCode = 'ICT1.002';
 
-    function selectSubject(name, code) {
+    async function selectSubject(name, code) {
       playDuoSound('hint');
       selectedSubjectName = name;
-      selectedSubjectCode = code;
+      selectedSubjectCode = code || 'CS102';
+
       const unitLabel = document.getElementById('unit-header-label');
       if (unitLabel) {
         if (code) {
@@ -2099,7 +2100,100 @@
           unitLabel.innerText = `${name.toUpperCase()}, BÀI 2`;
         }
       }
+
+      // Call backend to switch course scenario and corpus dynamically
+      try {
+        const res = await fetch('/api/session/select', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ course_id: selectedSubjectCode })
+        });
+        const data = await res.json();
+        if (data && data.session_state) {
+          sessionData = data.session_state;
+          const topicTitle = document.getElementById('unit-topic-title');
+          if (topicTitle && sessionData.concept_title) {
+            topicTitle.innerText = sessionData.concept_title;
+          }
+          updateUIFromState();
+          updateDialogue('peer', data.initial_statement || sessionData.initial_misconception);
+          updateWordBank(selectedSubjectCode);
+        }
+      } catch (err) {
+        console.warn("Could not switch course on backend:", err);
+      }
+
       switchView('home');
+    }
+
+    function updateWordBank(code) {
+      const container = document.getElementById('word-bank-tiles');
+      if (!container) return;
+
+      if (code === 'ICT1.002') {
+        container.innerHTML = `
+          <button onclick="appendWord('Tham trị sao chép giá trị (Pass-by-value)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tham trị sao chép giá trị (Pass-by-value)
+          </button>
+          <button onclick="appendWord('không làm thay đổi biến ngoài')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            không làm thay đổi biến ngoài
+          </button>
+          <button onclick="appendWord('Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tham chiếu truyền địa chỉ ô nhớ (& hoặc con trỏ *)
+          </button>
+          <button onclick="appendWord('thay đổi trực tiếp biến gốc')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            thay đổi trực tiếp biến gốc
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      } else if (code === 'CS105') {
+        container.innerHTML = `
+          <button onclick="appendWord('List là kiểu dữ liệu Mutable (thay đổi được)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            List là kiểu dữ liệu Mutable (thay đổi được)
+          </button>
+          <button onclick="appendWord('dùng ngoặc vuông [] và có append')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            dùng ngoặc vuông [] và có append
+          </button>
+          <button onclick="appendWord('Tuple là kiểu dữ liệu Immutable (bất biến)')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Tuple là kiểu dữ liệu Immutable (bất biến)
+          </button>
+          <button onclick="appendWord('dùng ngoặc tròn () không thể sửa phần tử')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            dùng ngoặc tròn () không thể sửa phần tử
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button onclick="appendWord('Overloading trong cùng một lớp')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Overloading trong cùng một lớp
+          </button>
+          <button onclick="appendWord('khác danh sách tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            khác danh sách tham số
+          </button>
+          <button onclick="appendWord('Overriding trong kế thừa lớp cha con')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            Overriding trong kế thừa lớp cha con
+          </button>
+          <button onclick="appendWord('cùng tên và cùng tham số')" class="duo-tile px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            cùng tên và cùng tham số
+          </button>
+          <button onclick="fillPreset('hint')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-400 border-amber-900/60 shadow-sm">
+            💡 Cho tớ gợi ý
+          </button>
+          <button onclick="fillPreset('future')" class="duo-tile px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 border-rose-900/60 shadow-sm">
+            🛑 Test chặn bài sau
+          </button>
+        `;
+      }
     }
 
     function playSpeechAudio() {
@@ -2117,6 +2211,14 @@
         const res = await fetch('/api/session');
         sessionData = await res.json();
         updateUIFromState();
+        if (sessionData && sessionData.concept_title) {
+          const topicTitle = document.getElementById('unit-topic-title');
+          if (topicTitle) topicTitle.innerText = sessionData.concept_title;
+        }
+        if (sessionData && sessionData.initial_misconception) {
+          updateDialogue('peer', sessionData.initial_misconception);
+        }
+        updateWordBank(sessionData.course_id);
         switchView('landing');
       } catch (e) {
         console.error("Init error:", e);
@@ -2147,7 +2249,13 @@
       if (type === 'hint') {
         input.value = "Tớ chưa hiểu lắm, cho tớ gợi ý với!";
       } else if (type === 'future') {
-        input.value = "Abstract class và Interface hoạt động thế nào?";
+        if (selectedSubjectCode === 'ICT1.002') {
+          input.value = "Cấp phát bộ nhớ động malloc và heap hoạt động thế nào?";
+        } else if (selectedSubjectCode === 'CS105') {
+          input.value = "Generator function và từ khóa yield hoạt động thế nào?";
+        } else {
+          input.value = "Abstract class và Interface hoạt động thế nào?";
+        }
       }
       updateButtonState();
       input.focus();

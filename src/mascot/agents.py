@@ -16,11 +16,12 @@ class PeerAgent:
     def get_initial_statement(self) -> str:
         return self.initial_misconception
 
-    def acknowledge_repair(self) -> str:
+    def acknowledge_repair(self, topic: Optional[str] = None) -> str:
+        topic_phrase = f" về {topic}" if topic else " giữa nạp chồng và ghi đè"
         return (
-            f"[{self.name}]: À, hóa ra tớ đã hiểu nhầm giữa nạp chồng và ghi đè! "
-            "Cậu nói rất có lý. Nhưng để tớ chắc chắn không quên, cậu có thể giải thích "
-            "tổng kết lại bằng lời của cậu xem 2 khái niệm này khác nhau ở những điểm cốt lõi nào không?"
+            f"[{self.name}]: À, hóa ra tớ đã hiểu nhầm{topic_phrase}! "
+            "Cậu nói rất có lý. Nhưng để tớ chắc chắn không quên, cậu có thể giải thích lại "
+            "tổng kết bằng lời của cậu xem các điểm cốt lõi khác nhau thế nào không?"
         )
 
     def ask_for_clarification(self) -> str:
