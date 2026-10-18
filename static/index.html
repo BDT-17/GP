@@ -93,6 +93,26 @@
     .chat-scroll::-webkit-scrollbar { width: 8px; }
     .chat-scroll::-webkit-scrollbar-track { background: transparent; }
     .chat-scroll::-webkit-scrollbar-thumb { background: #2b3940; border-radius: 9999px; }
+
+    /* Dynamic Guided Onboarding Tour Styles */
+    .tour-spotlight-pulse {
+      box-shadow: 0 0 0 9999px rgba(10, 16, 20, 0.82), 0 0 24px rgba(28, 176, 246, 0.7);
+      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation: tourGlow 2.2s infinite ease-in-out;
+    }
+    @keyframes tourGlow {
+      0%, 100% {
+        border-color: #1cb0f6;
+        box-shadow: 0 0 0 9999px rgba(10, 16, 20, 0.82), 0 0 16px rgba(28, 176, 246, 0.5);
+      }
+      50% {
+        border-color: #58cc02;
+        box-shadow: 0 0 0 9999px rgba(10, 16, 20, 0.82), 0 0 28px rgba(88, 204, 2, 0.75);
+      }
+    }
+    #tour-popover {
+      transition: top 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease-in-out;
+    }
   </style>
 </head>
 <body class="h-full flex overflow-hidden">
@@ -727,7 +747,7 @@
       <div class="flex-1 flex flex-col items-center py-6 px-4 max-w-2xl mx-auto w-full">
         
         <!-- Course Selector Bar & Quick Guide Trigger -->
-        <div class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
+        <div id="tour-course-selector" class="w-full mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-[#18262d] border-2 border-[#2b3940] rounded-2xl shadow-sm">
           <div class="flex items-center space-x-3">
             <div class="w-9 h-9 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-xl flex-shrink-0">
               📚
@@ -744,7 +764,7 @@
               <span>Đổi môn</span>
               <span>▾</span>
             </button>
-            <button onclick="openGuideModal()" class="px-3 py-1.5 rounded-xl bg-[#58cc02]/20 hover:bg-[#58cc02]/30 border border-[#58cc02]/50 text-xs font-black uppercase text-[#58cc02] transition flex items-center space-x-1 shadow-sm" title="Xem hướng dẫn cách sử dụng và luồng học">
+            <button onclick="openGuideModal('home')" class="px-3 py-1.5 rounded-xl bg-[#58cc02]/20 hover:bg-[#58cc02]/30 border border-[#58cc02]/50 text-xs font-black uppercase text-[#58cc02] transition flex items-center space-x-1 shadow-sm" title="Xem hướng dẫn tương tác">
               <span>❓</span>
               <span>Hướng dẫn</span>
             </button>
@@ -776,7 +796,7 @@
         <div class="relative w-full flex flex-col items-center space-y-9 pb-16">
           
           <!-- Node 1: START (Active Green Node with Tooltip Bubble) -->
-          <div class="relative flex flex-col items-center">
+          <div id="tour-start-node" class="relative flex flex-col items-center">
             <!-- Start Speech Tooltip Bubble -->
             <div class="mb-3 px-4 py-2 bg-[#1b262c] border-2 border-[#37464f] rounded-2xl font-black text-xs uppercase tracking-wider text-[#58cc02] shadow-lg animate-bounce flex items-center space-x-1">
               <span>BẮT ĐẦU</span>
@@ -834,7 +854,7 @@
       <div class="w-80 p-6 space-y-5 hidden xl:block flex-shrink-0">
         
         <!-- Top Stats Pill Bar -->
-        <div class="flex items-center justify-between pb-4 border-b border-[#202f36] text-sm font-black">
+        <div id="tour-stats-bar" class="flex items-center justify-between pb-4 border-b border-[#202f36] text-sm font-black">
           <div class="flex items-center space-x-1 text-white">
             <span class="text-lg">☕</span>
             <span>6</span>
@@ -1339,7 +1359,7 @@
             <span>📚</span>
             <span class="hidden sm:inline">Đổi môn</span>
           </button>
-          <button onclick="openGuideModal()" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-emerald-400 transition shadow-sm" title="Xem hướng dẫn cách học">
+          <button onclick="openGuideModal('exercise')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[#1c2c35] hover:bg-[#253945] border border-[#2e424e] text-xs font-bold text-emerald-400 transition shadow-sm" title="Xem hướng dẫn phòng học tương tác">
             <span>❓</span>
             <span class="hidden sm:inline">Hướng dẫn</span>
           </button>
@@ -1601,78 +1621,63 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- 5. QUICK USER GUIDE & ONBOARDING MODAL                    -->
+  <!-- 5. DYNAMIC INTERACTIVE GUIDED TOUR (WALKTHROUGH)         -->
   <!-- ======================================================== -->
-  <div id="guide-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-[#18262d] rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border-2 border-[#37464f] space-y-6">
+  <div id="dynamic-tour-container" class="fixed inset-0 z-[9990] hidden pointer-events-none select-none">
+    
+    <!-- Cutout Spotlight Box -->
+    <div id="tour-spotlight" class="fixed rounded-2xl border-2 border-[#1cb0f6] tour-spotlight-pulse pointer-events-none z-[9992]"></div>
+
+    <!-- Floating Popover Tooltip -->
+    <div id="tour-popover" class="fixed bg-[#18262d] border-2 border-[#1cb0f6] text-white rounded-3xl p-5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] max-w-sm w-[90vw] sm:w-[360px] pointer-events-auto z-[9995]">
       
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-4 border-b border-[#2b3940]">
-        <div class="flex items-center space-x-3">
-          <div class="w-11 h-11 rounded-2xl bg-[#58cc02]/20 border border-[#58cc02]/40 flex items-center justify-center text-2xl shadow-sm">
-            🦉
-          </div>
-          <div>
-            <h3 class="font-black text-lg text-white">Hướng dẫn Học cùng MASCOT</h3>
-            <p class="text-xs text-[#8598a0]">Lớp học Đa tác nhân Chữa ngộ nhận (Active Tutoring)</p>
-          </div>
+      <!-- Directional Arrow -->
+      <div id="tour-arrow" class="absolute -top-2 left-8 w-3.5 h-3.5 bg-[#18262d] border-l-2 border-t-2 border-[#1cb0f6] rotate-45"></div>
+
+      <!-- Header: Step badge + Mode + Close button -->
+      <div class="flex items-center justify-between mb-2.5">
+        <div class="flex items-center space-x-2">
+          <span id="tour-step-badge" class="px-2.5 py-0.5 rounded-full bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 text-[#1cb0f6] text-[10px] font-black uppercase tracking-wider">
+            Bước 1/6
+          </span>
+          <span id="tour-mode-badge" class="text-[10px] font-bold text-[#8598a0] uppercase tracking-wider">
+            LỘ TRÌNH HỌC
+          </span>
         </div>
-        <button onclick="closeGuideModal()" class="text-2xl text-[#8598a0] hover:text-white font-black leading-none" title="Đóng">✕</button>
-      </div>
-
-      <!-- 3-Step Pedagogical Cards -->
-      <div class="flex-1 overflow-y-auto space-y-3.5 chat-scroll pr-1">
-        
-        <!-- Step 1 Card: Course Selection -->
-        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-[#1cb0f6]/20 border border-[#1cb0f6]/40 flex items-center justify-center text-2xl flex-shrink-0">
-            📚
-          </div>
-          <div class="space-y-1">
-            <div class="text-xs font-black uppercase text-[#1cb0f6] tracking-wider">Bước 1: Chọn môn học mong muốn</div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              Bạn có thể tự do đổi giữa các môn <strong>Java (CS102)</strong>, <strong>C (ICT1.002)</strong>, <strong>Python (CS105)</strong> bằng nút <strong>"CHỌN MÔN"</strong> ở thanh bên trái hoặc thanh đầu trang. Hệ thống tự động nạp bài giảng và ngữ cảnh tương ứng.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 2 Card: Peer Misconception & Code Playground -->
-        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl flex-shrink-0">
-            💻
-          </div>
-          <div class="space-y-1">
-            <div class="text-xs font-black uppercase text-amber-400 tracking-wider">Bước 2: Cùng bạn Bảo sửa ngộ nhận (Code Playground)</div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              Bạn học Bảo đang phát biểu một hiểu lầm sai lệch. Bạn hãy xem đoạn code của Bảo, chuyển sang tab <strong>"✏️ Sửa & Kiểm tra Fix"</strong> để trực tiếp gõ sửa và bấm <strong>"⚡ Chạy thử code đã sửa"</strong> để kiểm chứng thực tế.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 3 Card: Explain-back & Socratic TA -->
-        <div class="p-4 rounded-2xl bg-[#142229] border-2 border-[#2b3940] flex items-start space-x-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-[#58cc02]/20 border border-[#58cc02]/40 flex items-center justify-center text-2xl flex-shrink-0">
-            🎙️
-          </div>
-          <div class="space-y-1">
-            <div class="text-xs font-black uppercase text-[#58cc02] tracking-wider">Bước 3: Giải thích lại bằng lời của bạn (Explain-Back)</div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              Sau khi chỉ ra lỗi sai, bạn hãy giải thích lại cho Bảo (bằng cách gõ phím hoặc bấm <strong>🎙️ Micro</strong> để nói). <strong>Thầy Hùng (Trợ giảng Socratic)</strong> sẽ đánh giá theo thang Rubric đa chiều, chỉ gợi ý định hướng chứ không giải hộ đáp án!
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="pt-3 border-t border-[#2b3940] flex items-center justify-between">
-        <label class="flex items-center space-x-2 text-xs text-[#8598a0] cursor-pointer">
-          <input type="checkbox" id="guide-dont-show-again" class="rounded bg-[#1b2b32] border-[#37464f] text-[#58cc02] focus:ring-0">
-          <span>Không tự động hiện lại</span>
-        </label>
-        <button onclick="closeGuideModal()" class="px-6 py-3 duo-btn-green rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg">
-          ĐÃ HIỂU • BẮT ĐẦU HỌC NGAY
+        <button onclick="endTour()" class="w-6 h-6 rounded-full bg-[#20313a] hover:bg-[#283e4a] text-[#8598a0] hover:text-white flex items-center justify-center text-xs font-black transition" title="Đóng hướng dẫn (Esc)">
+          ✕
         </button>
+      </div>
+
+      <!-- Icon & Short Title -->
+      <div class="flex items-center space-x-2.5 mb-1.5">
+        <span id="tour-icon" class="text-2xl flex-shrink-0">📚</span>
+        <h4 id="tour-title" class="text-base font-black text-white leading-tight">Chọn môn học</h4>
+      </div>
+
+      <!-- Concise Description (1-2 lines) -->
+      <p id="tour-desc" class="text-xs text-slate-300 font-semibold leading-relaxed mb-4 min-h-[2.5rem] flex items-center">
+        Bấm vào đây để chọn khối kiến thức (B0 - B3), học kỳ và môn học bạn muốn học.
+      </p>
+
+      <!-- Footer: Skip, Dots, Prev, Next -->
+      <div class="flex items-center justify-between pt-3 border-t border-[#2b3940]">
+        <button onclick="endTour()" class="text-xs font-bold text-[#8598a0] hover:text-white hover:underline transition">
+          Bỏ qua
+        </button>
+
+        <!-- Dynamic Progress Dots -->
+        <div id="tour-dots" class="flex items-center space-x-1"></div>
+
+        <!-- Controls -->
+        <div class="flex items-center space-x-2">
+          <button id="tour-prev-btn" onclick="prevTourStep()" class="px-2.5 py-1.5 rounded-xl bg-[#20313a] hover:bg-[#283e4a] text-slate-300 hover:text-white text-xs font-bold transition">
+            ←
+          </button>
+          <button id="tour-next-btn" onclick="nextTourStep()" class="px-3.5 py-1.5 rounded-xl duo-btn-blue text-xs font-black uppercase tracking-wider shadow-md">
+            Tiếp tục →
+          </button>
+        </div>
       </div>
 
     </div>
@@ -1684,19 +1689,308 @@
     let isWaitingNext = false;
     let isAudioMuted = false;
 
-    function openGuideModal() {
-      const modal = document.getElementById('guide-modal');
-      if (modal) modal.classList.remove('hidden');
+    // ========================================================
+    // DYNAMIC INTERACTIVE GUIDED TOUR (WALKTHROUGH)
+    // ========================================================
+    let isTourActive = false;
+    let currentTourType = 'home'; // 'home' or 'exercise'
+    let currentTourStepIndex = 0;
+
+    const tourHomeSteps = [
+      {
+        target: '#nav-subjects',
+        view: 'home',
+        icon: '📚',
+        title: 'Chọn môn học',
+        desc: 'Bấm vào đây để chọn khối kiến thức (B0 - B3), học kỳ và môn học bạn muốn học.',
+        placement: 'right'
+      },
+      {
+        target: '#tour-course-selector',
+        view: 'home',
+        icon: '🎓',
+        title: 'Môn học hiện tại',
+        desc: 'Hiển thị môn đang học (CS102, ICT1.002, CS105...) và nút Đổi môn nhanh chóng.',
+        placement: 'bottom'
+      },
+      {
+        target: '#tour-start-node',
+        view: 'home',
+        icon: '⭐',
+        title: 'Bắt đầu bài học',
+        desc: 'Nhấp nút Bắt đầu để vào lớp học tương tác và cùng bạn học Bảo sửa ngộ nhận.',
+        placement: 'bottom'
+      },
+      {
+        target: '#nav-curriculum',
+        view: 'home',
+        icon: '📖',
+        title: 'Sổ tay Giáo trình',
+        desc: 'Mở xem slide bài giảng chính thức của môn học với trích dẫn chuẩn sư phạm.',
+        placement: 'right'
+      },
+      {
+        target: '#nav-instructor',
+        view: 'home',
+        icon: '📊',
+        title: 'Bảng Giảng viên & Radar',
+        desc: 'Xem biểu đồ Radar Rubric năng lực, lịch sử đối thoại và xuất báo cáo kiểm định.',
+        placement: 'right'
+      },
+      {
+        target: '#tour-stats-bar',
+        fallbackTarget: '#nav-profile',
+        view: 'home',
+        icon: '🔥',
+        title: 'Chuỗi học & Thành tích',
+        desc: 'Duy trì Streak mỗi ngày, tích lũy đá quý và xem chứng chỉ tại mục Hồ sơ.',
+        placement: 'bottom'
+      }
+    ];
+
+    const tourExerciseSteps = [
+      {
+        target: '#step-indicator-1',
+        view: 'exercise',
+        icon: '🎯',
+        title: 'Quy trình 2 bước học tập',
+        desc: 'Bước 1: Sửa ngộ nhận của bạn học -> Bước 2: Tự giải thích lại (Explain-Back).',
+        placement: 'bottom'
+      },
+      {
+        target: '#code-misconception-card',
+        view: 'exercise',
+        icon: '💻',
+        title: 'Sân chơi Code tương tác',
+        desc: 'Xem code ngộ nhận của Bảo, chuyển tab "Sửa & Kiểm tra Fix" để gõ sửa và chạy thử.',
+        placement: 'bottom'
+      },
+      {
+        target: '#classroom-chat-feed',
+        view: 'exercise',
+        icon: '💬',
+        title: 'Thảo luận lớp học',
+        desc: 'Nơi bạn học Bảo, Trợ giảng Socratic Thầy Hùng và Giảng viên trao đổi trực tiếp.',
+        placement: 'top'
+      },
+      {
+        target: '#user-input',
+        view: 'exercise',
+        icon: '✍️',
+        title: 'Khung phản hồi & Từ khóa',
+        desc: 'Gõ câu giải thích bằng lời của bạn, hoặc bấm các thẻ từ khóa gợi ý bên trên.',
+        placement: 'top'
+      },
+      {
+        target: '#sound-toggle-btn',
+        view: 'exercise',
+        icon: '🎙️',
+        title: 'Voice STT & Âm thanh',
+        desc: 'Bấm Micro để nói bằng giọng nói, hoặc bấm biểu tượng Loa để tắt/bật âm thanh.',
+        placement: 'top'
+      }
+    ];
+
+    function startGuidedTour(type) {
+      currentTourType = type || (currentView === 'exercise' ? 'exercise' : 'home');
+      currentTourStepIndex = 0;
+      isTourActive = true;
+
+      const container = document.getElementById('dynamic-tour-container');
+      if (container) container.classList.remove('hidden');
+
+      playDuoSound('hint');
+      renderCurrentTourStep();
+    }
+
+    function openGuideModal(type) {
+      startGuidedTour(type);
     }
 
     function closeGuideModal() {
-      const modal = document.getElementById('guide-modal');
-      const dontShow = document.getElementById('guide-dont-show-again');
-      if (dontShow && dontShow.checked) {
-        localStorage.setItem('mascot_guide_seen', 'true');
-      }
-      if (modal) modal.classList.add('hidden');
+      endTour();
     }
+
+    function endTour() {
+      isTourActive = false;
+      const container = document.getElementById('dynamic-tour-container');
+      if (container) container.classList.add('hidden');
+      localStorage.setItem('mascot_guide_seen', 'true');
+    }
+
+    function getActiveSteps() {
+      return currentTourType === 'exercise' ? tourExerciseSteps : tourHomeSteps;
+    }
+
+    function nextTourStep() {
+      const steps = getActiveSteps();
+      if (currentTourStepIndex < steps.length - 1) {
+        currentTourStepIndex++;
+        playDuoSound('hint');
+        renderCurrentTourStep();
+      } else {
+        if (currentTourType === 'home') {
+          switchView('exercise');
+          setTimeout(() => {
+            startGuidedTour('exercise');
+          }, 350);
+        } else {
+          playDuoSound('success');
+          endTour();
+        }
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourStepIndex > 0) {
+        currentTourStepIndex--;
+        playDuoSound('hint');
+        renderCurrentTourStep();
+      }
+    }
+
+    function renderCurrentTourStep() {
+      const steps = getActiveSteps();
+      const step = steps[currentTourStepIndex];
+      if (!step) return;
+
+      if (step.view && currentView !== step.view) {
+        switchView(step.view);
+      }
+
+      const badge = document.getElementById('tour-step-badge');
+      const modeBadge = document.getElementById('tour-mode-badge');
+      const icon = document.getElementById('tour-icon');
+      const title = document.getElementById('tour-title');
+      const desc = document.getElementById('tour-desc');
+      const prevBtn = document.getElementById('tour-prev-btn');
+      const nextBtn = document.getElementById('tour-next-btn');
+      const dotsContainer = document.getElementById('tour-dots');
+
+      if (badge) badge.innerText = `Bước ${currentTourStepIndex + 1}/${steps.length}`;
+      if (modeBadge) modeBadge.innerText = currentTourType === 'exercise' ? 'PHÒNG HỌC' : 'LỘ TRÌNH HỌC';
+      if (icon) icon.innerText = step.icon;
+      if (title) title.innerText = step.title;
+      if (desc) desc.innerText = step.desc;
+
+      if (prevBtn) {
+        prevBtn.style.visibility = currentTourStepIndex === 0 ? 'hidden' : 'visible';
+      }
+
+      if (nextBtn) {
+        if (currentTourStepIndex === steps.length - 1) {
+          if (currentTourType === 'home') {
+            nextBtn.innerText = 'Vào lớp học ➔';
+            nextBtn.className = 'px-3.5 py-1.5 rounded-xl duo-btn-green text-xs font-black uppercase tracking-wider shadow-md';
+          } else {
+            nextBtn.innerText = 'Hoàn tất 🎉';
+            nextBtn.className = 'px-3.5 py-1.5 rounded-xl duo-btn-green text-xs font-black uppercase tracking-wider shadow-md';
+          }
+        } else {
+          nextBtn.innerText = 'Tiếp tục →';
+          nextBtn.className = 'px-3.5 py-1.5 rounded-xl duo-btn-blue text-xs font-black uppercase tracking-wider shadow-md';
+        }
+      }
+
+      if (dotsContainer) {
+        dotsContainer.innerHTML = steps.map((_, idx) => `
+          <span class="h-1.5 rounded-full transition-all duration-300 ${idx === currentTourStepIndex ? 'w-4 bg-[#1cb0f6]' : 'w-1.5 bg-[#37464f]'}"></span>
+        `).join('');
+      }
+
+      let targetEl = document.querySelector(step.target);
+      if (!targetEl || targetEl.offsetParent === null) {
+        if (step.fallbackTarget) {
+          targetEl = document.querySelector(step.fallbackTarget);
+        }
+      }
+
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+          positionTour(targetEl, step.placement);
+        }, 120);
+      }
+    }
+
+    function positionTour(targetEl, preferredPlacement) {
+      if (!targetEl) return;
+      const rect = targetEl.getBoundingClientRect();
+      const pad = 8;
+      const spotlight = document.getElementById('tour-spotlight');
+      const popover = document.getElementById('tour-popover');
+      const arrow = document.getElementById('tour-arrow');
+      if (!spotlight || !popover) return;
+
+      spotlight.style.top = `${Math.max(0, rect.top - pad)}px`;
+      spotlight.style.left = `${Math.max(0, rect.left - pad)}px`;
+      spotlight.style.width = `${rect.width + pad * 2}px`;
+      spotlight.style.height = `${rect.height + pad * 2}px`;
+
+      const popW = Math.min(350, window.innerWidth - 32);
+      popover.style.width = `${popW}px`;
+      const popH = popover.offsetHeight || 190;
+      const margin = 16;
+      let top = 0;
+      let left = 0;
+      let actualPlacement = preferredPlacement || 'bottom';
+
+      if (preferredPlacement === 'right') {
+        if (rect.right + pad + popW + margin > window.innerWidth) {
+          actualPlacement = 'bottom';
+        }
+      } else if (preferredPlacement === 'bottom') {
+        if (rect.bottom + pad + popH + margin > window.innerHeight) {
+          actualPlacement = rect.top - pad - popH - margin > 0 ? 'top' : 'bottom';
+        }
+      } else if (preferredPlacement === 'top') {
+        if (rect.top - pad - popH - margin < 0) {
+          actualPlacement = 'bottom';
+        }
+      }
+
+      if (actualPlacement === 'right') {
+        left = rect.right + pad + 14;
+        top = Math.max(margin, Math.min(window.innerHeight - popH - margin, rect.top + (rect.height - popH) / 2));
+        if (arrow) {
+          arrow.className = 'absolute -left-2 top-6 w-3.5 h-3.5 bg-[#18262d] border-l-2 border-b-2 border-[#1cb0f6] rotate-45';
+        }
+      } else if (actualPlacement === 'top') {
+        top = rect.top - pad - popH - 14;
+        left = Math.max(margin, Math.min(window.innerWidth - popW - margin, rect.left + (rect.width - popW) / 2));
+        if (arrow) {
+          arrow.className = 'absolute -bottom-2 left-8 w-3.5 h-3.5 bg-[#18262d] border-r-2 border-b-2 border-[#1cb0f6] rotate-45';
+        }
+      } else { // 'bottom'
+        top = rect.bottom + pad + 14;
+        left = Math.max(margin, Math.min(window.innerWidth - popW - margin, rect.left + (rect.width - popW) / 2));
+        if (arrow) {
+          arrow.className = 'absolute -top-2 left-8 w-3.5 h-3.5 bg-[#18262d] border-l-2 border-t-2 border-[#1cb0f6] rotate-45';
+        }
+      }
+
+      top = Math.max(margin, Math.min(window.innerHeight - popH - margin, top));
+      left = Math.max(margin, Math.min(window.innerWidth - popW - margin, left));
+
+      popover.style.top = `${top}px`;
+      popover.style.left = `${left}px`;
+    }
+
+    // Auto-update position on window resize or scroll
+    window.addEventListener('resize', () => {
+      if (isTourActive) renderCurrentTourStep();
+    });
+    window.addEventListener('scroll', () => {
+      if (isTourActive) renderCurrentTourStep();
+    }, true);
+
+    // Keyboard support: Esc = Exit, Right/Enter = Next, Left = Prev
+    window.addEventListener('keydown', (e) => {
+      if (!isTourActive) return;
+      if (e.key === 'Escape') endTour();
+      else if (e.key === 'ArrowRight' || e.key === 'Enter') nextTourStep();
+      else if (e.key === 'ArrowLeft') prevTourStep();
+    });
 
     // Web Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
