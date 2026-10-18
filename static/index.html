@@ -5,13 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MASCOT - Duolingo Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Fredoka', 'Nunito', 'sans-serif'],
+            sans: ['Nunito', 'system-ui', 'sans-serif'],
+            body: ['Nunito', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --font-heading: 'Fredoka', 'Nunito', sans-serif;
+      --font-body: 'Nunito', system-ui, -apple-system, sans-serif;
+    }
+
     body {
-      font-family: 'Nunito', sans-serif;
+      font-family: var(--font-body);
       background-color: #131f24;
       color: #ffffff;
       user-select: none;
+    }
+
+    /* Tiêu đề áp dụng font chữ trong Ảnh 1 (Fredoka - Duolingo Bold Rounded Heading) */
+    h1, h2, h3, h4, h5, h6,
+    .font-heading,
+    .font-title,
+    [class*="text-2xl"],
+    [class*="text-3xl"],
+    [class*="text-4xl"],
+    #unit-topic-title,
+    #exercise-title,
+    #profile-name,
+    #tour-title,
+    .brand-title {
+      font-family: var(--font-heading) !important;
+      letter-spacing: -0.015em;
+    }
+
+    h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, .font-heading * {
+      font-family: inherit;
+    }
+
+    /* Chữ bình thường áp dụng font chữ trong Ảnh 2 (Nunito - Duolingo Body) */
+    p, span, div, button, input, textarea, label {
+      font-family: var(--font-body);
+    }
+
+    /* Giữ nguyên font Monospace cho phần hiển thị mã nguồn */
+    pre, code, pre code, textarea.font-mono, .font-mono, #code-snippet-content, #code-snippet-editor {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
     }
 
     /* Duolingo 3D Tactile Buttons */
